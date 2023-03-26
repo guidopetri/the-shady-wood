@@ -6,15 +6,16 @@ import sys
 
 
 class MainCharacter(object):
-    def __init__(self):
-        # self.image = pygame.image.load(f'{folder_root}/assets/gfx/')
-        # self.location = self.image.get_rect()
+    def __init__(self, surface):
+        self.surface = surface
+
+        self.sprite = pygame.image.load(f'{config.gfx_path}/Base Sprite.png')
+        _, _, self._size_x, self._size_y = self.sprite.get_rect()
+
         self._accel_x = 0
         self._accel_y = 0
         self._x = 120
         self._y = 120
-        self._size_x = 10
-        self._size_y = 10
 
     @property
     def location(self):
@@ -42,7 +43,10 @@ class MainCharacter(object):
 
     def handle(self):
         self.move_character()
-        # self.next_animation_frame()
+        self.next_animation_frame()
+
+    def next_animation_frame(self):
+        pass
 
     def keep_character_inbounds(self):
         self._x = max(min(self._x,
@@ -58,64 +62,123 @@ class MainCharacter(object):
 
         self.keep_character_inbounds()
 
-    def render(self):
-        pass
+    def render(self, mode):
+        if mode == config.Modes.GAME:
+            coords = (config.screen_size[0] // 2 - self._size_x // 2,
+                      config.screen_size[1] // 2 - self._size_y // 2,
+                      )
+            self.surface.blit(self.sprite, coords)
 
 
-def handle_events(character):
-    keys_map = {pygame.K_UP: (0, -1),
-                pygame.K_DOWN: (0, 1),
-                pygame.K_LEFT: (-1, 0),
-                pygame.K_RIGHT: (1, 0),
+def handle_events(bg, character):
+    keys_map = {pygame.K_UP: (0, config.character_speed),
+                pygame.K_DOWN: (0, -config.character_speed),
+                pygame.K_LEFT: (config.character_speed, 0),
+                pygame.K_RIGHT: (-config.character_speed, 0),
                 }
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key in keys_map:
-                character.increase_accel(keys_map[event.key])
-        elif event.type == pygame.KEYUP:
-            if event.key in keys_map:
-                character.reset_accel()
+
+    keys = pygame.key.get_pressed()
+
+    for key, movement in keys_map.items():
+        if keys[key]:
+            print(f"moving {movement}")
+            bg.move(movement)
 
 
 class Background(object):
-    def __init__(self, screen):
-        self.screen = screen
-        self.gfx_path = f"{folder_root}/assets/gfx"
+    def __init__(self, surface):
+        self.surface = surface
         self.cross_bg = pygame.image.load(
-            f"{self.gfx_path}/sample_cross_bg.bmp"
+            f"{config.gfx_path}/sample_cross_bg.bmp"
             )
 
+        self._position_x = 0
+        self._position_y = 0
+
+    @property
+    def position(self):
+        return (self._position_x, self._position_y)
+
     def render(self, mode):
+        surface.fill('black')
         if mode == config.Modes.MAIN_MENU:
             pass
         elif mode == config.Modes.GAME:
-            self.screen.blit(self.cross_bg, (0, 0))
+            self.surface.blit(self.cross_bg, self.position)
+
+    def move(self, amount):
+        self._position_x += amount[0]
+        self._position_y += amount[1]
+
+
+class Dialog(object):
+    def __init__(self, surface):
+        self.surface = surface
+        self.messages = ['lorem ipsum', 'dolor sit amet']
+        self.font = pygame.font.SysFont(config.fontname, config.fontsize)
+        self.font_color = pygame.Color(30, 30, 30)
+
+    @property
+    def position(self):
+        return (10, 10)
+
+    @property
+    def size(self):
+        return (100, 100)
+
+    def render_box_bg(self):
+        # create filled in rect for border
+        border = pygame.Surface((100, 100))
+        border.fill('blue')
+        border_rect = border.get_rect(midtop=(100, 100))
+
+        # create bg to overlay on border
+        bg = pygame.Surface((90, 90))
+        bg.fill('yellow')
+        bg_rect = bg.get_rect(midtop=(100 / 2, 5))
+
+        # blit bg onto border to achieve a border effect
+        border.blit(bg, bg_rect)
+
+        # blit the result onto screen
+        self.surface.blit(border, border_rect)
+
+    def render_text(self, text):
+        render = self.font.render(text, True, self.font_color)
+        rect = render.get_rect(left=100, top=100)
+        self.surface.blit(render, rect)
+
+    def render(self, mode):
+        if True:
+            self.render_box_bg()
+            self.render_text(self.messages[0])
 
 
 if __name__ == '__main__':
-    # TODO: fix folder root
-    folder_root = '..'
     # pygame.display.init()
     # pygame.font.init()
     # pygame.mixer.init()
     pygame.init()
     clock = pygame.time.Clock()
 
-    screen = pygame.display.set_mode(config.screen_size)
+    surface = pygame.display.set_mode(config.screen_size)
 
-    # character_loc = character_image.get_rect()
-    character = MainCharacter()
-    bg = Background(screen)
+    character = MainCharacter(surface)
+    bg = Background(surface)
+    dialog = Dialog(surface)
 
     while True:
-        handle_events(character)
-        bg.render(config.Modes.GAME)
-        # screen.blit(character_image, character_loc)
+        handle_events(bg, character)
         character.handle()
-        pygame.draw.rect(screen, 'blue', character.location)
+
+        bg.render(config.Modes.GAME)
+        character.render(config.Modes.GAME)
+        dialog.render(config.Modes.GAME)
+
         pygame.display.flip()
 
         clock.tick(60)
