@@ -110,9 +110,36 @@ class Background(object):
         elif mode == config.Modes.GAME:
             self.surface.blit(self.cross_bg, self.position)
 
+            # to the left
+            self.surface.blit(self.cross_bg,
+                              (self._position_x
+                               - self.cross_bg.get_width()
+                               + config.img_buffer,
+                               self._position_y)
+                              )
+            # to the top
+            self.surface.blit(self.cross_bg,
+                              (self._position_x,
+                               self._position_y
+                               - self.cross_bg.get_height()
+                               + config.img_buffer)
+                              )
+
+            # diagonal
+            self.surface.blit(self.cross_bg,
+                              (self._position_x
+                               - self.cross_bg.get_width()
+                               + config.img_buffer,
+                               self._position_y
+                               - self.cross_bg.get_height()
+                               + config.img_buffer)
+                              )
+
     def move(self, amount):
         self._position_x += amount[0]
+        self._position_x %= self.cross_bg.get_width()
         self._position_y += amount[1]
+        self._position_y %= self.cross_bg.get_height()
 
 
 class Dialog(object):
@@ -159,7 +186,7 @@ class Dialog(object):
         self.surface.blit(text, rect)
 
     def render(self, mode):
-        if True:
+        if False:
             position = {'midtop': (config.screen_size[0] // 2,
                                    3 * config.screen_size[1] // 4),
                         }

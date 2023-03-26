@@ -10,6 +10,8 @@ fontsize = 32
 dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
 
+img_buffer = 2
+
 # TODO: fix folder root
 root = '..'
 gfx_path = f"{root}/assets/gfx"
