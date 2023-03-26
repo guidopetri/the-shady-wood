@@ -118,7 +118,10 @@ class Background(object):
 class Dialog(object):
     def __init__(self, surface):
         self.surface = surface
-        self.messages = ['lorem ipsum', 'dolor sit amet']
+        self.messages = ['lorem ipsum',
+                         'dolor sit amet',
+                         'Oh no! I\'m lost in the woods...',
+                         ]
         self.font = pygame.font.SysFont(config.fontname, config.fontsize)
         self.font_color = pygame.Color(30, 30, 30)
 
@@ -130,16 +133,16 @@ class Dialog(object):
     def size(self):
         return (100, 100)
 
-    def render_box_bg(self):
+    def render_box_bg(self, width, height, position):
         # create filled in rect for border
-        border = pygame.Surface((100, 100))
-        border.fill('blue')
-        border_rect = border.get_rect(midtop=(100, 100))
+        border = pygame.Surface((width + 20, height + 10))
+        border.fill(config.dialog_border_color)
+        border_rect = border.get_rect(**position)
 
         # create bg to overlay on border
-        bg = pygame.Surface((90, 90))
-        bg.fill('yellow')
-        bg_rect = bg.get_rect(midtop=(100 / 2, 5))
+        bg = pygame.Surface((border_rect.width - 10, border_rect.height - 10))
+        bg.fill(config.dialog_box_color)
+        bg_rect = bg.get_rect(midtop=(border_rect.width / 2, 5))
 
         # blit bg onto border to achieve a border effect
         border.blit(bg, bg_rect)
@@ -147,15 +150,22 @@ class Dialog(object):
         # blit the result onto screen
         self.surface.blit(border, border_rect)
 
-    def render_text(self, text):
+    def render_text(self, text, position):
         render = self.font.render(text, True, self.font_color)
-        rect = render.get_rect(left=100, top=100)
-        self.surface.blit(render, rect)
+        rect = render.get_rect(**position)
+        return render, rect
+
+    def blit_text(self, text, rect):
+        self.surface.blit(text, rect)
 
     def render(self, mode):
         if True:
-            self.render_box_bg()
-            self.render_text(self.messages[0])
+            position = {'midtop': (config.screen_size[0] // 2,
+                                   3 * config.screen_size[1] // 4),
+                        }
+            text, rect = self.render_text(self.messages[2], position)
+            self.render_box_bg(rect.width, rect.height, position)
+            self.blit_text(text, rect)
 
 
 if __name__ == '__main__':
