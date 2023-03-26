@@ -76,6 +76,7 @@ if __name__ == '__main__':
     # pygame.font.init()
     # pygame.mixer.init()
     pygame.init()
+    clock = pygame.time.Clock()
 
     screen = pygame.display.set_mode(config.screen_size)
 
@@ -90,3 +91,5 @@ if __name__ == '__main__':
         character.handle()
         pygame.draw.rect(screen, 'red', character.location)
         pygame.display.flip()
+
+        clock.tick(60)
