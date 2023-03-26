@@ -45,8 +45,12 @@ class MainCharacter(object):
         # self.next_animation_frame()
 
     def keep_character_inbounds(self):
-        self._x = max(min(self._x, config.screen_size[0] - self._size_x), 0)
-        self._y = max(min(self._y, config.screen_size[1] - self._size_y), 0)
+        self._x = max(min(self._x,
+                          config.screen_size[0] - self._size_x),
+                      0)
+        self._y = max(min(self._y,
+                          config.screen_size[1] - self._size_y),
+                      0)
 
     def move_character(self):
         self._x += self._accel_x
