@@ -58,19 +58,41 @@ class MainCharacter(object):
 
         self.keep_character_inbounds()
 
+    def render(self):
+        pass
+
 
 def handle_events(character):
+    keys_map = {pygame.K_UP: (0, -1),
+                pygame.K_DOWN: (0, 1),
+                pygame.K_LEFT: (-1, 0),
+                pygame.K_RIGHT: (1, 0),
+                }
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                character.increase_accel((0, -1))
-            elif event.key == pygame.K_DOWN:
-                character.increase_accel((0, 1))
+            if event.key in keys_map:
+                character.increase_accel(keys_map[event.key])
         elif event.type == pygame.KEYUP:
-            if event.key in (pygame.K_UP, pygame.K_DOWN):
+            if event.key in keys_map:
                 character.reset_accel()
+
+
+class Background(object):
+    def __init__(self, screen):
+        self.screen = screen
+        self.gfx_path = f"{folder_root}/assets/gfx"
+        self.cross_bg = pygame.image.load(
+            f"{self.gfx_path}/sample_cross_bg.bmp"
+            )
+
+    def render(self, mode):
+        if mode == config.Modes.MAIN_MENU:
+            pass
+        elif mode == config.Modes.GAME:
+            self.screen.blit(self.cross_bg, (0, 0))
 
 
 if __name__ == '__main__':
@@ -86,14 +108,14 @@ if __name__ == '__main__':
 
     # character_loc = character_image.get_rect()
     character = MainCharacter()
+    bg = Background(screen)
 
     while True:
         handle_events(character)
-
-        screen.fill('black')
+        bg.render(config.Modes.GAME)
         # screen.blit(character_image, character_loc)
         character.handle()
-        pygame.draw.rect(screen, 'red', character.location)
+        pygame.draw.rect(screen, 'blue', character.location)
         pygame.display.flip()
 
         clock.tick(60)
