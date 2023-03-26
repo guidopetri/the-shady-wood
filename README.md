@@ -1,2 +1,3 @@
-# pyweek-35
-Pyweek 35
+# PyWeek 35
+
+The theme for [this PyWeek](https://pyweek.org/35/) is `In The Shadows`.
