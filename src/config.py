@@ -1,1 +1,1 @@
-screen_size = (320, 240)
+screen_size = (1080, 720)
