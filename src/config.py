@@ -6,6 +6,7 @@ character_speed = 4
 
 fontname = 'Arial'
 fontsize = 32
+font_color = '#303030'
 
 dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
