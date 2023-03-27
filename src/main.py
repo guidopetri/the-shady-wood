@@ -8,6 +8,7 @@ from character import MainCharacter
 from background import Background
 from dialog import Dialog
 from background import Shadows
+from gui import Gui
 
 
 def handle_events(state, bg):
@@ -56,6 +57,9 @@ if __name__ == '__main__':
 
     game_state = {'current_game_mode': config.Modes.MAIN_MENU,
                   'active_message': 0,
+                  'hp': 0,
+                  'status': 'safe',
+                  'inventory': [],
                   }
 
     character = MainCharacter(surface)
@@ -63,6 +67,7 @@ if __name__ == '__main__':
     dialog = Dialog(surface)
     shadows = Shadows(surface, area=720, variance=48000)
     fg = Background(surface)
+    gui = Gui(surface)
 
     while True:
         game_state = handle_events(game_state, bg)
@@ -72,6 +77,7 @@ if __name__ == '__main__':
         character.render(game_state)
         # fg.render(game_state)
         shadows.render(game_state)
+        gui.render(game_state)
         dialog.render(game_state)
 
         pygame.display.flip()

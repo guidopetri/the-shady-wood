@@ -16,9 +16,12 @@ dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
 menu_bg_color = 'yellow'
 
+courage_fontname = 'Arial'
+courage_fontsize = 16
+courage_font_color = '#808080'
+
 img_buffer = 2
 
-# TODO: fix folder root
 main_dir = Path(os.path.split(os.path.abspath(__file__))[0])
 root = main_dir / '..'
 gfx_path = str(root / 'assets' / 'gfx')
