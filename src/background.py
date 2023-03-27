@@ -18,7 +18,9 @@ class Background(object):
     def position(self):
         return (self._position_x, self._position_y)
 
-    def render(self, mode):
+    def render(self, state):
+        mode = state['current_game_mode']
+
         fns = {config.Modes.MAIN_MENU: self.render_main_menu,
                config.Modes.GAME: self.render_game,
                config.Modes.INTRO: self.render_intro_dialog,
@@ -115,7 +117,9 @@ class Shadows(object):
 
         return shadow
 
-    def render(self, mode):
+    def render(self, state):
+        mode = state['current_game_mode']
+
         if self.redo_render or self.shadows is None:
             self.shadows = self.render_shadows()
 

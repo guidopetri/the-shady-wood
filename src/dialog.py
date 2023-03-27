@@ -39,7 +39,10 @@ class Dialog(object):
     def blit_text(self, text, rect):
         self.surface.blit(text, rect)
 
-    def render(self, mode, message=0):
+    def render(self, state):
+        mode = state['current_game_mode']
+        message = state['active_message']
+
         if mode == config.Modes.INTRO:
             text, rect = self.render_text(config.intro_messages[message])
             self.render_box_bg(rect.width, rect.height)

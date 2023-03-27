@@ -19,7 +19,9 @@ class MainCharacter(object):
     def next_animation_frame(self):
         pass
 
-    def render(self, mode):
+    def render(self, state):
+        mode = state['current_game_mode']
+
         if mode == config.Modes.GAME:
             coords = (config.screen_size[0] // 2 - self._size_x // 2,
                       config.screen_size[1] // 2 - self._size_y // 2,

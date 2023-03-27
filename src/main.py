@@ -10,7 +10,7 @@ from dialog import Dialog
 from background import Shadows
 
 
-def handle_events(current_game_mode, message, bg, character):
+def handle_events(state, bg):
     keys_map = {pygame.K_UP: (0, config.character_speed),
                 pygame.K_DOWN: (0, -config.character_speed),
                 pygame.K_LEFT: (config.character_speed, 0),
@@ -18,6 +18,7 @@ def handle_events(current_game_mode, message, bg, character):
                 }
 
     any_key = False
+    mode = state['current_game_mode']
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -27,21 +28,21 @@ def handle_events(current_game_mode, message, bg, character):
 
     keys = pygame.key.get_pressed()
 
-    if current_game_mode == config.Modes.MAIN_MENU:
+    if mode == config.Modes.MAIN_MENU:
         if any_key:
-            current_game_mode = config.Modes.INTRO
-    elif current_game_mode == config.Modes.INTRO:
+            state['current_game_mode'] = config.Modes.INTRO
+    elif mode == config.Modes.INTRO:
         if any_key:
-            message += 1
-            if message >= len(config.intro_messages):
-                current_game_mode = config.Modes.GAME
-                message = 0
-    elif current_game_mode == config.Modes.GAME:
+            state['active_message'] += 1
+            if state['active_message'] >= len(config.intro_messages):
+                state['current_game_mode'] = config.Modes.GAME
+                state['active_message'] = 0
+    elif mode == config.Modes.GAME:
         for key, movement in keys_map.items():
             if keys[key]:
                 bg.move(movement)
 
-    return current_game_mode, message
+    return state
 
 
 if __name__ == '__main__':
@@ -52,8 +53,10 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
 
     surface = pygame.display.set_mode(config.screen_size)
-    current_game_mode = config.Modes.MAIN_MENU
-    active_message = 0
+
+    game_state = {'current_game_mode': config.Modes.MAIN_MENU,
+                  'active_message': 0,
+                  }
 
     character = MainCharacter(surface)
     bg = Background(surface)
@@ -62,14 +65,14 @@ if __name__ == '__main__':
     fg = Background(surface)
 
     while True:
-        current_game_mode, active_message = handle_events(current_game_mode, active_message, bg, character)  # noqa
+        game_state = handle_events(game_state, bg)
         character.handle()
 
-        bg.render(current_game_mode)
-        character.render(current_game_mode)
-        # fg.render(current_game_mode)
-        shadows.render(current_game_mode)
-        dialog.render(current_game_mode, active_message)
+        bg.render(game_state)
+        character.render(game_state)
+        # fg.render(game_state)
+        shadows.render(game_state)
+        dialog.render(game_state)
 
         pygame.display.flip()
 
