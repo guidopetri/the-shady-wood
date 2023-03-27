@@ -5,10 +5,6 @@ import config
 class Dialog(object):
     def __init__(self, surface):
         self.surface = surface
-        self.messages = ['lorem ipsum',
-                         'dolor sit amet',
-                         'Oh no! I\'m lost in the woods...',
-                         ]
         self.font = pygame.font.SysFont(config.fontname, config.fontsize)
         self.font_color = pygame.Color(config.font_color)
 
@@ -43,8 +39,8 @@ class Dialog(object):
     def blit_text(self, text, rect):
         self.surface.blit(text, rect)
 
-    def render(self, mode):
-        if True:
-            text, rect = self.render_text(self.messages[2])
+    def render(self, mode, message=0):
+        if mode == config.Modes.INTRO:
+            text, rect = self.render_text(config.intro_messages[message])
             self.render_box_bg(rect.width, rect.height)
             self.blit_text(text, rect)

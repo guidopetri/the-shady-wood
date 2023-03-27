@@ -19,69 +19,105 @@ class Background(object):
         return (self._position_x, self._position_y)
 
     def render(self, mode):
+        fns = {config.Modes.MAIN_MENU: self.render_main_menu,
+               config.Modes.GAME: self.render_game,
+               config.Modes.INTRO: self.render_intro_dialog,
+               }
+
+        fns[mode]()
+
+    def render_intro_dialog(self):
         self.surface.fill('black')
-        if mode == config.Modes.MAIN_MENU:
-            pass
-        elif mode == config.Modes.GAME:
-            self.surface.blit(self.cross_bg, self.position)
 
-            # to the left
-            self.surface.blit(self.cross_bg,
-                              (self._position_x
-                               - self.cross_bg.get_width()
-                               + config.img_buffer,
-                               self._position_y)
-                              )
-            # to the top
-            self.surface.blit(self.cross_bg,
-                              (self._position_x,
-                               self._position_y
-                               - self.cross_bg.get_height()
-                               + config.img_buffer)
-                              )
+    def render_main_menu(self):
+        self.surface.fill('black')
 
-            # diagonal
-            self.surface.blit(self.cross_bg,
-                              (self._position_x
-                               - self.cross_bg.get_width()
-                               + config.img_buffer,
-                               self._position_y
-                               - self.cross_bg.get_height()
-                               + config.img_buffer)
-                              )
+        dims = [int(dim * 0.8) for dim in config.screen_size]
+        menu_surface = pygame.Surface(dims)
+        menu_surface.fill(config.menu_bg_color)
+        menu_rect = menu_surface.get_rect(center=config.screen_center)
 
-            # foreground with lighting effect
-            foreground = pygame.Surface((self.surface.get_width(),
-                                         self.surface.get_height(),
-                                         ),
-                                        flags=pygame.SRCALPHA,
-                                        )
+        self.surface.blit(menu_surface, menu_rect)
 
-            foreground.fill('black')
-            alphas = pygame.surfarray.pixels_alpha(foreground)
+    def render_game(self):
+        self.surface.fill('black')
+        self.surface.blit(self.cross_bg, self.position)
 
-            midpoints = [config.screen_size[0] // 2,
-                         config.screen_size[1] // 2]
+        # to the left
+        self.surface.blit(self.cross_bg,
+                          (self._position_x
+                           - self.cross_bg.get_width()
+                           + config.img_buffer,
+                           self._position_y)
+                          )
+        # to the top
+        self.surface.blit(self.cross_bg,
+                          (self._position_x,
+                           self._position_y
+                           - self.cross_bg.get_height()
+                           + config.img_buffer)
+                          )
 
-            area_size = 400
-            area_half = area_size // 2
-
-            array = np.mgrid[:area_size, :area_size]
-            array = array.transpose((1, 2, 0))
-            rv = multivariate_normal(mean=area_half,
-                                     cov=[[4000, 0], [0, 4000]])
-            diffs = rv.pdf(array)
-            normalized_diffs = diffs * 255 / diffs.max()
-
-            # replace middle section of alphas with the diff'd amount
-            alphas[midpoints[0] - area_half: midpoints[0] + area_half,
-                   midpoints[1] - area_half: midpoints[1] + area_half] = alphas[midpoints[0] - area_half: midpoints[0] + area_half,  # noqa
-                                                                                midpoints[1] - area_half: midpoints[1] + area_half] - normalized_diffs  # noqa
-            del alphas
-            self.surface.blit(foreground, (0, 0))
+        # diagonal
+        self.surface.blit(self.cross_bg,
+                          (self._position_x
+                           - self.cross_bg.get_width()
+                           + config.img_buffer,
+                           self._position_y
+                           - self.cross_bg.get_height()
+                           + config.img_buffer)
+                          )
 
     def move(self, amount):
         self._position_x += amount[0]
         self._position_x %= self.cross_bg.get_width()
         self._position_y += amount[1]
         self._position_y %= self.cross_bg.get_height()
+
+
+class Shadows(object):
+    def __init__(self, surface, area, variance):
+        self.surface = surface
+        self.area = area
+        self.variance = variance
+        self.shadows = None
+        self.redo_render = True
+
+    def render_shadows(self):
+        # foreground with lighting effect
+        shadow = pygame.Surface((self.surface.get_width(),
+                                 self.surface.get_height(),
+                                 ),
+                                flags=pygame.SRCALPHA,
+                                )
+
+        shadow.fill('black')
+        alphas = pygame.surfarray.pixels_alpha(shadow)
+
+        midpoints = [config.screen_size[0] // 2,
+                     config.screen_size[1] // 2]
+
+        area_half = self.area // 2
+
+        array = np.mgrid[:self.area, :self.area]
+        array = array.transpose((1, 2, 0))
+        rv = multivariate_normal(mean=[area_half, area_half],
+                                 cov=[[self.variance, 0], [0, self.variance]])
+        diffs = rv.pdf(array)
+        normalized_diffs = diffs * alphas.max() / diffs.max()
+
+        # replace middle section of alphas with the diff'd amount
+        alphas[midpoints[0] - area_half: midpoints[0] + area_half,
+               midpoints[1] - area_half: midpoints[1] + area_half] = alphas[midpoints[0] - area_half: midpoints[0] + area_half,  # noqa
+                                                                            midpoints[1] - area_half: midpoints[1] + area_half] - normalized_diffs  # noqa
+
+        self.redo_render = False
+
+        return shadow
+
+    def render(self, mode):
+        if self.redo_render or self.shadows is None:
+            self.shadows = self.render_shadows()
+
+        if mode == config.Modes.GAME:
+            self.surface.blit(self.shadows, (0, 0))
