@@ -26,13 +26,25 @@ class Gui(object):
                                              self.font_color,
                                              )
 
+        self.item_font = pygame.font.SysFont(config.courage_fontname,
+                                             config.item_fontsize,
+                                             )
         self.item_font_color = pygame.Color(config.item_font_color)
 
+        key_filename = 'ItemBar_Key_10x10px.png'
+        path = config.gfx_path / key_filename
+        key_img = pygame.image.load(path).convert_alpha()
+        img_rect = key_img.get_rect()
         for item in config.items:
-            self.shortcut[item] = self.font.render(config.keys[item],
-                                                   True,
-                                                   self.item_font_color,
-                                                   )
+            img = key_img.copy()
+            text = self.item_font.render(config.keys[item],
+                                         True,
+                                         self.item_font_color,
+                                         )
+            rect = text.get_rect(center=img_rect.center)
+            img.blit(text, rect)
+
+            self.shortcut[item] = img
 
     @property
     def num_frames(self):
