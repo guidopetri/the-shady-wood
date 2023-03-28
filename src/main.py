@@ -90,7 +90,7 @@ if __name__ == '__main__':
                   'active_message': 0,
                   'hp': 100,
                   'status': 'safe',
-                  'inventory': {'candle': 5, 'firefly': 0, 'snail': 0},
+                  'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
                   'walking': False,
                   'position': (0, 0),
