@@ -21,20 +21,20 @@ class Gui(object):
 
     def load_hp_icon(self):
         self.num_frames = 2
-        self.fps = 2
+        self.fps = 1
         self._frames_per_sprite = config.framerate // self.fps
         self.frame_counter = 0
 
-        filename = 'heart_icon.png'
+        filename = 'heart_hp_spritesheet_1x2_48px.png'
         path = config.gfx_path / filename
         sheet = pygame.image.load(path).convert_alpha()
 
         sprites = []
-        width = 64
-        height = 64
+        width = 48
+        height = 48
 
         coords = [(0, 0),
-                  (width, 0),
+                  (0, height),
                   ]
 
         for idx in range(self.num_frames):
