@@ -19,11 +19,45 @@ class Gui(object):
                                                      self.courage_font_color,
                                                      )
 
+    def load_hp_icon(self):
+        self.num_frames = 2
+        self.fps = 2
+        self._frames_per_sprite = config.framerate // self.fps
+        self.frame_counter = 0
+
+        filename = 'heart_icon.png'
+        path = config.gfx_path / filename
+        sheet = pygame.image.load(path).convert_alpha()
+
+        sprites = []
+        width = 64
+        height = 64
+
+        coords = [(0, 0),
+                  (width, 0),
+                  ]
+
+        for idx in range(self.num_frames):
+            sprite_area = pygame.Rect(*coords[idx], width, height)
+            sprites.append(sheet.subsurface(sprite_area))
+
+        self.hp_icon = sprites
+        self.current_frame = 0
+        self.hp_icon_rect = self.hp_sprite.get_rect()
+
+    def advance_heart_frames(self):
+        self.frame_counter += 1
+        if self.frame_counter == self._frames_per_sprite:
+            self.frame_counter = 0
+            self.current_frame += 1
+            self.current_frame %= self.num_frames
+
+    @property
+    def hp_sprite(self):
+        return self.hp_icon[self.current_frame]
+
     def render_base_hp_bar(self):
-        # self.hp_icon = pygame.image.load().convert()
-        self.hp_icon = pygame.Surface((64, 64)).convert()
-        self.hp_icon.fill('magenta')
-        self.hp_icon_rect = self.hp_icon.get_rect()
+        self.load_hp_icon()
 
         self.hp_bg_bar_color = pygame.Color(config.hp_bar_bg_color)
         self.hp_bar_radius = config.hp_bar_border_radius
@@ -41,7 +75,7 @@ class Gui(object):
         self.courage_rect = self.courage_text.get_rect(**coords)
         self.hp_indicator.blit(self.courage_text, self.courage_rect)
 
-        height = (self.hp_icon.get_height() - hp_indicator_size[1]) // 2
+        height = (self.hp_sprite.get_height() - hp_indicator_size[1]) // 2
         coords = {'topright': (config.screen_size[0] - 10, height)}
         self.hp_indicator_rect = self.hp_indicator.get_rect(**coords)
         self.hp_icon_rect.midright = self.hp_indicator_rect.midleft
@@ -99,6 +133,8 @@ class Gui(object):
                          border_radius=self.hp_bar_radius,
                          )
 
+        self.advance_heart_frames()
+
         self.surface.blit(hp_indicator_copy, self.hp_indicator_rect)
-        self.surface.blit(self.hp_icon, self.hp_icon_rect)
+        self.surface.blit(self.hp_sprite, self.hp_icon_rect)
         self.surface.blit(self.item_bar, self.item_bar_rect)

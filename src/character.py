@@ -36,13 +36,16 @@ class MainCharacter(object):
         # start by default facing forward
         self.current_sprites = self.spritesheets['forward']
         self.current_frame = 0
-        self.sprite = self.current_sprites[self.current_frame]
 
         _, _, self._size_x, self._size_y = self.sprite.get_rect()
 
         self.coords = (config.screen_size[0] // 2 - self._size_x // 2,
                        config.screen_size[1] // 2 - self._size_y // 2,
                        )
+
+    @property
+    def sprite(self):
+        return self.current_sprites[self.current_frame]
 
     @property
     def size(self):
@@ -59,7 +62,6 @@ class MainCharacter(object):
             self.frame_counter = 0
 
         self.current_frame %= self.num_frames
-        self.sprite = self.current_sprites[self.current_frame]
 
     def render(self, state):
         mode = state['current_game_mode']
