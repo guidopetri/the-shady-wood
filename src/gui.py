@@ -90,11 +90,12 @@ class Gui(object):
         self.full_hp_color = pygame.Color(config.full_hp_color)
         self.empty_hp_color = pygame.Color(config.empty_hp_color)
 
+    def load_item_icons(self):
+        pass
+
     def render_base_item_bar(self):
-        # self.item_icons = pygame.image.load()
-        item_bar_size = (config.screen_size[0] // 3,
-                         config.screen_size[1] // 12,
-                         )
+        # self.load_item_icons()
+        item_bar_size = config.item_bar_size
         self.item_bar = pygame.Surface(item_bar_size).convert()
         self.item_bar.fill('red')
 

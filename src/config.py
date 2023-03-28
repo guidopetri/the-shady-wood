@@ -30,6 +30,10 @@ hp_indicator_size = (150,  # ~ 1080 / 8 + 10%
                      40,  # ~ 720 / 20 + 10%
                      )
 
+item_bar_size = (360,  # 1080 / 3
+                 60,  # 720 / 12
+                 )
+
 img_buffer = 2
 
 main_dir = Path(os.path.split(os.path.abspath(__file__))[0])
