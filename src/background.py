@@ -15,9 +15,8 @@ class AbstractBG(ABC):
 
     def load_images(self):
         self.cross = pygame.image.load(
-            config.gfx_path / f"BG_Maze_{self.image_type}_Cross_128px.png"
+            config.gfx_path / f"BG_Maze_{self.image_type}_Cross_384px.png"
             ).convert_alpha()
-        self.cross = pygame.transform.scale_by(self.cross, 3)
 
     @property
     def position(self):
