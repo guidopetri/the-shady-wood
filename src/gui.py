@@ -132,6 +132,7 @@ class Gui(object):
         for item in config.items:
             coords = {'center': self.item_rects[item].midbottom}
             rect = self.shortcut[item].get_rect(**coords)
+            rect.move_ip(config.item_key_padding)
             self.item_bar_template.blit(self.shortcut[item], rect)
 
     def render_item_counts(self):
@@ -144,8 +145,10 @@ class Gui(object):
                                     self.item_font_color,
                                     )
             coords = {'topright': self.item_rects[item].topright}
+            rect = text.get_rect(**coords)
+            rect.move_ip(config.item_count_padding)
             self.item_count_texts[item] = text
-            self.item_count_rects[item] = text.get_rect(**coords)
+            self.item_count_rects[item] = rect
 
     def load_item_icons(self):
         item_bar_size = config.item_bar_size
@@ -153,8 +156,9 @@ class Gui(object):
         self.icons = {}
         self.item_rects = {}
 
-        self.item_bar_template = pygame.Surface(item_bar_size).convert()
-        self.item_bar_template.fill('#964b00')
+        filename = 'ItemBar_184x68px.png'
+        path = config.gfx_path / filename
+        self.item_bar_template = pygame.image.load(path).convert_alpha()
 
         coords = {'midbottom': (config.screen_center[0],
                                 config.screen_size[1] - 10)
@@ -194,7 +198,7 @@ class Gui(object):
         self.render_item_counts()
 
         for item in config.items:
-            fn = lambda x: x
+            fn = lambda x: x  # noqa
             if self.item_count[item] == 0:
                 fn = pygame.transform.grayscale
             self.item_bar.blit(fn(self.icons[item]), self.item_rects[item])
