@@ -42,6 +42,11 @@ def handle_events(state, bg):
         for key, movement in keys_map.items():
             if keys[key]:
                 bg.move(movement)
+        # todo: remove
+        if keys[pygame.K_a]:
+            state['hp'] = min(state['hp'] + 1, 100)
+        if keys[pygame.K_s]:
+            state['hp'] = max(state['hp'] - 1, 0)
 
     return state
 
@@ -57,7 +62,7 @@ if __name__ == '__main__':
 
     game_state = {'current_game_mode': config.Modes.MAIN_MENU,
                   'active_message': 0,
-                  'hp': 0,
+                  'hp': 100,
                   'status': 'safe',
                   'inventory': [],
                   }

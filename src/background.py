@@ -108,10 +108,14 @@ class Shadows(object):
         diffs = rv.pdf(array)
         normalized_diffs = diffs * alphas.max() / diffs.max()
 
+        x_start = midpoints[0] - area_half
+        x_end = midpoints[0] + area_half
+        y_start = midpoints[1] - area_half
+        y_end = midpoints[1] + area_half
         # replace middle section of alphas with the diff'd amount
-        alphas[midpoints[0] - area_half: midpoints[0] + area_half,
-               midpoints[1] - area_half: midpoints[1] + area_half] = alphas[midpoints[0] - area_half: midpoints[0] + area_half,  # noqa
-                                                                            midpoints[1] - area_half: midpoints[1] + area_half] - normalized_diffs  # noqa
+        alphas[x_start: x_end,
+               y_start: y_end] = alphas[x_start: x_end,
+                                        y_start: y_end] - normalized_diffs
 
         self.redo_render = False
 

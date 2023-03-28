@@ -16,9 +16,17 @@ dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
 menu_bg_color = 'yellow'
 
-courage_fontname = 'Arial'
-courage_fontsize = 16
+courage_fontname = 'Copperplate Gothic'
+courage_fontsize = 14
 courage_font_color = '#808080'
+
+hp_bar_border_radius = 3
+full_hp_color = '#00aa00'
+empty_hp_color = '#cc0000'
+hp_bar_bg_color = '#222222'
+hp_indicator_size = (150,  # ~ 1080 / 8 + 10%
+                     40,  # ~ 720 / 20 + 10%
+                     )
 
 img_buffer = 2
 
