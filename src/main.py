@@ -6,12 +6,14 @@ import sys
 
 from character import MainCharacter
 from background import Background
-from dialog import Dialog
+from background import Foreground
+from background import Boundaries
 from background import Shadows
+from dialog import Dialog
 from gui import Gui
 
 
-def handle_events(state, bg):
+def handle_events(state, bg, fg):
     keys_map = {pygame.K_UP: {'movement': (0, config.character_speed),
                               'direction': 'back',
                               },
@@ -51,6 +53,9 @@ def handle_events(state, bg):
         for key, actions in keys_map.items():
             if keys[key]:
                 bg.move(actions['movement'])
+                fg.move(actions['movement'])
+                state['position'] = tuple(map(sum, zip(state['position'],
+                                                       actions['movement'])))
                 state['walking'] = True
                 state['direction'] = actions['direction']
         # todo: remove
@@ -71,28 +76,32 @@ if __name__ == '__main__':
 
     surface = pygame.display.set_mode(config.screen_size)
 
-    game_state = {'current_game_mode': config.Modes.MAIN_MENU,
+    game_state = {'current_game_mode': config.Modes.GAME,
                   'active_message': 0,
                   'hp': 100,
                   'status': 'safe',
                   'inventory': [],
                   'direction': 'forward',
                   'walking': False,
+                  'position': (0, 0),
                   }
 
     character = MainCharacter(surface)
     bg = Background(surface)
     dialog = Dialog(surface)
     shadows = Shadows(surface, area=720, variance=48000)
-    fg = Background(surface)
+    fg = Foreground(surface)
     gui = Gui(surface)
+    boundaries = Boundaries(surface)
 
     while True:
-        game_state = handle_events(game_state, bg)
+        game_state = handle_events(game_state, bg, fg)
+
+        surface.fill('black')
 
         bg.render(game_state)
         character.render(game_state)
-        # fg.render(game_state)
+        fg.render(game_state)
         shadows.render(game_state)
         gui.render(game_state)
         dialog.render(game_state)
