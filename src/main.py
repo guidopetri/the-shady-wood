@@ -104,7 +104,7 @@ if __name__ == '__main__':
     gui = Gui(surface)
     boundaries = Boundaries(surface)
     game_map = Map()
-    game_map.generate_map()
+    # game_map.generate_map()
 
     while True:
         game_state = handle_events(game_state, bg, fg)
