@@ -178,8 +178,8 @@ class Gui(object):
         self.item_bar_rect = self.item_bar_template.get_rect(**coords)
 
         filenames = {'candle': 'Candle_sprite_itembar_48px_v2.png',
-                     'firefly': 'Firefly_sprite_itembar_48px_v2.png',
-                     'snail': 'Snail_sprite_itembar_48px_v2.png',
+                     'firefly': 'Firefly_sprite_itembar_48px_v3.png',
+                     'snail': 'Snail_sprite_itembar_48px_v3.png',
                      }
 
         coords = {'candle': {'midleft': (config.item_padding,
