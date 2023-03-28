@@ -12,14 +12,23 @@ from gui import Gui
 
 
 def handle_events(state, bg):
-    keys_map = {pygame.K_UP: (0, config.character_speed),
-                pygame.K_DOWN: (0, -config.character_speed),
-                pygame.K_LEFT: (config.character_speed, 0),
-                pygame.K_RIGHT: (-config.character_speed, 0),
+    keys_map = {pygame.K_UP: {'movement': (0, config.character_speed),
+                              'direction': 'back',
+                              },
+                pygame.K_DOWN: {'movement': (0, -config.character_speed),
+                                'direction': 'forward',
+                                },
+                pygame.K_LEFT: {'movement': (config.character_speed, 0),
+                                'direction': 'left',
+                                },
+                pygame.K_RIGHT: {'movement': (-config.character_speed, 0),
+                                 'direction': 'right',
+                                 },
                 }
 
     any_key = False
     mode = state['current_game_mode']
+    state['walking'] = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -39,9 +48,11 @@ def handle_events(state, bg):
                 state['current_game_mode'] = config.Modes.GAME
                 state['active_message'] = 0
     elif mode == config.Modes.GAME:
-        for key, movement in keys_map.items():
+        for key, actions in keys_map.items():
             if keys[key]:
-                bg.move(movement)
+                bg.move(actions['movement'])
+                state['walking'] = True
+                state['direction'] = actions['direction']
         # todo: remove
         if keys[pygame.K_a]:
             state['hp'] = min(state['hp'] + 1, 100)
@@ -65,6 +76,8 @@ if __name__ == '__main__':
                   'hp': 100,
                   'status': 'safe',
                   'inventory': [],
+                  'direction': 'forward',
+                  'walking': False,
                   }
 
     character = MainCharacter(surface)
@@ -76,7 +89,6 @@ if __name__ == '__main__':
 
     while True:
         game_state = handle_events(game_state, bg)
-        character.handle()
 
         bg.render(game_state)
         character.render(game_state)
@@ -87,4 +99,4 @@ if __name__ == '__main__':
 
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(config.framerate)

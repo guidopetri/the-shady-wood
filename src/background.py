@@ -8,7 +8,7 @@ class Background(object):
     def __init__(self, surface):
         self.surface = surface
         self.cross_bg = pygame.image.load(
-            f"{config.gfx_path}/sample_cross_bg.bmp"
+            config.gfx_path / "sample_cross_bg.bmp"
             )
 
         self._position_x = 0

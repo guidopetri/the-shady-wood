@@ -20,7 +20,7 @@ class Gui(object):
                                                      )
 
     def render_base_hp_bar(self):
-        # self.hp_icon = pygame.image.load()
+        # self.hp_icon = pygame.image.load().convert()
         self.hp_icon = pygame.Surface((64, 64)).convert()
         self.hp_icon.fill('magenta')
         self.hp_icon_rect = self.hp_icon.get_rect()
