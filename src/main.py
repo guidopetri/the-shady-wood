@@ -59,13 +59,20 @@ def handle_events(state, bg, fg):
                                                        actions['movement'])))
                 state['walking'] = True
                 state['direction'] = actions['direction']
-        # todo: remove
-        if keys[pygame.K_a]:
-            state['hp'] = min(state['hp'] + 1, 100)
-        if keys[pygame.K_s]:
-            state['hp'] = max(state['hp'] - 1, 0)
-        if keys[pygame.K_d]:
-            state['inventory'].append(1)
+
+        if config.debug_mode:
+            if keys[pygame.K_a]:
+                state['hp'] = min(state['hp'] + 1, 100)
+            if keys[pygame.K_s]:
+                state['hp'] = max(state['hp'] - 1, 0)
+            if keys[pygame.K_d]:
+                state['status'] = 'unsafe'
+            if keys[pygame.K_f]:
+                state['status'] = 'safe'
+            if keys[pygame.K_e]:
+                state['status'] = 'unsafe_2'
+            if keys[pygame.K_r]:
+                state['status'] = 'unsafe_3'
 
     return state
 

@@ -6,7 +6,10 @@ class Gui(object):
     def __init__(self, surface):
         self.surface = surface
         self._inventory_tracker = []
-        self.load_hp_icon()
+        self.current_status = 'safe'
+        self.current_frame = 0
+
+        self.load_hp_icons()
         self.load_item_icons()
         self.render_font()
         self.render_base_hp_bar()
@@ -22,42 +25,67 @@ class Gui(object):
                                                      self.courage_font_color,
                                                      )
 
-    def load_hp_icon(self):
-        self.num_frames = 2
-        self.fps = 1
-        self._frames_per_sprite = config.framerate // self.fps
+    @property
+    def num_frames(self):
+        return self.num_frames_map[self.current_status]
+
+    @property
+    def fps(self):
+        return self.fps_map[self.current_status]
+
+    @property
+    def _frames_per_sprite(self):
+        return self._frames_per_sprite_map[self.current_status]
+
+    def load_hp_icons(self):
+        self.hp_icons = {}
+        self.num_frames_map = {'safe': 2,
+                               'unsafe': 3,
+                               'dead': 1}
+        self.fps_map = {'safe': 1,
+                        'unsafe': 4,
+                        'dead': 1}
+        self._frames_per_sprite_map = {k: config.framerate // v
+                                       for k, v in self.fps_map.items()
+                                       }
         self.frame_counter = 0
 
-        filename = 'heart_hp_spritesheet_1x2_48px.png'
-        path = config.gfx_path / filename
-        sheet = pygame.image.load(path).convert_alpha()
+        filenames = {'safe': 'heart_hp_spritesheet_2x1_48px.png',
+                     'unsafe': 'heart_hp_spritesheet_2x2_3frames_48px_vGuido.png',  # noqa
+                     # 'dead': '',
+                     }
 
-        sprites = []
-        width = 48
-        height = 48
+        for status, filename in filenames.items():
+            path = config.gfx_path / filename
+            sheet = pygame.image.load(path).convert_alpha()
 
-        coords = [(0, 0),
-                  (0, height),
-                  ]
+            sprites = []
+            width = 48
+            height = 48
 
-        for idx in range(self.num_frames):
-            sprite_area = pygame.Rect(*coords[idx], width, height)
-            sprites.append(sheet.subsurface(sprite_area))
+            coords = [(0, 0),
+                      (width, 0),
+                      (0, height),
+                      ]
 
-        self.hp_icon = sprites
-        self.current_frame = 0
+            for idx in range(self.num_frames_map[status]):
+                sprite_area = pygame.Rect(*coords[idx], width, height)
+                sprites.append(sheet.subsurface(sprite_area))
+
+            self.hp_icons[status] = sprites
+
         self.hp_icon_rect = self.hp_sprite.get_rect()
 
     def advance_heart_frames(self):
         self.frame_counter += 1
-        if self.frame_counter == self._frames_per_sprite:
+        if self.frame_counter >= self._frames_per_sprite:
             self.frame_counter = 0
             self.current_frame += 1
             self.current_frame %= self.num_frames
 
     @property
     def hp_sprite(self):
-        return self.hp_icon[self.current_frame]
+        return self.hp_icons[self.current_status][self.current_frame]
 
     def render_base_hp_bar(self):
         self.hp_bg_bar_color = pygame.Color(config.hp_bar_bg_color)
@@ -150,6 +178,11 @@ class Gui(object):
     def color(self, hp):
         return self.empty_hp_color.lerp(self.full_hp_color, hp / 100)
 
+    def update_status(self, status):
+        if status != self.current_status:
+            self.current_status = status
+            self.current_frame = 0
+
     def render_gui(self, hp, status, inventory):
         hp_indicator_copy = self.hp_indicator.copy()
         pygame.draw.rect(hp_indicator_copy,
@@ -170,6 +203,8 @@ class Gui(object):
                          hp_bar_rect,
                          border_radius=self.hp_bar_radius,
                          )
+
+        self.update_status(status)
 
         if inventory != self._inventory_tracker:
             self.render_base_item_bar()

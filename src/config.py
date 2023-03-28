@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 
 
+debug_mode = True
+
 screen_size = (1080, 720)
 screen_center = tuple(x // 2 for x in screen_size)
 
