@@ -212,14 +212,24 @@ class Gui(object):
 
     def render_base_item_bar(self):
         self.item_bar = self.item_bar_template.copy()
-        self.item_bar.blit(self.candle_icon, self.candle_rect)
-        self.item_bar.blit(self.firefly_icon, self.firefly_rect)
-        self.item_bar.blit(self.snail_icon, self.snail_rect)
-
         self.render_item_counts()
 
+        fn = lambda x: x
+        if self.candle_count == 0:
+            fn = pygame.transform.grayscale
+        self.item_bar.blit(fn(self.candle_icon), self.candle_rect)
         self.item_bar.blit(self.candle_count_text, self.candle_count_rect)
+
+        fn = lambda x: x
+        if self.firefly_count == 0:
+            fn = pygame.transform.grayscale
+        self.item_bar.blit(fn(self.firefly_icon), self.firefly_rect)
         self.item_bar.blit(self.firefly_count_text, self.firefly_count_rect)
+
+        fn = lambda x: x
+        if self.snail_count == 0:
+            fn = pygame.transform.grayscale
+        self.item_bar.blit(fn(self.snail_icon), self.snail_rect)
         self.item_bar.blit(self.snail_count_text, self.snail_count_rect)
 
     @property
