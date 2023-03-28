@@ -37,7 +37,7 @@ item_padding = 10
 item_bar_size = (3 * item_icon_size + 4 * item_padding,
                  item_icon_size + 2 * item_padding,
                  )
-
+item_font_color = 'black'
 
 img_buffer = 2
 

@@ -26,10 +26,12 @@ class Gui(object):
                                              self.font_color,
                                              )
 
+        self.item_font_color = pygame.Color(config.item_font_color)
+
         for item in config.items:
             self.shortcut[item] = self.font.render(config.keys[item],
                                                    True,
-                                                   self.font_color,
+                                                   self.item_font_color,
                                                    )
 
     @property
@@ -140,31 +142,30 @@ class Gui(object):
     def render_item_counts(self):
         self.candle_count_text = self.font.render(str(self.candle_count),
                                                   True,
-                                                  self.font_color,
+                                                  self.item_font_color,
                                                   )
         coords = {'topright': self.candle_rect.topright}
         self.candle_count_rect = self.candle_count_text.get_rect(**coords)
 
         self.firefly_count_text = self.font.render(str(self.firefly_count),
                                                    True,
-                                                   self.font_color,
+                                                   self.item_font_color,
                                                    )
         coords = {'topright': self.firefly_rect.topright}
         self.firefly_count_rect = self.firefly_count_text.get_rect(**coords)
 
         self.snail_count_text = self.font.render(str(self.snail_count),
                                                  True,
-                                                 self.font_color,
+                                                 self.item_font_color,
                                                  )
         coords = {'topright': self.snail_rect.topright}
         self.snail_count_rect = self.snail_count_text.get_rect(**coords)
 
     def load_item_icons(self):
         item_bar_size = config.item_bar_size
-        icon_size = config.item_icon_size
 
         self.item_bar_template = pygame.Surface(item_bar_size).convert()
-        self.item_bar_template.fill('red')
+        self.item_bar_template.fill('#964b00')
 
         coords = {'midbottom': (config.screen_center[0],
                                 config.screen_size[1] - 10)
@@ -172,8 +173,9 @@ class Gui(object):
         self.item_bar_rect = self.item_bar_template.get_rect(**coords)
 
         # load candle icon
-        self.candle_icon = pygame.Surface((icon_size, icon_size)).convert()
-        self.candle_icon.fill('white')
+        filename = 'Candle_sprite_itembar_48px.png'
+        path = config.gfx_path / filename
+        self.candle_icon = pygame.image.load(path).convert_alpha()
 
         # set candle coords in item bar
         coords = {'midleft': (config.item_padding,
@@ -182,8 +184,9 @@ class Gui(object):
         self.candle_rect = self.candle_icon.get_rect(**coords)
 
         # load firefly icon
-        self.firefly_icon = pygame.Surface((icon_size, icon_size)).convert()
-        self.firefly_icon.fill('yellow')
+        filename = 'Firefly_sprite_itembar_48px.png'
+        path = config.gfx_path / filename
+        self.firefly_icon = pygame.image.load(path).convert_alpha()
 
         # set firefly coords in item bar
         coords = {'midleft': (2 * config.item_padding
@@ -193,8 +196,9 @@ class Gui(object):
         self.firefly_rect = self.firefly_icon.get_rect(**coords)
 
         # load snail icon
-        self.snail_icon = pygame.Surface((icon_size, icon_size)).convert()
-        self.snail_icon.fill('brown')
+        filename = 'Snail_sprite_itembar_48px.png'
+        path = config.gfx_path / filename
+        self.snail_icon = pygame.image.load(path).convert_alpha()
 
         # set snail coords in item bar
         coords = {'midleft': (3 * config.item_padding
