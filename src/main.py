@@ -11,6 +11,7 @@ from background import Boundaries
 from background import Shadows
 from dialog import Dialog
 from gui import Gui
+from map import Map
 
 
 def handle_events(state, bg, fg):
@@ -93,6 +94,8 @@ if __name__ == '__main__':
     fg = Foreground(surface)
     gui = Gui(surface)
     boundaries = Boundaries(surface)
+    game_map = Map()
+    game_map.generate_map()
 
     while True:
         game_state = handle_events(game_state, bg, fg)
