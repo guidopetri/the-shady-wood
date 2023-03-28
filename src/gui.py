@@ -5,6 +5,9 @@ import config
 class Gui(object):
     def __init__(self, surface):
         self.surface = surface
+        self._inventory_tracker = []
+        self.load_hp_icon()
+        self.load_item_icons()
         self.render_font()
         self.render_base_hp_bar()
         self.render_base_item_bar()
@@ -57,8 +60,6 @@ class Gui(object):
         return self.hp_icon[self.current_frame]
 
     def render_base_hp_bar(self):
-        self.load_hp_icon()
-
         self.hp_bg_bar_color = pygame.Color(config.hp_bar_bg_color)
         self.hp_bar_radius = config.hp_bar_border_radius
 
@@ -91,18 +92,54 @@ class Gui(object):
         self.empty_hp_color = pygame.Color(config.empty_hp_color)
 
     def load_item_icons(self):
-        pass
-
-    def render_base_item_bar(self):
-        # self.load_item_icons()
         item_bar_size = config.item_bar_size
+        icon_size = config.item_icon_size
+
         self.item_bar = pygame.Surface(item_bar_size).convert()
         self.item_bar.fill('red')
 
+        # load candle icon
+        self.candle_icon = pygame.Surface((icon_size, icon_size)).convert()
+        self.candle_icon.fill('white')
+
+        # set candle coords in item bar
+        coords = {'midleft': (config.item_padding,
+                              item_bar_size[1] // 2),
+                  }
+        self.candle_rect = self.candle_icon.get_rect(**coords)
+
+        # load firefly icon
+        self.firefly_icon = pygame.Surface((icon_size, icon_size)).convert()
+        self.firefly_icon.fill('yellow')
+
+        # set firefly coords in item bar
+        coords = {'midleft': (2 * config.item_padding
+                              + self.candle_icon.get_width(),
+                              item_bar_size[1] // 2),
+                  }
+        self.firefly_rect = self.firefly_icon.get_rect(**coords)
+
+        # load snail icon
+        self.snail_icon = pygame.Surface((icon_size, icon_size)).convert()
+        self.snail_icon.fill('brown')
+
+        # set snail coords in item bar
+        coords = {'midleft': (3 * config.item_padding
+                              + self.candle_icon.get_width()
+                              + self.firefly_icon.get_width(),
+                              item_bar_size[1] // 2),
+                  }
+        self.snail_rect = self.snail_icon.get_rect(**coords)
+
+    def render_base_item_bar(self):
         item_bar_coords = {'midbottom': (config.screen_center[0],
                                          config.screen_size[1] - 10)
                            }
         self.item_bar_rect = self.item_bar.get_rect(**item_bar_coords)
+
+        self.item_bar.blit(self.candle_icon, self.candle_rect)
+        self.item_bar.blit(self.firefly_icon, self.firefly_rect)
+        self.item_bar.blit(self.snail_icon, self.snail_rect)
 
     def render(self, state):
         mode = state['current_game_mode']
@@ -133,6 +170,9 @@ class Gui(object):
                          hp_bar_rect,
                          border_radius=self.hp_bar_radius,
                          )
+
+        if inventory != self._inventory_tracker:
+            self.render_base_item_bar()
 
         self.advance_heart_frames()
 

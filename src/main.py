@@ -64,6 +64,8 @@ def handle_events(state, bg, fg):
             state['hp'] = min(state['hp'] + 1, 100)
         if keys[pygame.K_s]:
             state['hp'] = max(state['hp'] - 1, 0)
+        if keys[pygame.K_d]:
+            state['inventory'].append(1)
 
     return state
 

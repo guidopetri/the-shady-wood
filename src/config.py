@@ -30,9 +30,12 @@ hp_indicator_size = (150,  # ~ 1080 / 8 + 10%
                      40,  # ~ 720 / 20 + 10%
                      )
 
-item_bar_size = (360,  # 1080 / 3
-                 60,  # 720 / 12
+item_icon_size = 48
+item_padding = 10
+item_bar_size = (3 * item_icon_size + 4 * item_padding,
+                 item_icon_size + 2 * item_padding,
                  )
+
 
 img_buffer = 2
 
