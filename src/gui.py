@@ -5,25 +5,32 @@ import config
 class Gui(object):
     def __init__(self, surface):
         self.surface = surface
-        self._inventory_tracker = []
+        self._inventory_tracker = {}
         self.current_status = 'safe'
         self.current_frame = 0
+        self.shortcut = {}
 
+        self.render_text()
         self.load_hp_icons()
         self.load_item_icons()
-        self.render_font()
         self.render_base_hp_bar()
         self.render_base_item_bar()
 
-    def render_font(self):
-        self.courage_font = pygame.font.SysFont(config.courage_fontname,
-                                                config.courage_fontsize,
-                                                )
-        self.courage_font_color = pygame.Color(config.courage_font_color)
-        self.courage_text = self.courage_font.render('courage',
-                                                     True,
-                                                     self.courage_font_color,
-                                                     )
+    def render_text(self):
+        self.font = pygame.font.SysFont(config.courage_fontname,
+                                        config.courage_fontsize,
+                                        )
+        self.font_color = pygame.Color(config.courage_font_color)
+        self.courage_text = self.font.render('courage',
+                                             True,
+                                             self.font_color,
+                                             )
+
+        for item in config.items:
+            self.shortcut[item] = self.font.render(config.keys[item],
+                                                   True,
+                                                   self.font_color,
+                                                   )
 
     @property
     def num_frames(self):
@@ -119,12 +126,50 @@ class Gui(object):
         self.full_hp_color = pygame.Color(config.full_hp_color)
         self.empty_hp_color = pygame.Color(config.empty_hp_color)
 
+    def blit_keys_on_item_bar(self):
+
+        coords = {'candle': {'center': self.candle_rect.midbottom},
+                  'firefly': {'center': self.firefly_rect.midbottom},
+                  'snail': {'center': self.snail_rect.midbottom},
+                  }
+
+        for item in config.items:
+            rect = self.shortcut[item].get_rect(**coords[item])
+            self.item_bar_template.blit(self.shortcut[item], rect)
+
+    def render_item_counts(self):
+        self.candle_count_text = self.font.render(str(self.candle_count),
+                                                  True,
+                                                  self.font_color,
+                                                  )
+        coords = {'topright': self.candle_rect.topright}
+        self.candle_count_rect = self.candle_count_text.get_rect(**coords)
+
+        self.firefly_count_text = self.font.render(str(self.firefly_count),
+                                                   True,
+                                                   self.font_color,
+                                                   )
+        coords = {'topright': self.firefly_rect.topright}
+        self.firefly_count_rect = self.firefly_count_text.get_rect(**coords)
+
+        self.snail_count_text = self.font.render(str(self.snail_count),
+                                                 True,
+                                                 self.font_color,
+                                                 )
+        coords = {'topright': self.snail_rect.topright}
+        self.snail_count_rect = self.snail_count_text.get_rect(**coords)
+
     def load_item_icons(self):
         item_bar_size = config.item_bar_size
         icon_size = config.item_icon_size
 
-        self.item_bar = pygame.Surface(item_bar_size).convert()
-        self.item_bar.fill('red')
+        self.item_bar_template = pygame.Surface(item_bar_size).convert()
+        self.item_bar_template.fill('red')
+
+        coords = {'midbottom': (config.screen_center[0],
+                                config.screen_size[1] - 10)
+                  }
+        self.item_bar_rect = self.item_bar_template.get_rect(**coords)
 
         # load candle icon
         self.candle_icon = pygame.Surface((icon_size, icon_size)).convert()
@@ -159,15 +204,31 @@ class Gui(object):
                   }
         self.snail_rect = self.snail_icon.get_rect(**coords)
 
-    def render_base_item_bar(self):
-        item_bar_coords = {'midbottom': (config.screen_center[0],
-                                         config.screen_size[1] - 10)
-                           }
-        self.item_bar_rect = self.item_bar.get_rect(**item_bar_coords)
+        self.blit_keys_on_item_bar()
 
+    def render_base_item_bar(self):
+        self.item_bar = self.item_bar_template.copy()
         self.item_bar.blit(self.candle_icon, self.candle_rect)
         self.item_bar.blit(self.firefly_icon, self.firefly_rect)
         self.item_bar.blit(self.snail_icon, self.snail_rect)
+
+        self.render_item_counts()
+
+        self.item_bar.blit(self.candle_count_text, self.candle_count_rect)
+        self.item_bar.blit(self.firefly_count_text, self.firefly_count_rect)
+        self.item_bar.blit(self.snail_count_text, self.snail_count_rect)
+
+    @property
+    def candle_count(self):
+        return self._inventory_tracker.get('candle', 0)
+
+    @property
+    def firefly_count(self):
+        return self._inventory_tracker.get('firefly', 0)
+
+    @property
+    def snail_count(self):
+        return self._inventory_tracker.get('snail', 0)
 
     def render(self, state):
         mode = state['current_game_mode']
@@ -182,6 +243,10 @@ class Gui(object):
         if status != self.current_status:
             self.current_status = status
             self.current_frame = 0
+
+    def inventory_changed(self, new_inventory):
+        return any([self._inventory_tracker.get(key, 0) != new_val
+                    for key, new_val in new_inventory.items()])
 
     def render_gui(self, hp, status, inventory):
         hp_indicator_copy = self.hp_indicator.copy()
@@ -206,7 +271,8 @@ class Gui(object):
 
         self.update_status(status)
 
-        if inventory != self._inventory_tracker:
+        if self.inventory_changed(inventory):
+            self._inventory_tracker = inventory.copy()
             self.render_base_item_bar()
 
         self.advance_heart_frames()

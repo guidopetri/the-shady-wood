@@ -51,6 +51,12 @@ intro_messages = ['lorem ipsum',
                   'Oh no! I\'m lost in the woods...',
                   ]
 
+items = ['firefly', 'candle', 'snail']
+keys = {'firefly': 'f',
+        'candle': 'c',
+        'snail': 's',
+        }
+
 
 class Modes(enum.Enum):
 
