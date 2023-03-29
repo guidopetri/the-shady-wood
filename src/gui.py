@@ -73,7 +73,7 @@ class Gui(object):
 
         filenames = {'safe': 'heart_hp_spritesheet_2x1_48px.png',
                      'unsafe': 'heart_hp_spritesheet_2x2_3frames_48px_vGuido.png',  # noqa
-                     # 'dead': '',
+                     'dead': 'heart_gameover_sprite_48px.png',
                      }
 
         for status, filename in filenames.items():

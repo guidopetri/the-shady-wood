@@ -69,6 +69,8 @@ def handle_events(state, bg, fg):
                 state['status'] = 'unsafe'
             if keys[pygame.K_f]:
                 state['status'] = 'safe'
+            if keys[pygame.K_g]:
+                state['status'] = 'dead'
             if keys[pygame.K_e]:
                 state['inventory']['candle'] += 1
             if keys[pygame.K_r]:
