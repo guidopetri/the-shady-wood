@@ -1,7 +1,6 @@
 import config
 import random
 import numpy as np
-from math import ceil
 
 
 class Map(object):
@@ -72,7 +71,7 @@ class Map(object):
             for x, row in enumerate(col):
                 grid[y][x] = directions_map[''.join(sorted(grid[y][x]))]
 
-        buffer_size = ceil(max(config.screen_size) / 384)
+        buffer_size = config.map_buffer_size
         buffered_grid = np.full((size[0] + 2 * buffer_size,
                                  size[1] + 2 * buffer_size),
                                 'blank',  # buffer with blanks

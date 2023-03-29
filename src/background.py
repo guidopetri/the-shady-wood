@@ -75,22 +75,33 @@ class AbstractBG(ABC):
                             )
 
     def render_game(self, state):
-        center_idx_x = (config.default_map_size[0] - 1) // 2
-        center_idx_y = (config.default_map_size[1] - 1) // 2
-        # center_tile = state['map'][idxs[0]][idxs[1]]
-
-        for y in range(-self.v_tiles, self.v_tiles + 2):
-            for x in range(-self.h_tiles, self.h_tiles + 2):
+        for y in range(-self.v_tiles, self.v_tiles + 1):
+            for x in range(-self.h_tiles, self.h_tiles + 1):
                 h_adjustment = state['position'][0] % config.map_tile_size
                 v_adjustment = state['position'][1] % config.map_tile_size
 
                 tile_h_adj = state['position'][0] // config.map_tile_size
                 tile_v_adj = state['position'][1] // config.map_tile_size
 
-                pos = (config.map_tile_size * (x + 1) - h_adjustment,
-                       config.map_tile_size * (y + 1) - v_adjustment,
+                pos = (int(config.map_tile_size * (x + 0.5)
+                           + config.screen_center[0]
+                           - h_adjustment),
+                       int(config.map_tile_size * (y + 0.5)
+                           + config.screen_center[1]
+                           - v_adjustment),
                        )
-                tile = state['map'][center_idx_y + y + tile_v_adj][center_idx_x + x + tile_h_adj]  # noqa
+                if config.debug_mode and (x, y) == (2, 0):
+                    print(x + tile_h_adj, y + tile_v_adj)
+                    pygame.draw.rect(self.surface,
+                                     'red',
+                                     pygame.Rect(*pos, 10, 10)
+                                     )
+                    # print(pos)
+
+                try:
+                    tile = state['map'][y + tile_v_adj][x + tile_h_adj]  # noqa
+                except IndexError:
+                    tile = 'blank'
                 rect = self.images[tile].get_rect(center=pos)
                 self.surface.blit(self.images[tile], rect)
 

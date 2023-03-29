@@ -98,7 +98,11 @@ if __name__ == '__main__':
                   'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
                   'walking': False,
-                  'position': (0, 0),
+                  'position': tuple([int((x + 2 * config.map_buffer_size)
+                                         / 2
+                                         * config.map_tile_size
+                                         )
+                                     for x in config.default_map_size]),
                   }
 
     character = MainCharacter(surface)

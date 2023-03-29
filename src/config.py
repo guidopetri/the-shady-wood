@@ -1,6 +1,7 @@
 import enum
 import os
 from pathlib import Path
+from math import ceil
 
 
 debug_mode = True
@@ -62,6 +63,7 @@ keys = {'firefly': 'f',
 
 default_map_size = (11, 11)
 map_tile_size = 384
+map_buffer_size = ceil(max(screen_size) / map_tile_size)
 
 
 class Modes(enum.Enum):
