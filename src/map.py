@@ -1,5 +1,7 @@
 import config
 import random
+import numpy as np
+from math import ceil
 
 
 class Map(object):
@@ -70,7 +72,23 @@ class Map(object):
             for x, row in enumerate(col):
                 grid[y][x] = directions_map[''.join(sorted(grid[y][x]))]
 
-        self.map = grid
+        buffer_size = ceil(max(config.screen_size) / 384)
+        buffered_grid = np.full((size[0] + 2 * buffer_size,
+                                 size[1] + 2 * buffer_size),
+                                'blank',  # buffer with blanks
+                                dtype="U20",
+                                )
+
+        buffered_grid[buffer_size: -buffer_size,
+                      buffer_size: -buffer_size] = grid
+
+        self.map = buffered_grid.tolist()
+
+    def pretty_print(self):
+        for row in self.map:
+            for item in row:
+                print(self.characters[item], end="")
+            print()
 
 
 if __name__ == '__main__':
@@ -82,8 +100,4 @@ if __name__ == '__main__':
     m.generate_map((21, 21))
     print(f'Time taken to generate map: {time.time() - start_time}')
     print('\n\n')
-
-    for row in m.map:
-        for item in row:
-            print(m.characters[item], end="")
-        print()
+    m.pretty_print()

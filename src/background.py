@@ -3,6 +3,8 @@ import config
 from scipy.stats import multivariate_normal
 import numpy as np
 from abc import ABC
+from functools import partial
+from math import ceil
 
 
 class AbstractBG(ABC):
@@ -12,11 +14,37 @@ class AbstractBG(ABC):
         self._position_y = config.screen_size[1] // 2
 
         self.load_images()
+        self.calc_num_tiles_in_screen()
 
     def load_images(self):
-        self.cross = pygame.image.load(
-            config.gfx_path / f"BG_Maze_{self.image_type}_Cross_384px.png"
-            ).convert_alpha()
+        raw_imgs = {}
+
+        for tile in ['Blank', 'Corner', 'Cross', 'DeadEnd', 'Straight', 'T']:
+            filename = f"BG_Maze_{self.image_type}_{tile}_384px.png"
+            path = config.gfx_path / filename
+            raw_imgs[tile] = pygame.image.load(path).convert_alpha()
+
+        rot_90 = partial(pygame.transform.rotate, angle=90)
+        rot_180 = partial(pygame.transform.rotate, angle=180)
+        rot_270 = partial(pygame.transform.rotate, angle=270)
+
+        self.images = {'cross': raw_imgs['Cross'],
+                       't_up': rot_180(raw_imgs['T']),
+                       't_down': raw_imgs['T'],
+                       't_right': rot_90(raw_imgs['T']),
+                       't_left': rot_270(raw_imgs['T']),
+                       'straight_horizontal': rot_90(raw_imgs['Straight']),
+                       'straight_vertical': raw_imgs['Straight'],
+                       'corner_topleft': rot_180(raw_imgs['Corner']),
+                       'corner_topright': rot_90(raw_imgs['Corner']),
+                       'corner_botleft': rot_270(raw_imgs['Corner']),
+                       'corner_botright': raw_imgs['Corner'],
+                       'deadend_left': rot_270(raw_imgs['DeadEnd']),
+                       'deadend_right': rot_90(raw_imgs['DeadEnd']),
+                       'deadend_up': rot_180(raw_imgs['DeadEnd']),
+                       'deadend_down': raw_imgs['DeadEnd'],
+                       'blank': raw_imgs['Blank'],
+                       }
 
     @property
     def position(self):
@@ -30,41 +58,41 @@ class AbstractBG(ABC):
                config.Modes.INTRO: self.render_intro_dialog,
                }
 
-        fns[mode]()
+        fns[mode](state)
 
-    def render_intro_dialog(self):
+    def render_intro_dialog(self, state):
         pass
 
-    def render_main_menu(self):
+    def render_main_menu(self, state):
         pass
 
-    def render_game(self):
-        self.surface.blit(self.cross, self.position)
+    def calc_num_tiles_in_screen(self):
+        self.h_tiles = ceil(config.screen_size[0]
+                            / (2 * config.map_tile_size)
+                            )
+        self.v_tiles = ceil(config.screen_size[1]
+                            / (2 * config.map_tile_size)
+                            )
 
-        # to the left
-        self.surface.blit(self.cross,
-                          (self._position_x
-                           - self.cross.get_width()
-                           + config.img_buffer,
-                           self._position_y)
-                          )
-        # to the top
-        self.surface.blit(self.cross,
-                          (self._position_x,
-                           self._position_y
-                           - self.cross.get_height()
-                           + config.img_buffer)
-                          )
+    def render_game(self, state):
+        center_idx_x = (config.default_map_size[0] - 1) // 2
+        center_idx_y = (config.default_map_size[1] - 1) // 2
+        # center_tile = state['map'][idxs[0]][idxs[1]]
 
-        # diagonal
-        self.surface.blit(self.cross,
-                          (self._position_x
-                           - self.cross.get_width()
-                           + config.img_buffer,
-                           self._position_y
-                           - self.cross.get_height()
-                           + config.img_buffer)
-                          )
+        for y in range(-self.v_tiles, self.v_tiles + 2):
+            for x in range(-self.h_tiles, self.h_tiles + 2):
+                h_adjustment = state['position'][0] % config.map_tile_size
+                v_adjustment = state['position'][1] % config.map_tile_size
+
+                tile_h_adj = state['position'][0] // config.map_tile_size
+                tile_v_adj = state['position'][1] // config.map_tile_size
+
+                pos = (config.map_tile_size * (x + 1) - h_adjustment,
+                       config.map_tile_size * (y + 1) - v_adjustment,
+                       )
+                tile = state['map'][center_idx_y + y + tile_v_adj][center_idx_x + x + tile_h_adj]  # noqa
+                rect = self.images[tile].get_rect(center=pos)
+                self.surface.blit(self.images[tile], rect)
 
     def move(self, amount):
         self._position_x += amount[0]
@@ -79,10 +107,10 @@ class Background(AbstractBG):
 
         super().__init__(surface)
 
-    def render_intro_dialog(self):
+    def render_intro_dialog(self, state):
         self.surface.fill('black')
 
-    def render_main_menu(self):
+    def render_main_menu(self, state):
         self.surface.fill('black')
 
         dims = [int(dim * 0.8) for dim in config.screen_size]

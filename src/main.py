@@ -14,17 +14,17 @@ from gui import Gui
 from map import Map
 
 
-def handle_events(state, bg, fg):
-    keys_map = {pygame.K_UP: {'movement': (0, config.character_speed),
+def handle_events(state):
+    keys_map = {pygame.K_UP: {'movement': (0, -config.character_speed),
                               'direction': 'back',
                               },
-                pygame.K_DOWN: {'movement': (0, -config.character_speed),
+                pygame.K_DOWN: {'movement': (0, config.character_speed),
                                 'direction': 'forward',
                                 },
-                pygame.K_LEFT: {'movement': (config.character_speed, 0),
+                pygame.K_LEFT: {'movement': (-config.character_speed, 0),
                                 'direction': 'left',
                                 },
-                pygame.K_RIGHT: {'movement': (-config.character_speed, 0),
+                pygame.K_RIGHT: {'movement': (config.character_speed, 0),
                                  'direction': 'right',
                                  },
                 }
@@ -53,8 +53,6 @@ def handle_events(state, bg, fg):
     elif mode == config.Modes.GAME:
         for key, actions in keys_map.items():
             if keys[key]:
-                bg.move(actions['movement'])
-                fg.move(actions['movement'])
                 state['position'] = tuple(map(sum, zip(state['position'],
                                                        actions['movement'])))
                 state['walking'] = True
@@ -113,9 +111,10 @@ if __name__ == '__main__':
     game_map = Map()
     game_map.generate_map()
     game_state['map'] = game_map.map
+    game_map.pretty_print()
 
     while True:
-        game_state = handle_events(game_state, bg, fg)
+        game_state = handle_events(game_state)
 
         surface.fill('black')
 

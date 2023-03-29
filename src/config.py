@@ -61,6 +61,7 @@ keys = {'firefly': 'f',
         }
 
 default_map_size = (11, 11)
+map_tile_size = 384
 
 
 class Modes(enum.Enum):
