@@ -22,7 +22,7 @@ menu_bg_color = 'yellow'
 
 courage_fontname = 'Copperplate Gothic'
 courage_fontsize = 14
-courage_font_color = '#808080'
+courage_font_color = 'black'
 
 hp_bar_border_radius = 3
 full_hp_color = '#00aa00'

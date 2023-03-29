@@ -112,27 +112,26 @@ class Gui(object):
         self.hp_bg_bar_color = pygame.Color(config.hp_bar_bg_color)
         self.hp_bar_radius = config.hp_bar_border_radius
 
-        hp_indicator_size = config.hp_indicator_size
-        self.hp_indicator = pygame.Surface(hp_indicator_size).convert()
-        pygame.draw.rect(self.hp_indicator,
-                         self.hp_bg_bar_color,
-                         pygame.Rect(0, 0, *hp_indicator_size),
-                         border_radius=self.hp_bar_radius,
-                         )
-        self.hp_indicator.fill(self.hp_bg_bar_color)
+        hp_bar_filename = 'HPBar_160x50px.png'
+        path = config.gfx_path / hp_bar_filename
+        self.hp_indicator = pygame.image.load(path).convert_alpha()
 
-        coords = {'midtop': (hp_indicator_size[0] // 2, 0)}
+        hp_indicator_size = (self.hp_indicator.get_width(),
+                             self.hp_indicator.get_height(),
+                             )
+
+        coords = {'midtop': (hp_indicator_size[0] // 2, 8)}
         self.courage_rect = self.courage_text.get_rect(**coords)
         self.hp_indicator.blit(self.courage_text, self.courage_rect)
 
         height = (self.hp_sprite.get_height() - hp_indicator_size[1]) // 2
-        coords = {'topright': (config.screen_size[0] - 10, height)}
+        coords = {'topright': (config.screen_size[0] - 10, height + 10)}
         self.hp_indicator_rect = self.hp_indicator.get_rect(**coords)
         self.hp_icon_rect.midright = self.hp_indicator_rect.midleft
 
         self.hp_bg_bar_rect = pygame.Rect(0,
                                           0,
-                                          hp_indicator_size[0] - 20,
+                                          hp_indicator_size[0] - 30,
                                           10,
                                           )
         self.hp_bg_bar_rect.midtop = self.courage_rect.midbottom
