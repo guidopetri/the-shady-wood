@@ -75,6 +75,10 @@ def handle_events(state, bg, fg):
                 state['inventory']['candle'] += 1
             if keys[pygame.K_r]:
                 state['inventory']['candle'] -= 1
+            if keys[pygame.K_t]:
+                state['action'] = 'firefly'
+            if keys[pygame.K_y]:
+                state['action'] = 'walking'
 
     return state
 
@@ -92,6 +96,7 @@ if __name__ == '__main__':
                   'active_message': 0,
                   'hp': 100,
                   'status': 'safe',
+                  'action': 'walking',
                   'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
                   'walking': False,

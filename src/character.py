@@ -7,34 +7,36 @@ class MainCharacter(object):
         self.surface = surface
 
         self.num_frames = 4
-        self.fps = 5
+        self.fps = 4
         self._frames_per_sprite = config.framerate // self.fps
         self.frame_counter = 0
         self.spritesheets = {}
 
-        for direction in ['back', 'forward', 'left', 'right']:
-            filename = f'anne_spritesheet_walking_{direction}_2x2_128px.png'
-            path = config.gfx_path / filename
-            sheet = pygame.image.load(path).convert_alpha()
+        for action in ['walking', 'firefly']:
+            self.spritesheets[action] = {}
+            for direction in ['back', 'forward', 'left', 'right']:
+                file = f'anne_spritesheet_{action}_{direction}_2x2_128px.png'
+                path = config.gfx_path / file
+                sheet = pygame.image.load(path).convert_alpha()
 
-            sprites = []
-            width = 128
-            height = 128
+                sprites = []
+                width = 128
+                height = 128
 
-            coords = [(0, 0),
-                      (width, 0),
-                      (0, height),
-                      (width, height),
-                      ]
+                coords = [(0, 0),
+                          (width, 0),
+                          (0, height),
+                          (width, height),
+                          ]
 
-            for idx in range(self.num_frames):
-                sprite_area = pygame.Rect(*coords[idx], width, height)
-                sprites.append(sheet.subsurface(sprite_area))
+                for idx in range(self.num_frames):
+                    sprite_area = pygame.Rect(*coords[idx], width, height)
+                    sprites.append(sheet.subsurface(sprite_area))
 
-            self.spritesheets[direction] = sprites
+                self.spritesheets[action][direction] = sprites
 
         # start by default facing forward
-        self.current_sprites = self.spritesheets['forward']
+        self.current_sprites = self.spritesheets['walking']['forward']
         self.current_frame = 0
 
         _, _, self._size_x, self._size_y = self.sprite.get_rect()
@@ -69,7 +71,9 @@ class MainCharacter(object):
         if mode != config.Modes.GAME:
             return
 
-        self.current_sprites = self.spritesheets[state['direction']]
+        self.current_sprites = (self.spritesheets.get(state['action'])
+                                                 .get(state['direction'])
+                                )
 
         self.next_animation_frame(state['walking'])
 
