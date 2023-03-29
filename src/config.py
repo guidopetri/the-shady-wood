@@ -60,6 +60,8 @@ keys = {'firefly': 'f',
         'snail': 's',
         }
 
+default_map_size = (11, 11)
+
 
 class Modes(enum.Enum):
 
