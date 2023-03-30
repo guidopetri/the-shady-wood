@@ -14,6 +14,7 @@ from background import LightStatusEffects
 from dialog import Dialog
 from gui import Gui
 from map import Map
+from audio import Audio
 
 
 def handle_events(state):
@@ -203,6 +204,8 @@ if __name__ == '__main__':
     boundaries = Boundaries(surface)
     light_fx = LightStatusEffects(surface)
 
+    audio = Audio()
+
     game_map = Map()
     game_map.generate_map()
     game_state['map'] = game_map.map
@@ -224,6 +227,8 @@ if __name__ == '__main__':
         light_fx.render(game_state)
         gui.render(game_state)
         dialog.render(game_state)
+
+        audio.play(game_state)
 
         pygame.display.flip()
 
