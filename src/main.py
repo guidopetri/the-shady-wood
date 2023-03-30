@@ -31,7 +31,6 @@ def handle_events(state):
 
     any_key = False
     mode = state['current_game_mode']
-    state['walking'] = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -51,12 +50,28 @@ def handle_events(state):
                 state['current_game_mode'] = config.Modes.GAME
                 state['active_message'] = 0
     elif mode == config.Modes.GAME:
+        state['action'] = 'standing'
         for key, actions in keys_map.items():
             if keys[key]:
                 state['position'] = tuple(map(sum, zip(state['position'],
                                                        actions['movement'])))
-                state['walking'] = True
+                state['action'] = 'walking'
                 state['direction'] = actions['direction']
+
+        if state['status'] == 'unsafe':
+            # lose 1hp every 3 frames ~ 20hp per s ~ 5s in unsafe zone
+            state['unsafe_frame_count'] += 1
+            state['hp'] -= state['unsafe_frame_count'] // 3
+            state['unsafe_frame_count'] %= 3
+        if state['status'] == 'dead' or state['hp'] <= 0:
+            state['hp'] = 0
+            state['status'] = 'dead'
+            state['game_over'] = True
+            state['direction'] = 'forward'
+            state['action'] = 'dead'
+
+        if state['game_over']:
+            state['current_game_mode'] = config.Modes.GAME_OVER
 
         if config.debug_mode:
             if keys[pygame.K_a]:
@@ -77,6 +92,8 @@ def handle_events(state):
                 state['action'] = 'firefly'
             if keys[pygame.K_y]:
                 state['action'] = 'walking'
+    elif mode == config.Modes.GAME_OVER:
+        pass
 
     return state
 
@@ -94,10 +111,13 @@ if __name__ == '__main__':
                   'active_message': 0,
                   'hp': 100,
                   'status': 'safe',
-                  'action': 'walking',
+                  'unsafe_frame_count': 0,
+                  'game_over': False,
+                  'action': 'standing',
                   'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
-                  'walking': False,
+                  'item': None,
+                  # 'walking': False,
                   'position': tuple([int((x + 2 * config.map_buffer_size)
                                          / 2
                                          * config.map_tile_size
@@ -115,7 +135,9 @@ if __name__ == '__main__':
     game_map = Map()
     game_map.generate_map()
     game_state['map'] = game_map.map
-    game_map.pretty_print()
+
+    if config.debug_mode:
+        game_map.pretty_print()
 
     while True:
         game_state = handle_events(game_state)
@@ -123,6 +145,7 @@ if __name__ == '__main__':
         surface.fill('black')
 
         bg.render(game_state)
+        boundaries.check_for_dmg(game_state)
         character.render(game_state)
         fg.render(game_state)
         shadows.render(game_state)

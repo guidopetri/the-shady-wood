@@ -56,9 +56,13 @@ class AbstractBG(ABC):
         fns = {config.Modes.MAIN_MENU: self.render_main_menu,
                config.Modes.GAME: self.render_game,
                config.Modes.INTRO: self.render_intro_dialog,
+               config.Modes.GAME_OVER: self.render_game_over,
                }
 
         fns[mode](state)
+
+    def render_game_over(self, state):
+        pass
 
     def render_intro_dialog(self, state):
         pass
@@ -90,13 +94,27 @@ class AbstractBG(ABC):
                            + config.screen_center[1]
                            - v_adjustment),
                        )
-                if config.debug_mode and (x, y) == (2, 0):
-                    print(x + tile_h_adj, y + tile_v_adj)
+                if config.debug_mode and (x, y) == (0, 0):
+                    # current tile
+                    # print(x + tile_h_adj, y + tile_v_adj)
+
+                    # where center tile will be plotted
+                    # print(pos)
                     pygame.draw.rect(self.surface,
                                      'red',
                                      pygame.Rect(*pos, 10, 10)
                                      )
-                    # print(pos)
+
+                    # h/v adjustment for player position
+                    # also location within current tile
+                    # print(h_adjustment, v_adjustment)
+                    pygame.draw.rect(self.surface,
+                                     'magenta',
+                                     pygame.Rect(h_adjustment,
+                                                 v_adjustment,
+                                                 5,
+                                                 5,
+                                                 ))
 
                 try:
                     tile = state['map'][y + tile_v_adj][x + tile_h_adj]  # noqa
@@ -143,7 +161,37 @@ class Boundaries(AbstractBG):
     def __init__(self, surface):
         self.image_type = 'Boundary'
 
+        safe = tuple(pygame.Color(config.boundary_safe_zone_color))
+        unsafe = tuple(pygame.Color(config.boundary_unsafe_zone_color))
+        dead = tuple(pygame.Color(config.boundary_dead_zone_color))
+
+        self.boundary_status_mapping = {safe: 'safe',
+                                        unsafe: 'unsafe',
+                                        dead: 'dead',
+                                        }
+
         super().__init__(surface)
+
+    def check_for_dmg(self, state):
+        if config.debug_mode:
+            pass
+            # super().render_game(state)
+
+        tile_h_adj = state['position'][0] // config.map_tile_size
+        tile_v_adj = state['position'][1] // config.map_tile_size
+
+        center_tile = state['map'][tile_v_adj][tile_h_adj]
+
+        h_adjustment = state['position'][0] % config.map_tile_size
+        v_adjustment = state['position'][1] % config.map_tile_size
+        xy = (h_adjustment, v_adjustment)
+        boundary_color = tuple(self.images[center_tile].get_at(xy))
+
+        state['status'] = self.boundary_status_mapping[boundary_color]
+
+        if config.debug_mode:
+            pass
+            # print(state['status'])
 
 
 class Shadows(object):

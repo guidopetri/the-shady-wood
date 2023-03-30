@@ -231,6 +231,8 @@ class Gui(object):
 
         if mode == config.Modes.GAME:
             self.render_gui(state['hp'], state['status'], state['inventory'])
+        elif mode == config.Modes.GAME_OVER:
+            self.render_hp_bar(state['hp'], state['status'])
 
     def color(self, hp):
         return self.empty_hp_color.lerp(self.full_hp_color, hp / 100)
@@ -245,6 +247,14 @@ class Gui(object):
                     for key, new_val in new_inventory.items()])
 
     def render_gui(self, hp, status, inventory):
+        self.render_hp_bar(hp, status)
+        if self.inventory_changed(inventory):
+            self._inventory_tracker = inventory.copy()
+            self.render_base_item_bar()
+
+        self.surface.blit(self.item_bar, self.item_bar_rect)
+
+    def render_hp_bar(self, hp, status):
         hp_indicator_copy = self.hp_indicator.copy()
         pygame.draw.rect(hp_indicator_copy,
                          self.hp_bg_bar_color,
@@ -266,13 +276,7 @@ class Gui(object):
                          )
 
         self.update_status(status)
-
-        if self.inventory_changed(inventory):
-            self._inventory_tracker = inventory.copy()
-            self.render_base_item_bar()
-
         self.advance_heart_frames()
 
         self.surface.blit(hp_indicator_copy, self.hp_indicator_rect)
         self.surface.blit(self.hp_sprite, self.hp_icon_rect)
-        self.surface.blit(self.item_bar, self.item_bar_rect)

@@ -65,9 +65,14 @@ default_map_size = (11, 11)
 map_tile_size = 384
 map_buffer_size = ceil(max(screen_size) / map_tile_size)
 
+boundary_safe_zone_color = '#15ff00'
+boundary_unsafe_zone_color = '#0000ff'
+boundary_dead_zone_color = '#ff0000'
+
 
 class Modes(enum.Enum):
 
     MAIN_MENU = 0
     GAME = 1
     INTRO = 2
+    GAME_OVER = 3
