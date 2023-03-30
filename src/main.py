@@ -102,6 +102,14 @@ def handle_events(state):
         elif state['effect'] == 'moonlight':
             state['effect_duration'] -= 1
             state['effect_alpha'] -= config.moonlight_drop_rate
+
+            # gain 1 hp for every N frames in moonlight
+            N = 20
+            state['moonlight_frame_count'] += 1
+            state['hp'] += state['moonlight_frame_count'] // N
+            state['moonlight_frame_count'] %= N
+            # but make sure we don't go over 100
+            state['hp'] = min(100, state['hp'])
         elif state['effect'] == 'lightning':
             state['effect_duration'] -= 1
 
@@ -183,6 +191,7 @@ if __name__ == '__main__':
                   'effect_duration': 0,
                   'effect_check_counter': 0,
                   'effect_fade_in': False,
+                  'moonlight_frame_count': 0,
                   }
 
     character = MainCharacter(surface)

@@ -79,7 +79,7 @@ game_over_font_color = 'white'
 
 moonlight_color = 'blue'
 moonlight_default_alpha = 120
-moonlight_duration = 10 * framerate
+moonlight_duration = 15 * framerate
 moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
 moonlight_fade_in_s = 2
 moonlight_fade_in_f = moonlight_fade_in_s * framerate
