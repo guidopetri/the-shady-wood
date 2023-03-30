@@ -77,7 +77,18 @@ game_over_fontsize = 20
 game_over_font_color = 'white'
 
 moonlight_color = 'blue'
+moonlight_default_alpha = 120
+moonlight_duration = 10 * framerate
+moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
+
 lightning_color = 'black'
+lightning_default_alpha = 120
+lightning_duration = 15 * framerate
+lightning_frame_count = 5
+lightning_drop_rate = (255 - lightning_default_alpha) // lightning_frame_count
+lightning_fade_in_time = 3 * framerate
+
+effect_rate = 1 * framerate
 
 
 class Modes(enum.Enum):

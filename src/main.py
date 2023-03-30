@@ -3,6 +3,7 @@
 import pygame
 import config
 import sys
+import random
 
 from character import MainCharacter
 from background import Background
@@ -74,6 +75,47 @@ def handle_events(state):
         if state['game_over']:
             state['current_game_mode'] = config.Modes.GAME_OVER
 
+        if state['effect'] == 'regular':
+            # randomly switch to other effects
+
+            if state['effect_check_counter'] < config.effect_rate:
+                state['effect_check_counter'] += 1
+            else:
+                state['effect_check_counter'] = 0
+
+                val = random.random()
+                if val < 1:
+                    state['effect'] = 'moonlight'
+                    state['effect_alpha'] = config.moonlight_default_alpha
+                    state['effect_duration'] = config.moonlight_duration
+                    state['effect_fade_in'] = True
+                elif val < 0.1:
+                    state['effect'] = 'lightning'
+                    state['effect_alpha'] = config.lightning_default_alpha
+                    state['effect_duration'] = config.lightning_duration
+                    state['effect_fade_in'] = True
+                else:
+                    pass
+        elif state['effect'] == 'moonlight':
+            state['effect_duration'] -= 1
+            state['effect_alpha'] += config.moonlight_drop_rate
+        elif state['effect'] == 'lightning':
+            state['effect_duration'] -= 1
+
+            if state['effect_check_counter'] < config.effect_rate:
+                state['effect_check_counter'] += 1
+            else:
+                state['effect_check_counter'] = 0
+                val = random.random()
+                if val < 0.3:
+                    state['effect_alpha'] = config.lightning_default_alpha
+
+            state['effect_alpha'] += config.lightning_drop_rate
+            state['effect_alpha'] = min(state['effect_alpha'], 255)
+
+        if state['effect_duration'] <= 0:
+            state['effect'] = 'regular'
+
         if config.debug_mode:
             if keys[pygame.K_a]:
                 state['hp'] = min(state['hp'] + 1, 100)
@@ -135,12 +177,15 @@ if __name__ == '__main__':
                                      for x in config.default_map_size]),
                   'effect': 'regular',
                   'effect_alpha': 120,
+                  'effect_duration': 0,
+                  'effect_check_counter': 0,
+                  'effect_fade_in': False,
                   }
 
     character = MainCharacter(surface)
     bg = Background(surface)
     dialog = Dialog(surface)
-    shadows = Shadows(surface, area=720, variance=48000)
+    shadows = Shadows(surface, area=180, variance=2400)
     fg = Foreground(surface)
     gui = Gui(surface)
     boundaries = Boundaries(surface)
@@ -162,6 +207,7 @@ if __name__ == '__main__':
         boundaries.check_for_dmg(game_state)
         character.render(game_state)
         fg.render(game_state)
+
         shadows.render(game_state)
         light_fx.render(game_state)
         gui.render(game_state)

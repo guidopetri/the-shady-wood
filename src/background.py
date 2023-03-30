@@ -229,7 +229,7 @@ class Shadows(object):
         self.shadows = None
         self.redo_render = True
 
-    def render_shadows(self):
+    def render_shadows(self, color, default_alpha):
         # foreground with lighting effect
         shadow = pygame.Surface((self.surface.get_width(),
                                  self.surface.get_height(),
@@ -237,25 +237,24 @@ class Shadows(object):
                                 flags=pygame.SRCALPHA,
                                 )
 
-        shadow.fill('black')
+        shadow.fill(color)
+        shadow.set_alpha(default_alpha)
         alphas = pygame.surfarray.pixels_alpha(shadow)
 
         midpoints = [config.screen_size[0] // 2,
                      config.screen_size[1] // 2]
 
-        area_half = self.area // 2
-
-        array = np.mgrid[:self.area, :self.area]
+        array = np.mgrid[:self.area * 2, :self.area * 2]
         array = array.transpose((1, 2, 0))
-        rv = multivariate_normal(mean=[area_half, area_half],
+        rv = multivariate_normal(mean=[self.area, self.area],
                                  cov=[[self.variance, 0], [0, self.variance]])
         diffs = rv.pdf(array)
         normalized_diffs = diffs * alphas.max() / diffs.max()
 
-        x_start = midpoints[0] - area_half
-        x_end = midpoints[0] + area_half
-        y_start = midpoints[1] - area_half
-        y_end = midpoints[1] + area_half
+        x_start = midpoints[0] - self.area
+        x_end = midpoints[0] + self.area
+        y_start = midpoints[1] - self.area
+        y_end = midpoints[1] + self.area
         # replace middle section of alphas with the diff'd amount
         alphas[x_start: x_end,
                y_start: y_end] = alphas[x_start: x_end,
@@ -269,30 +268,72 @@ class Shadows(object):
         mode = state['current_game_mode']
 
         if self.redo_render or self.shadows is None:
-            self.shadows = self.render_shadows()
+            self.shadows = self.render_shadows('black', 255)
 
         if mode == config.Modes.GAME:
-            self.surface.blit(self.shadows, (0, 0))
+            if state['effect'] == 'regular' or state['effect_fade_in']:
+                self.surface.blit(self.shadows, (0, 0))
 
 
-class LightStatusEffects(object):
+class LightStatusEffects(Shadows):
     def __init__(self, surface):
-        self.surface = surface
+        self.initial_area = 180
+        self.initial_variance = 48000
+        self.final_area = 50
+        self.final_variance = 400
+        self.reset_to_defaults()
+
+        super().__init__(surface,
+                         area=self.initial_area,
+                         variance=self.initial_variance,
+                         )
+
+    def reset_to_defaults(self):
+        self.fade_in_frame = 0
+        self.filt = None
+        self.area = self.initial_area
+        self.variance = self.initial_variance
 
     def render_filter(self, color, alpha):
-        filt = pygame.Surface(config.screen_size)
-        filt.fill(color)
-        filt.set_alpha(alpha)
+        if self.effect_is_fading_in:
+            self.filt = self.render_shadows(color, ceil(alpha))
+        else:
+            self.filt.set_alpha(alpha)
 
         # blit filter over whole surface
-        self.surface.blit(filt, (0, 0))
+        self.surface.blit(self.filt, (0, 0))
+
+    def render_moonlight(self, state):
+        self.render_filter(config.moonlight_color, state['effect_alpha'])
+
+    def render_lightning(self, state):
+        self.render_filter(config.lightning_color, state['effect_alpha'])
 
     def render(self, state):
-        colors_map = {'moonlight': config.moonlight_color,
-                      'lightning': config.lightning_color,
-                      }
+        mode = state['current_game_mode']
 
-        if state['effect'] in colors_map:
-            self.render_filter(colors_map[state['effect']],
-                               state['effect_alpha'],
-                               )
+        if mode == config.Modes.GAME:
+            colors_map = {'moonlight': self.render_moonlight,
+                          'lightning': self.render_lightning,
+                          }
+
+            if state['effect_fade_in']:
+                self.effect_is_fading_in = True
+                self.fade_in_frame += 1
+
+                if self.fade_in_frame == config.lightning_fade_in_time:
+                    state['effect_fade_in'] = False
+                    self.effect_is_fading_in = False
+
+                if self.fade_in_frame % 3 == 0:
+                    self.area = max(self.area - 1, self.final_area)
+
+                self.redo_render = True
+                fade = config.lightning_fade_in_time
+                self.variance -= (self.initial_variance
+                                  - self.final_variance) / fade
+
+            if state['effect'] in colors_map:
+                colors_map[state['effect']](state)
+            else:
+                self.reset_to_defaults()
