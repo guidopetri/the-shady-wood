@@ -48,7 +48,12 @@ class Dialog(object):
             self.render_box_bg(rect.width, rect.height)
             self.blit_text(text, rect)
         elif mode == config.Modes.GAME:
-            if state['effect'] == 'moonlight' and state['effect_fade_in']:
-                text, rect = self.render_text(config.moonlight_text)
+            if state['effect_fade_in']:
+                if state['effect'] == 'moonlight':
+                    text = config.moonlight_text
+                elif state['effect'] == 'lightning':
+                    text = config.lightning_text
+
+                text, rect = self.render_text(text)
                 self.render_box_bg(rect.width, rect.height)
                 self.blit_text(text, rect)
