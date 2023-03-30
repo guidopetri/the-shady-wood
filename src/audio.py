@@ -34,7 +34,9 @@ class Audio(object):
 
     def play(self, state):
         if config.debug_mode:
+            pass
             pygame.mixer.music.set_volume(0)
+
         # keep playing the current song by default
         track = self.current_music
 

@@ -11,7 +11,7 @@ screen_center = tuple(x // 2 for x in screen_size)
 
 framerate = 60
 
-character_speed = 4
+character_speed = 2
 
 fontname = 'Arial'
 fontsize = 32

@@ -301,7 +301,7 @@ class LightStatusEffects(Shadows):
         self.initial_area = 180
         self.initial_variance = 48000
         self.final_area = 50
-        self.final_variance = 400
+        self.final_variance = 3
 
         moon_num_frames = 2
         filename = 'Moonlight_Rays_2x1_384px.png'
