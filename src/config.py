@@ -82,7 +82,7 @@ moonlight_color = 'blue'
 moonlight_default_alpha = 120
 moonlight_duration = 15 * framerate
 moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
-moonlight_fade_in_s = 2
+moonlight_fade_in_s = 3
 moonlight_fade_in_f = moonlight_fade_in_s * framerate
 moonlight_text = 'What a terrible night for a curse...'
 
@@ -91,7 +91,7 @@ lightning_default_alpha = 120
 lightning_duration = 15 * framerate
 lightning_frame_count = 8
 lightning_drop_rate = (255 - lightning_default_alpha) // lightning_frame_count
-lightning_fade_in_s = 1
+lightning_fade_in_s = 2
 lightning_fade_in_f = lightning_fade_in_s * framerate
 lightning_freq = 0.3
 lightning_text = 'Jeepers! It\'s raining, Batman!'
