@@ -19,7 +19,16 @@ class AbstractBG(ABC):
     def load_images(self):
         raw_imgs = {}
 
-        for tile in ['Blank', 'Corner', 'Cross', 'DeadEnd', 'Straight', 'T']:
+        tile_names = ['Blank',
+                      'Corner',
+                      'Cross',
+                      'DeadEnd',
+                      'Straight',
+                      'T',
+                      'MazeEnd',
+                      ]
+
+        for tile in tile_names:
             filename = f"BG_Maze_{self.image_type}_{tile}_384px.png"
             path = config.gfx_path / filename
             raw_imgs[tile] = pygame.image.load(path).convert_alpha()
@@ -44,6 +53,10 @@ class AbstractBG(ABC):
                        'deadend_up': rot_180(raw_imgs['DeadEnd']),
                        'deadend_down': raw_imgs['DeadEnd'],
                        'blank': raw_imgs['Blank'],
+                       'mazeend_left': rot_270(raw_imgs['MazeEnd']),
+                       'mazeend_right': rot_90(raw_imgs['MazeEnd']),
+                       'mazeend_up': rot_180(raw_imgs['MazeEnd']),
+                       'mazeend_down': raw_imgs['MazeEnd'],
                        }
 
     @property
@@ -57,9 +70,13 @@ class AbstractBG(ABC):
                config.Modes.GAME: self.render_game,
                config.Modes.INTRO: self.render_intro_dialog,
                config.Modes.GAME_OVER: self.render_game_over,
+               config.Modes.WIN_DIALOG: self.render_win_dialog,
                }
 
         fns[mode](state)
+
+    def render_win_dialog(self, *args):
+        pass
 
     def render_game_over(self, *args):
         pass
@@ -189,10 +206,12 @@ class Boundaries(AbstractBG):
         safe = tuple(pygame.Color(config.boundary_safe_zone_color))
         unsafe = tuple(pygame.Color(config.boundary_unsafe_zone_color))
         dead = tuple(pygame.Color(config.boundary_dead_zone_color))
+        win = tuple(pygame.Color(config.boundary_win_zone_color))
 
         self.boundary_status_mapping = {safe: 'safe',
                                         unsafe: 'unsafe',
                                         dead: 'dead',
+                                        win: 'win',
                                         }
 
         super().__init__(surface)

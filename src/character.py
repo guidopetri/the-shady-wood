@@ -120,7 +120,7 @@ class MainCharacter(object):
     def render(self, state):
         mode = state['current_game_mode']
 
-        if mode in (config.Modes.MAIN_MENU, config.Modes.INTRO):
+        if mode not in (config.Modes.GAME, config.Modes.GAME_OVER):
             return
 
         self.current_sprites = (self.spritesheets.get(state['action'])

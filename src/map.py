@@ -21,9 +21,21 @@ class Map(object):
                            'deadend_up': '╨',
                            'deadend_down': '╥',
                            'blank': ' ',
+                           'mazeend_left': 'x',
+                           'mazeend_right': 'x',
+                           'mazeend_up': 'x',
+                           'mazeend_down': 'x',
                            }
 
     def generate_map(self, size=config.default_map_size):
+
+        final_side = random.sample(['N', 'S', 'E', 'W'], 1)[0]
+        final_loc = random.randrange(0,
+                                     size[0]
+                                     if final_side in ['N', 'S']
+                                     else size[1],
+                                     )
+
         grid = [[[] for _ in range(size[0])] for _ in range(size[1])]
 
         DX = {'E': 1, 'W': -1, 'N': 0, 'S': 0}
@@ -45,6 +57,10 @@ class Map(object):
                           'E': 'deadend_right',
                           'N': 'deadend_up',
                           'S': 'deadend_down',
+                          'Wx': 'mazeend_left',
+                          'Ex': 'mazeend_right',
+                          'Nx': 'mazeend_up',
+                          'Sx': 'mazeend_down',
                           '': 'blank',
                           }
 
@@ -67,6 +83,15 @@ class Map(object):
                             grid,
                             )
 
+        # insert win piece
+        mapping = {'E': (size[0] - 1, final_loc),
+                   'W': (0, final_loc),
+                   'N': (final_loc, 0),
+                   'S': (final_loc, size[1] - 1),
+                   }
+        coords = mapping[final_side]
+        grid[coords[1]][coords[0]].append(final_side)
+
         for y, col in enumerate(grid):
             for x, row in enumerate(col):
                 grid[y][x] = directions_map[''.join(sorted(grid[y][x]))]
@@ -80,6 +105,17 @@ class Map(object):
 
         buffered_grid[buffer_size: -buffer_size,
                       buffer_size: -buffer_size] = grid
+
+        # insert win piece
+        mapping = {'E': (size[0] + buffer_size, final_loc + buffer_size),
+                   'W': (buffer_size - 1, final_loc + buffer_size),
+                   'N': (final_loc + buffer_size, buffer_size - 1),
+                   'S': (final_loc + buffer_size, size[1] + buffer_size),
+                   }
+        xy = mapping[final_side]
+
+        win_piece = f"{opposite[final_side]}x"
+        buffered_grid[xy[1]][xy[0]] = directions_map[win_piece]
 
         self.map = buffered_grid.tolist()
 

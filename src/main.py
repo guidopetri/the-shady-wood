@@ -60,6 +60,9 @@ def handle_events(state):
                 state['action'] = 'walking'
                 state['direction'] = actions['direction']
 
+        if state['status'] == 'win':
+            state['current_game_mode'] = config.Modes.WIN_DIALOG
+
         if state['status'] == 'unsafe':
             # lose 1hp every 3 frames ~ 20hp per s ~ 5s in unsafe zone
             state['unsafe_frame_count'] += 1
@@ -199,12 +202,12 @@ if __name__ == '__main__':
         game_map.pretty_print()
 
     while True:
+        boundaries.check_for_dmg(game_state)
         game_state = handle_events(game_state)
 
         surface.fill('black')
 
         bg.render(game_state)
-        boundaries.check_for_dmg(game_state)
         character.render(game_state)
         fg.render(game_state)
 
