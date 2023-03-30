@@ -273,3 +273,26 @@ class Shadows(object):
 
         if mode == config.Modes.GAME:
             self.surface.blit(self.shadows, (0, 0))
+
+
+class LightStatusEffects(object):
+    def __init__(self, surface):
+        self.surface = surface
+
+    def render_filter(self, color, alpha):
+        filt = pygame.Surface(config.screen_size)
+        filt.fill(color)
+        filt.set_alpha(alpha)
+
+        # blit filter over whole surface
+        self.surface.blit(filt, (0, 0))
+
+    def render(self, state):
+        colors_map = {'moonlight': config.moonlight_color,
+                      'lightning': config.lightning_color,
+                      }
+
+        if state['effect'] in colors_map:
+            self.render_filter(colors_map[state['effect']],
+                               state['effect_alpha'],
+                               )

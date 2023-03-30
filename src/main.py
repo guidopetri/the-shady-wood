@@ -9,6 +9,7 @@ from background import Background
 from background import Foreground
 from background import Boundaries
 from background import Shadows
+from background import LightStatusEffects
 from dialog import Dialog
 from gui import Gui
 from map import Map
@@ -92,6 +93,16 @@ def handle_events(state):
                 state['action'] = 'firefly'
             if keys[pygame.K_y]:
                 state['action'] = 'walking'
+            if keys[pygame.K_u]:
+                state['effect'] = 'moonlight'
+            if keys[pygame.K_i]:
+                state['effect'] = 'lightning'
+            if keys[pygame.K_o]:
+                state['effect'] = 'regular'
+            if keys[pygame.K_p]:
+                state['effect_alpha'] += 1
+            if keys[pygame.K_l]:
+                state['effect_alpha'] -= 1
     elif mode == config.Modes.GAME_OVER:
         pass
 
@@ -122,6 +133,8 @@ if __name__ == '__main__':
                                          * config.map_tile_size
                                          )
                                      for x in config.default_map_size]),
+                  'effect': 'regular',
+                  'effect_alpha': 120,
                   }
 
     character = MainCharacter(surface)
@@ -131,6 +144,8 @@ if __name__ == '__main__':
     fg = Foreground(surface)
     gui = Gui(surface)
     boundaries = Boundaries(surface)
+    light_fx = LightStatusEffects(surface)
+
     game_map = Map()
     game_map.generate_map()
     game_state['map'] = game_map.map
@@ -148,6 +163,7 @@ if __name__ == '__main__':
         character.render(game_state)
         fg.render(game_state)
         shadows.render(game_state)
+        light_fx.render(game_state)
         gui.render(game_state)
         dialog.render(game_state)
 

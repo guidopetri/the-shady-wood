@@ -76,6 +76,9 @@ game_over_fontname = 'Copperplate Gothic'
 game_over_fontsize = 20
 game_over_font_color = 'white'
 
+moonlight_color = 'blue'
+lightning_color = 'black'
+
 
 class Modes(enum.Enum):
 
