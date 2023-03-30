@@ -173,6 +173,8 @@ class Boundaries(AbstractBG):
         super().__init__(surface)
 
     def check_for_dmg(self, state):
+        if state['current_game_mode'] != config.Modes.GAME:
+            return
         if config.debug_mode:
             pass
             # super().render_game(state)
