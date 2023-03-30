@@ -271,7 +271,9 @@ class Shadows(object):
             self.shadows = self.render_shadows('black', 255)
 
         if mode == config.Modes.GAME:
-            if state['effect'] == 'regular' or state['effect_fade_in']:
+            if (state['effect'] == 'regular' or
+                (state['effect'] == 'lightning'
+                    and state['effect_fade_in'])):
                 self.surface.blit(self.shadows, (0, 0))
 
 
@@ -281,18 +283,20 @@ class LightStatusEffects(Shadows):
         self.initial_variance = 48000
         self.final_area = 50
         self.final_variance = 400
-        self.reset_to_defaults()
 
         super().__init__(surface,
                          area=self.initial_area,
-                         variance=self.initial_variance,
+                         variance=2400,
                          )
+        self.shadows = self.render_shadows('black', 255)
+        self.reset_to_defaults()
 
     def reset_to_defaults(self):
         self.fade_in_frame = 0
         self.filt = None
         self.area = self.initial_area
         self.variance = self.initial_variance
+        self.effect_is_fading_in = False
 
     def render_filter(self, color, alpha):
         if self.effect_is_fading_in:
@@ -304,7 +308,31 @@ class LightStatusEffects(Shadows):
         self.surface.blit(self.filt, (0, 0))
 
     def render_moonlight(self, state):
-        self.render_filter(config.moonlight_color, state['effect_alpha'])
+        def render_filter(self, color, alpha):
+            filt = pygame.Surface(config.screen_size)
+            filt.fill(color)
+
+            filt.set_alpha(alpha)
+
+            # blit filter over whole surface
+            self.surface.blit(filt, (0, 0))
+
+        if self.effect_is_fading_in:
+            alpha = (state['effect_alpha']
+                     - config.moonlight_fade_in_f
+                     + self.fade_in_frame)
+            render_filter(self,
+                          config.moonlight_color,
+                          alpha,
+                          )
+            self.shadows.set_alpha(255 - alpha)
+        else:
+            render_filter(self,
+                          config.moonlight_color,
+                          state['effect_alpha'],
+                          )
+            self.shadows.set_alpha(255 - state['effect_alpha'])
+        self.surface.blit(self.shadows, (0, 0))
 
     def render_lightning(self, state):
         self.render_filter(config.lightning_color, state['effect_alpha'])
@@ -321,17 +349,23 @@ class LightStatusEffects(Shadows):
                 self.effect_is_fading_in = True
                 self.fade_in_frame += 1
 
-                if self.fade_in_frame == config.lightning_fade_in_f:
-                    state['effect_fade_in'] = False
-                    self.effect_is_fading_in = False
+                if state['effect'] == 'moonlight':
+                    if self.fade_in_frame == config.moonlight_fade_in_f:
+                        state['effect_fade_in'] = False
+                        self.effect_is_fading_in = False
 
-                if self.fade_in_frame % (config.lightning_fade_in_s) == 0:
-                    self.area = max(self.area - 1, self.final_area)
+                elif state['effect'] == 'lightning':
+                    if self.fade_in_frame == config.lightning_fade_in_f:
+                        state['effect_fade_in'] = False
+                        self.effect_is_fading_in = False
 
-                self.redo_render = True
-                fade = config.lightning_fade_in_f
-                self.variance -= (self.initial_variance
-                                  - self.final_variance) / fade
+                    if self.fade_in_frame % (config.lightning_fade_in_s) == 0:
+                        self.area = max(self.area - 1, self.final_area)
+
+                    self.redo_render = True
+                    fade = config.lightning_fade_in_f
+                    self.variance -= (self.initial_variance
+                                      - self.final_variance) / fade
 
             if state['effect'] in colors_map:
                 colors_map[state['effect']](state)

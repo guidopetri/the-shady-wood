@@ -98,7 +98,7 @@ def handle_events(state):
                     pass
         elif state['effect'] == 'moonlight':
             state['effect_duration'] -= 1
-            state['effect_alpha'] += config.moonlight_drop_rate
+            state['effect_alpha'] -= config.moonlight_drop_rate
         elif state['effect'] == 'lightning':
             state['effect_duration'] -= 1
 
