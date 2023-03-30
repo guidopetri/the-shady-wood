@@ -42,6 +42,7 @@ class Gui(object):
                                          self.item_font_color,
                                          )
             rect = text.get_rect(center=img_rect.center)
+            rect.move_ip(config.item_letter_padding)
             img.blit(text, rect)
 
             self.shortcut[item] = img

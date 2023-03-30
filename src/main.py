@@ -172,6 +172,7 @@ if __name__ == '__main__':
 
     surface = pygame.display.set_mode(config.screen_size)
 
+    # todo: back to main menu
     game_state = {'current_game_mode': config.Modes.GAME,
                   'active_message': 0,
                   'hp': 100,
@@ -198,7 +199,8 @@ if __name__ == '__main__':
     character = MainCharacter(surface)
     bg = Background(surface)
     dialog = Dialog(surface)
-    shadows = Shadows(surface, area=180, variance=2400)
+    shadows = Shadows(surface, area=360, variance=2400)
+    # shadows = Shadows(surface, area=360, variance=48000)
     fg = Foreground(surface)
     gui = Gui(surface)
     boundaries = Boundaries(surface)

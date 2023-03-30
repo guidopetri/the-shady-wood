@@ -36,13 +36,14 @@ hp_bar_border_thickness = 1
 
 item_fontsize = 14
 item_icon_size = 48
-item_padding = 10
+item_padding = 11
 item_bar_size = (3 * item_icon_size + 4 * item_padding,
                  item_icon_size + 2 * item_padding,
                  )
 item_font_color = 'black'
-item_count_padding = (-3, 0)
-item_key_padding = (0, 2)
+item_count_padding = (-3, 2)
+item_key_padding = (0, 1)
+item_letter_padding = (0, -1)
 
 img_buffer = 2
 
