@@ -303,6 +303,24 @@ class LightStatusEffects(Shadows):
         self.final_area = 50
         self.final_variance = 400
 
+        moon_num_frames = 2
+        filename = 'Moonlight_Rays_2x1_384px.png'
+
+        self.moonlight_tiles = self.load_spritesheet(moon_num_frames,
+                                                     filename,
+                                                     384,
+                                                     384,
+                                                     )
+
+        rain_num_frames = 4
+        filename = 'Lightning_Rain_Spritesheet_2x2_128px.png'
+
+        self.rain_tiles = self.load_spritesheet(rain_num_frames,
+                                                filename,
+                                                128,
+                                                128,
+                                                )
+
         super().__init__(surface,
                          area=self.initial_area,
                          variance=2400,
@@ -310,12 +328,32 @@ class LightStatusEffects(Shadows):
         self.shadows = self.render_shadows('black', 255)
         self.reset_to_defaults()
 
+    def load_spritesheet(self, num_frames, file, width, height):
+        path = config.gfx_path / file
+        sheet = pygame.image.load(path).convert_alpha()
+
+        sprites = []
+
+        coords = [(0, 0),
+                  (width, 0),
+                  (0, height),
+                  (width, height),
+                  ]
+
+        for idx in range(num_frames):
+            sprite_area = pygame.Rect(*coords[idx], width, height)
+            sprites.append(sheet.subsurface(sprite_area))
+        return sprites
+
     def reset_to_defaults(self):
         self.fade_in_frame = 0
         self.filt = None
         self.area = self.initial_area
         self.variance = self.initial_variance
         self.effect_is_fading_in = False
+        self.current_frame = 0
+        self.moonlight_alpha = 0
+        self.moonlight_up = True
 
     def render_filter(self, color, alpha):
         if self.effect_is_fading_in:
@@ -325,6 +363,26 @@ class LightStatusEffects(Shadows):
 
         # blit filter over whole surface
         self.surface.blit(self.filt, (0, 0))
+
+    @property
+    def moonlight(self):
+        return self.moonlight_tiles[self.current_frame]
+
+    @property
+    def moonlight_alpha(self):
+        return self._moonlight_alpha
+
+    @moonlight_alpha.setter
+    def moonlight_alpha(self, val):
+        self._moonlight_alpha = val
+        if self._moonlight_alpha >= 255:
+            self.moonlight_up = False
+            self._moonlight_alpha = 255
+        elif self._moonlight_alpha <= 0:
+            self.moonlight_up = True
+            self.current_frame += 1
+            self.current_frame %= 2
+            self._moonlight_alpha = 0
 
     def render_moonlight(self, state):
         def render_filter(self, color, alpha):
@@ -345,12 +403,25 @@ class LightStatusEffects(Shadows):
                           alpha,
                           )
             self.shadows.set_alpha(255 - alpha)
+
         else:
             render_filter(self,
                           config.moonlight_color,
                           state['effect_alpha'],
                           )
             self.shadows.set_alpha(255 - state['effect_alpha'])
+
+        if self.moonlight_up:
+            self.moonlight_alpha += 255 // (2 * config.framerate)
+        else:
+            self.moonlight_alpha -= 255 // (2 * config.framerate)
+        # fade moonlight in
+        self.moonlight.set_alpha(self.moonlight_alpha)
+        width = self.moonlight.get_width()
+
+        for x in range(ceil(config.screen_size[0] / width)):
+            self.surface.blit(self.moonlight, (width * x, 0))
+
         self.surface.blit(self.shadows, (0, 0))
 
     def render_lightning(self, state):
