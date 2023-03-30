@@ -321,15 +321,15 @@ class LightStatusEffects(Shadows):
                 self.effect_is_fading_in = True
                 self.fade_in_frame += 1
 
-                if self.fade_in_frame == config.lightning_fade_in_time:
+                if self.fade_in_frame == config.lightning_fade_in_f:
                     state['effect_fade_in'] = False
                     self.effect_is_fading_in = False
 
-                if self.fade_in_frame % 3 == 0:
+                if self.fade_in_frame % (config.lightning_fade_in_s) == 0:
                     self.area = max(self.area - 1, self.final_area)
 
                 self.redo_render = True
-                fade = config.lightning_fade_in_time
+                fade = config.lightning_fade_in_f
                 self.variance -= (self.initial_variance
                                   - self.final_variance) / fade
 

@@ -107,7 +107,7 @@ def handle_events(state):
             else:
                 state['effect_check_counter'] = 0
                 val = random.random()
-                if val < 0.3:
+                if val < config.lightning_freq:
                     state['effect_alpha'] = config.lightning_default_alpha
 
             state['effect_alpha'] += config.lightning_drop_rate

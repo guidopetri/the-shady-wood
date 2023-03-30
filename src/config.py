@@ -84,9 +84,11 @@ moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
 lightning_color = 'black'
 lightning_default_alpha = 120
 lightning_duration = 15 * framerate
-lightning_frame_count = 5
+lightning_frame_count = 8
 lightning_drop_rate = (255 - lightning_default_alpha) // lightning_frame_count
-lightning_fade_in_time = 3 * framerate
+lightning_fade_in_s = 1
+lightning_fade_in_f = lightning_fade_in_s * framerate
+lightning_freq = 0.3
 
 effect_rate = 1 * framerate
 
