@@ -134,7 +134,32 @@ class Background(AbstractBG):
     def __init__(self, surface):
         self.image_type = 'Ground'
 
+        self.font = pygame.font.SysFont(config.game_over_fontname,
+                                        config.game_over_fontsize,
+                                        )
+        self.font_color = pygame.Color(config.game_over_font_color)
+
         super().__init__(surface)
+
+    def render_game_over(self, *args):
+        text = config.game_over_text
+
+        coords = {'center': (config.screen_center[0],
+                             config.screen_center[1] - 128,
+                             )
+                  }
+        game_over_text = self.font.render(text[0], True, self.font_color)
+        game_over_rect = game_over_text.get_rect(**coords)
+
+        coords = {'center': (config.screen_center[0],
+                             config.screen_center[1] + 128,
+                             )
+                  }
+        stone_text = self.font.render(text[1], True, self.font_color)
+        stone_rect = stone_text.get_rect(**coords)
+
+        self.surface.blit(game_over_text, game_over_rect)
+        self.surface.blit(stone_text, stone_rect)
 
     def render_intro_dialog(self, *args):
         self.surface.fill('black')

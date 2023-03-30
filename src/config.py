@@ -69,6 +69,13 @@ boundary_safe_zone_color = '#15ff00'
 boundary_unsafe_zone_color = '#0000ff'
 boundary_dead_zone_color = '#ff0000'
 
+game_over_text = ['GAME OVER',
+                  'Anne became too afraid. She turned to stone...',
+                  ]
+game_over_fontname = 'Copperplate Gothic'
+game_over_fontsize = 20
+game_over_font_color = 'white'
+
 
 class Modes(enum.Enum):
 
