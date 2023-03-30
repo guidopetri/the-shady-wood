@@ -61,13 +61,13 @@ class AbstractBG(ABC):
 
         fns[mode](state)
 
-    def render_game_over(self, state):
+    def render_game_over(self, *args):
         pass
 
-    def render_intro_dialog(self, state):
+    def render_intro_dialog(self, *args):
         pass
 
-    def render_main_menu(self, state):
+    def render_main_menu(self, *args):
         pass
 
     def calc_num_tiles_in_screen(self):
@@ -136,10 +136,10 @@ class Background(AbstractBG):
 
         super().__init__(surface)
 
-    def render_intro_dialog(self, state):
+    def render_intro_dialog(self, *args):
         self.surface.fill('black')
 
-    def render_main_menu(self, state):
+    def render_main_menu(self, *args):
         self.surface.fill('black')
 
         dims = [int(dim * 0.8) for dim in config.screen_size]
