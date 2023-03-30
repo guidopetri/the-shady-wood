@@ -32,6 +32,7 @@ hp_bar_bg_color = '#222222'
 hp_indicator_size = (150,  # ~ 1080 / 8 + 10%
                      40,  # ~ 720 / 20 + 10%
                      )
+hp_bar_border_thickness = 1
 
 item_fontsize = 14
 item_icon_size = 48

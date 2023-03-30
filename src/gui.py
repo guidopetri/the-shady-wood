@@ -120,7 +120,7 @@ class Gui(object):
                              self.hp_indicator.get_height(),
                              )
 
-        coords = {'midtop': (hp_indicator_size[0] // 2, 8)}
+        coords = {'midtop': (hp_indicator_size[0] // 2, 12)}
         self.courage_rect = self.courage_text.get_rect(**coords)
         self.hp_indicator.blit(self.courage_text, self.courage_rect)
 
@@ -262,12 +262,16 @@ class Gui(object):
                          border_radius=self.hp_bar_radius,
                          )
 
+        thickness = config.hp_bar_border_thickness
         hp_bar_rect = pygame.Rect(0,
                                   0,
-                                  self.hp_bg_bar_rect.width * hp // 100,
-                                  self.hp_bg_bar_rect.height,
+                                  (self.hp_bg_bar_rect.width
+                                   - 2 * thickness)
+                                  * hp // 100,
+                                  self.hp_bg_bar_rect.height - 2 * thickness,
                                   )
         hp_bar_rect.topleft = self.hp_bg_bar_rect.topleft
+        hp_bar_rect.move_ip(thickness, thickness)
 
         pygame.draw.rect(hp_indicator_copy,
                          self.color(hp),
