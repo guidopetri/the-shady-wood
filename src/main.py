@@ -117,7 +117,6 @@ if __name__ == '__main__':
                   'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
                   'item': None,
-                  # 'walking': False,
                   'position': tuple([int((x + 2 * config.map_buffer_size)
                                          / 2
                                          * config.map_tile_size

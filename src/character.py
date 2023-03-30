@@ -5,10 +5,24 @@ import config
 class MainCharacter(object):
     def __init__(self, surface):
         self.surface = surface
+        self.current_action = 'standing'
 
-        self.num_frames = 4
-        self.fps = 4
-        self._frames_per_sprite = config.framerate // self.fps
+        self.num_frames_map = {'standing': 1,
+                               'walking': 4,
+                               'firefly': 4,
+                               'dead': 3,
+                               }
+
+        self.fps_map = {'standing': 1,
+                        'walking': 4,
+                        'firefly': 4,
+                        'dead': 1,
+                        }
+
+        self._frames_per_sprite_map = {k: config.framerate // v
+                                       for k, v in self.fps_map.items()
+                                       }
+
         self.frame_counter = 0
         self.spritesheets = {}
 
@@ -16,7 +30,8 @@ class MainCharacter(object):
             self.spritesheets[action] = {}
             for direction in ['back', 'forward', 'left', 'right']:
                 file = f'anne_spritesheet_{action}_{direction}_2x2_128px.png'
-                sprites = self.load_spritesheet(file, self.num_frames)
+                sprites = self.load_spritesheet(file,
+                                                self.num_frames_map[action])
                 self.spritesheets[action][direction] = sprites
 
         self.spritesheets['standing'] = self.spritesheets['walking']
@@ -35,6 +50,18 @@ class MainCharacter(object):
         self.coords = (config.screen_size[0] // 2 - self._size_x // 2,
                        config.screen_size[1] // 2 - self._size_y // 2,
                        )
+
+    @property
+    def num_frames(self):
+        return self.num_frames_map[self.current_action]
+
+    @property
+    def fps(self):
+        return self.fps_map[self.current_action]
+
+    @property
+    def _frames_per_sprite(self):
+        return self._frames_per_sprite_map[self.current_action]
 
     def load_spritesheet(self, file, num_frames):
         path = config.gfx_path / file
@@ -63,17 +90,32 @@ class MainCharacter(object):
     def size(self):
         return (self._size_x, self._size_y)
 
-    def next_animation_frame(self, state):
-        if state['action'] == 'walking':
-            self.frame_counter += 1
-            if self.frame_counter == self._frames_per_sprite:
-                self.current_frame += 1
-                self.frame_counter = 0
+    def advance_frame(self, amount=1, loop=True):
+        self.frame_counter += 1
+        if self.frame_counter == self._frames_per_sprite:
+            self.current_frame += amount
+            self.frame_counter = 0
+
+        if loop:
+            self.current_frame %= self.num_frames
+        else:
+            self.current_frame = min(self.num_frames - 1, self.current_frame)
+
+    def next_animation_frame(self, item):
+        if self.current_action == 'walking':
+            self.advance_frame(1, loop=True)
+        elif self.current_action == 'standing' and item == 'firefly':
+            self.advance_frame(2, loop=True)
+        elif self.current_action == 'dead':
+            self.advance_frame(1, loop=False)
         else:
             self.current_frame = 0
             self.frame_counter = 0
 
-        self.current_frame %= self.num_frames
+    def update_action(self, action):
+        if action != self.current_action:
+            self.current_action = action
+            self.current_frame = 0
 
     def render(self, state):
         mode = state['current_game_mode']
@@ -84,10 +126,8 @@ class MainCharacter(object):
         self.current_sprites = (self.spritesheets.get(state['action'])
                                                  .get(state['direction'])
                                 )
-        if mode == config.Modes.GAME_OVER:
-            pass
-            # print(state['action'], state['direction'], self.current_sprites)
 
-        self.next_animation_frame(state)
+        self.update_action(state['action'])
+        self.next_animation_frame(state['item'])
 
         self.surface.blit(self.sprite, self.coords)
