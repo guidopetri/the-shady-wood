@@ -84,7 +84,7 @@ def handle_events(state):
                 state['effect_check_counter'] = 0
 
                 val = random.random()
-                if val < 1:
+                if val < 0.05:
                     state['effect'] = 'moonlight'
                     state['effect_alpha'] = config.moonlight_default_alpha
                     state['effect_duration'] = config.moonlight_duration
