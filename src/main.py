@@ -32,6 +32,11 @@ def handle_events(state):
                                  },
                 }
 
+    items_map = {pygame.key.key_code(config.keys['candle']): 'candle',
+                 pygame.key.key_code(config.keys['firefly']): 'firefly',
+                 pygame.key.key_code(config.keys['snail']): 'snail',
+                 }
+
     any_key = False
     mode = state['current_game_mode']
 
@@ -88,16 +93,30 @@ def handle_events(state):
                 state['effect_check_counter'] = 0
 
                 val = random.random()
-                if val < 0.05:
+                if val < 0.025:
                     state['effect'] = 'moonlight'
                     state['effect_alpha'] = config.moonlight_default_alpha
                     state['effect_duration'] = config.moonlight_duration
                     state['effect_fade_in'] = True
-                elif val < 0.1:
+                    state['can_use_item'] = False
+                    # place item back in inventory
+                    if state['item'] != 'none':
+                        state['inventory'][state['item']] += 1
+                        state['item'] = 'none'
+                        state['can_use_item'] = False
+                        state['item_duration'] = 0
+                elif val < 0.05:
                     state['effect'] = 'lightning'
                     state['effect_alpha'] = config.lightning_default_alpha
                     state['effect_duration'] = config.lightning_duration
                     state['effect_fade_in'] = True
+                    state['can_use_item'] = False
+                    # place item back in inventory
+                    if state['item'] != 'none':
+                        state['inventory'][state['item']] += 1
+                        state['item'] = 'none'
+                        state['can_use_item'] = False
+                        state['item_duration'] = 0
                 else:
                     pass
         elif state['effect'] == 'moonlight':
@@ -125,17 +144,36 @@ def handle_events(state):
             state['effect_alpha'] += config.lightning_drop_rate
             state['effect_alpha'] = min(state['effect_alpha'], 255)
 
-        if state['effect_duration'] <= 0:
+        if state['effect'] != 'regular' and state['effect_duration'] <= 0:
             state['effect'] = 'regular'
+            state['can_use_item'] = True
+
+        if state['can_use_item']:
+            for key, item in items_map.items():
+                if keys[key] and state['inventory'][item] > 0:
+                    state['item'] = item
+                    state['inventory'][item] -= 1
+                    state['can_use_item'] = False
+                    state['item_duration'] = config.item_durations[item]
+                    break
+        elif state['item'] != 'none':
+            state['item_duration'] -= 1
+
+        if state['item_duration'] <= 0 and state['item'] != 'none':
+            state['item'] = 'none'
+            state['can_use_item'] = True
+            state['item_duration'] = 0
+
+        # if state['item_out']
 
         if config.debug_mode:
             if keys[pygame.K_a]:
                 state['hp'] = min(state['hp'] + 1, 100)
-            if keys[pygame.K_s]:
+            if keys[pygame.K_v]:
                 state['hp'] = max(state['hp'] - 1, 0)
             if keys[pygame.K_d]:
                 state['status'] = 'unsafe'
-            if keys[pygame.K_f]:
+            if keys[pygame.K_b]:
                 state['status'] = 'safe'
             if keys[pygame.K_g]:
                 state['status'] = 'dead'
@@ -182,7 +220,7 @@ if __name__ == '__main__':
                   'action': 'standing',
                   'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
-                  'item': None,
+                  'item': 'none',
                   'position': tuple([int((x + 2 * config.map_buffer_size)
                                          / 2
                                          * config.map_tile_size
@@ -194,6 +232,8 @@ if __name__ == '__main__':
                   'effect_check_counter': 0,
                   'effect_fade_in': False,
                   'moonlight_frame_count': 0,
+                  'can_use_item': True,
+                  'item_duration': 0,
                   }
 
     character = MainCharacter(surface)

@@ -63,6 +63,16 @@ keys = {'firefly': 'f',
         'snail': 's',
         }
 
+item_durations = {'candle': 15 * framerate,
+                  'firefly': 10 * framerate,
+                  'snail': 30 * framerate,
+                  }
+
+item_end_messages = {'candle': 'Oh no... my candle is out.',
+                     'firefly': 'Oh no... the firefly flew away!',
+                     'snail': 'Oh no... the snail went into the woods.',
+                     }
+
 default_map_size = (11, 11)
 map_tile_size = 384
 map_buffer_size = ceil(max(screen_size) / map_tile_size)
