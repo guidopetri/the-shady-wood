@@ -62,8 +62,8 @@ intro_messages = ['All I wanted was a nice picnic at my favorite spot.',
                   'When I arrived at the spot and sat down, something poked at me!',  # noqa
                   'I had sat on a tiny angry fairy!',
                   'It was so upset it cast a spell on me and...',
-                  'it transported me to the middle of the Shaded Woods!',
-                  'The Shaded Woods are cursed.',
+                  'it transported me to the middle of the Shady Wood!',
+                  'The Shady Wood is cursed.',
                   'Anyone who shows fear gets turned to stone and lost forever.',  # noqa
                   'I need to keep courage and find my way out!',
                   ]
