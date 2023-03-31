@@ -156,6 +156,9 @@ class Background(AbstractBG):
                                         )
         self.font_color = pygame.Color(config.game_over_font_color)
 
+        self.frame_counter = 0
+        self.current_frame = 0
+
         super().__init__(surface)
 
     def render_game_over(self, *args):
@@ -181,15 +184,58 @@ class Background(AbstractBG):
     def render_intro_dialog(self, *args):
         self.surface.fill('black')
 
+    def load_images(self):
+        super().load_images()
+
+        self.num_frames = 4
+        self.fps = 4
+        self._frames_per_sprite = config.framerate / self.fps
+        file = 'Main_menu_spritesheet_2x2_384px.png'
+        path = config.gfx_path / file
+        sheet = pygame.image.load(path).convert_alpha()
+
+        sprites = []
+        width = 384
+        height = 384
+
+        coords = [(0, 0),
+                  (width, 0),
+                  (0, height),
+                  (width, height),
+                  ]
+
+        for idx in range(self.num_frames):
+            sprite_area = pygame.Rect(*coords[idx], width, height)
+            sprites.append(sheet.subsurface(sprite_area))
+        self.main_menu_images = sprites
+        coords = {'center': config.screen_center}
+        self.menu_rect = self.menu_sprite.get_rect(**coords)
+
+        self.menu_text = self.font.render(config.main_menu_text,
+                                          True,
+                                          self.font_color,
+                                          )
+        self.menu_text_rect = self.menu_text.get_rect()
+        self.menu_text_rect.midtop = self.menu_rect.midbottom
+        self.menu_text_rect.move_ip(config.menu_text_padding)
+
+    def advance_frame(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self._frames_per_sprite:
+            self.current_frame += 1
+            self.frame_counter = 0
+
+        self.current_frame %= self.num_frames
+
+    @property
+    def menu_sprite(self):
+        return self.main_menu_images[self.current_frame]
+
     def render_main_menu(self, *args):
-        self.surface.fill('black')
-
-        dims = [int(dim * 0.8) for dim in config.screen_size]
-        menu_surface = pygame.Surface(dims)
-        menu_surface.fill(config.menu_bg_color)
-        menu_rect = menu_surface.get_rect(center=config.screen_center)
-
-        self.surface.blit(menu_surface, menu_rect)
+        self.surface.fill(config.main_menu_bg_color)
+        self.advance_frame()
+        self.surface.blit(self.menu_sprite, self.menu_rect)
+        self.surface.blit(self.menu_text, self.menu_text_rect)
 
 
 class Foreground(AbstractBG):

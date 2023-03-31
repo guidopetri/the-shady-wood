@@ -21,6 +21,10 @@ dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
 menu_bg_color = 'yellow'
 
+main_menu_bg_color = '#072016'
+main_menu_text = 'Press any key to start'
+menu_text_padding = (0, 50)
+
 courage_fontname = 'Copperplate Gothic'
 courage_fontsize = 14
 courage_font_color = 'black'

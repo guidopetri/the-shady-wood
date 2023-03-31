@@ -213,8 +213,7 @@ if __name__ == '__main__':
 
     surface = pygame.display.set_mode(config.screen_size)
 
-    # todo: back to main menu
-    game_state = {'current_game_mode': config.Modes.GAME,
+    game_state = {'current_game_mode': config.Modes.MAIN_MENU,
                   'active_message': 0,
                   'hp': 100,
                   'status': 'safe',
