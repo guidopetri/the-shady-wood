@@ -59,36 +59,40 @@ class Map(object):
 
         grid = [[[] for _ in range(size[0])] for _ in range(size[1])]
 
-        DX = {'E': 1, 'W': -1, 'N': 0, 'S': 0}
-        DY = {'E': 0, 'W': 0, 'N': -1, 'S': 1}
-        opposite = {'E': 'W', 'W': 'E', 'N': 'S', 'S': 'N'}
+        self.DX = {'E': 1, 'W': -1, 'N': 0, 'S': 0}
+        self.DY = {'E': 0, 'W': 0, 'N': -1, 'S': 1}
+        self.opposite = {'E': 'W', 'W': 'E', 'N': 'S', 'S': 'N'}
 
-        directions_map = {'ENSW': 'cross',
-                          'ENW': 't_up',
-                          'ESW': 't_down',
-                          'ENS': 't_right',
-                          'NSW': 't_left',
-                          'EW': 'straight_horizontal',
-                          'NS': 'straight_vertical',
-                          'NW': 'corner_topleft',
-                          'EN': 'corner_topright',
-                          'SW': 'corner_botleft',
-                          'ES': 'corner_botright',
-                          'W': 'deadend_left',
-                          'E': 'deadend_right',
-                          'N': 'deadend_up',
-                          'S': 'deadend_down',
-                          'Wx': 'mazeend_left',
-                          'Ex': 'mazeend_right',
-                          'Nx': 'mazeend_up',
-                          'Sx': 'mazeend_down',
-                          '': 'blank',
-                          }
+        self.directions_map = {'ENSW': 'cross',
+                               'ENW': 't_up',
+                               'ESW': 't_down',
+                               'ENS': 't_right',
+                               'NSW': 't_left',
+                               'EW': 'straight_horizontal',
+                               'NS': 'straight_vertical',
+                               'NW': 'corner_topleft',
+                               'EN': 'corner_topright',
+                               'SW': 'corner_botleft',
+                               'ES': 'corner_botright',
+                               'W': 'deadend_left',
+                               'E': 'deadend_right',
+                               'N': 'deadend_up',
+                               'S': 'deadend_down',
+                               'Wx': 'mazeend_left',
+                               'Ex': 'mazeend_right',
+                               'Nx': 'mazeend_up',
+                               'Sx': 'mazeend_down',
+                               '': 'blank',
+                               }
+
+        self.inv_directions_map = {v: k
+                                   for k, v in self.directions_map.items()
+                                   }
 
         def carve_passages_from(cx, cy, grid):
             for direction in random.sample(['N', 'S', 'E', 'W'], 4):
-                nx = cx + DX[direction]
-                ny = cy + DY[direction]
+                nx = cx + self.DX[direction]
+                ny = cy + self.DY[direction]
 
                 available = (0 <= ny < size[1]
                              and 0 <= nx < size[0]
@@ -96,7 +100,7 @@ class Map(object):
                              )
                 if available:
                     grid[cy][cx].append(direction)
-                    grid[ny][nx].append(opposite[direction])
+                    grid[ny][nx].append(self.opposite[direction])
                     carve_passages_from(nx, ny, grid)
 
         carve_passages_from((size[0] - 1) // 2,
@@ -115,13 +119,13 @@ class Map(object):
 
         for y, col in enumerate(grid):
             for x, row in enumerate(col):
-                grid[y][x] = directions_map[''.join(sorted(grid[y][x]))]
+                grid[y][x] = self.directions_map[''.join(sorted(grid[y][x]))]
 
         buffer_size = config.map_buffer_size
         buffered_grid = np.full((size[0] + 2 * buffer_size,
                                  size[1] + 2 * buffer_size),
                                 'blank',  # buffer with blanks
-                                dtype="U20",
+                                dtype='U20',
                                 )
 
         buffered_grid[buffer_size: -buffer_size,
@@ -135,15 +139,38 @@ class Map(object):
                    }
         xy = mapping[final_side]
 
-        win_piece = f"{opposite[final_side]}x"
-        buffered_grid[xy[1]][xy[0]] = directions_map[win_piece]
+        win_piece = f"{self.opposite[final_side]}x"
+        buffered_grid[xy[1]][xy[0]] = self.directions_map[win_piece]
 
         self.map = buffered_grid.tolist()
+
+        grid = np.full(buffered_grid.shape, '', dtype='U1')
+        self.ai_map = self.flood_fill(xy[0], xy[1], grid, '')
+
+    def flood_fill(self, x, y, grid, ignore_direction):
+        for direction in ['E', 'N', 'S', 'W']:
+            if direction == ignore_direction:
+                continue
+            nx = x + self.DX[direction]
+            ny = y + self.DY[direction]
+
+            next_directions = self.inv_directions_map[self.map[ny][nx]]
+            available = self.opposite[direction] in next_directions
+            if available:
+                grid[ny][nx] = self.opposite[direction]
+                grid = self.flood_fill(nx, ny, grid, self.opposite[direction])
+        return grid
 
     def pretty_print(self):
         for row in self.map:
             for item in row:
                 print(self.characters[item], end="")
+            print()
+
+    def pretty_print_ai(self):
+        for row in self.ai_map:
+            for item in row:
+                print(f'{item} ', end="")
             print()
 
 
@@ -157,3 +184,4 @@ if __name__ == '__main__':
     print(f'Time taken to generate map: {time.time() - start_time}')
     print('\n\n')
     m.pretty_print()
+    # m.pretty_print_ai()
