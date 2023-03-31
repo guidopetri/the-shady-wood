@@ -8,6 +8,8 @@ class Audio(object):
         self.menu_music = 'Main_menu.wav'
         self.game_over_music = 'Game_over.wav'
         self.win_music = 'Game_win.wav'
+        self.lightning_music = 'Lightning.wav'
+        self.moonlight_music = 'Moonlight.wav'
 
         self.current_music = self.menu_music
         self.playing = False
@@ -43,7 +45,10 @@ class Audio(object):
             pass
             # pygame.mixer.music.set_volume(0)
 
-        mapper = {config.Modes.GAME: self.game_music,
+        mapper = {config.Modes.GAME: {'regular': self.game_music,
+                                      'lightning': self.lightning_music,
+                                      'moonlight': self.moonlight_music,
+                                      },
                   config.Modes.MAIN_MENU: self.menu_music,
                   config.Modes.GAME_OVER: self.game_over_music,
                   config.Modes.WIN_DIALOG: self.win_music,
@@ -57,6 +62,8 @@ class Audio(object):
 
         # keep playing the current song by default
         track = mapper.get(state['current_game_mode'], self.current_music)
+        if isinstance(track, dict):
+            track = track.get(state['effect'], self.current_music)
         self.loops = loops_mapper.get(state['current_game_mode'], 0)
 
         if self.current_music != track:
