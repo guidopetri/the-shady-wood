@@ -26,7 +26,8 @@ class AbstractBG(ABC):
                       'Straight',
                       'T',
                       'MazeEnd',
-                      # 'Win',
+                      'Win',
+                      'WinEnd',
                       ]
 
         for tile in tile_names:
@@ -58,8 +59,8 @@ class AbstractBG(ABC):
                        'mazeend_right': rot_90(raw_imgs['MazeEnd']),
                        'mazeend_up': rot_180(raw_imgs['MazeEnd']),
                        'mazeend_down': raw_imgs['MazeEnd'],
-                       # todo: change for win piece
-                       'horizontal_win': rot_90(raw_imgs['Straight']),
+                       'horizontal_win': rot_90(raw_imgs['Win']),
+                       'mazeend_win': rot_90(raw_imgs['WinEnd']),
                        }
 
     @property

@@ -42,7 +42,7 @@ class Map(object):
                   (size[1] - 1) // 2 + buffer_size,
                   )
 
-        replacement = (['mazeend_right']
+        replacement = (['mazeend_win']
                        + ['horizontal_win'] * len(grid[0, center[0]: -1]))
 
         grid[center[1], center[0]:] = replacement
