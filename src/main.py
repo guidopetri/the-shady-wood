@@ -270,44 +270,13 @@ if __name__ == '__main__':
     game_map = Map()
     game_map.generate_map()
 
-    game_state = {'current_game_mode': config.Modes.MAIN_MENU,
-                  'active_message': 0,
-                  'hp': 100,
-                  'status': 'safe',
-                  'unsafe_frame_count': 0,
-                  'game_over': False,
-                  'action': 'standing',
-                  'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
-                  'direction': 'forward',
-                  'item': 'none',
-                  'position': config.initial_position,
-                  'effect': 'regular',
-                  'effect_alpha': 120,
-                  'effect_duration': 0,
-                  'effect_check_counter': 0,
-                  'effect_fade_in': False,
-                  'effect_fade_out': False,
-                  'moonlight_frame_count': 0,
-                  'can_use_item': True,
-                  'item_duration': 0,
-                  'map': game_map.map,
-                  'ai_map': game_map.ai_map,
-                  'win_map': game_map.win_map,
-                  'item_map': game_map.item_map,
-                  'msg_duration': config.msg_duration,
-                  'maze_begin': True,
-                  'first_item_end': {'candle': True,
-                                     'firefly': True,
-                                     'snail': True,
-                                     },
-                  'last_item_picked_up': None,
-                  'pickup': False,
-                  'first_item_pickup': {'candle': True,
-                                        'firefly': True,
-                                        'snail': True,
-                                        },
-                  'snail_position': (0, 0),
-                  }
+    map_state = {'map': game_map.map,
+                 'ai_map': game_map.ai_map,
+                 'win_map': game_map.win_map,
+                 'item_map': game_map.item_map,
+                 }
+    game_state = config.default_game_state.copy()
+    game_state.update(map_state)
 
     character = MainCharacter(surface)
     bg = Background(surface)

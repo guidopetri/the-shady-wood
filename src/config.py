@@ -4,6 +4,15 @@ from pathlib import Path
 from math import ceil
 
 
+class Modes(enum.Enum):
+
+    MAIN_MENU = 0
+    GAME = 1
+    INTRO = 2
+    GAME_OVER = 3
+    WIN_DIALOG = 4
+
+
 debug_mode = True
 
 screen_size = (1080, 720)
@@ -165,11 +174,37 @@ initial_position = tuple([int((x + 2 * map_buffer_size)
 msg_duration = framerate * 3
 pickup_item_sprite_size = 32
 
-
-class Modes(enum.Enum):
-
-    MAIN_MENU = 0
-    GAME = 1
-    INTRO = 2
-    GAME_OVER = 3
-    WIN_DIALOG = 4
+default_game_state = {'current_game_mode': Modes.GAME,
+                      'active_message': 0,
+                      'hp': 100,
+                      'status': 'safe',
+                      'unsafe_frame_count': 0,
+                      'game_over': False,
+                      'action': 'standing',
+                      'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
+                      'direction': 'forward',
+                      'item': 'none',
+                      'position': initial_position,
+                      'effect': 'regular',
+                      'effect_alpha': 120,
+                      'effect_duration': 0,
+                      'effect_check_counter': 0,
+                      'effect_fade_in': False,
+                      'effect_fade_out': False,
+                      'moonlight_frame_count': 0,
+                      'can_use_item': True,
+                      'item_duration': 0,
+                      'msg_duration': msg_duration,
+                      'maze_begin': True,
+                      'first_item_end': {'candle': True,
+                                         'firefly': True,
+                                         'snail': True,
+                                         },
+                      'last_item_picked_up': None,
+                      'pickup': False,
+                      'first_item_pickup': {'candle': True,
+                                            'firefly': True,
+                                            'snail': True,
+                                            },
+                      'snail_position': (0, 0),
+                      }
