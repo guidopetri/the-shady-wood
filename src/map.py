@@ -146,6 +146,29 @@ class Map(object):
 
         grid = np.full(buffered_grid.shape, '', dtype='U1')
         self.ai_map = self.flood_fill(xy[0], xy[1], grid, '')
+        self.generate_item_map(buffered_grid.shape)
+
+    def generate_item_map(self, shape):
+        grid = np.full(shape, ' ', dtype='U7')
+
+        objects = [' ', ' ', ' ', 'firefly' 'firefly', 'snail']
+        unique_objs = ['firefly', 'snail']
+
+        for y, row in enumerate(self.map):
+            for x, tile in enumerate(row):
+                if tile.startswith('deadend'):
+                    # pick one item at random
+                    item = random.sample(objects, 1)[0]
+                    grid[y][x] = item
+                elif tile == 'cross':
+                    # guarantee an item at a cross
+                    item = random.sample(unique_objs, 1)[0]
+                    grid[y][x] = item
+
+        # set center to no item
+        grid[grid.shape[0] // 2, grid.shape[1] // 2] = ' '
+
+        self.item_map = grid.tolist()
 
     def flood_fill(self, x, y, grid, ignore_direction):
         for direction in ['E', 'N', 'S', 'W']:
@@ -173,6 +196,15 @@ class Map(object):
                 print(f'{item} ', end="")
             print()
 
+    def pretty_print_item(self):
+        m = {'firefly': 'f', 'snail': 's', ' ': ' '}
+        for y, row in enumerate(self.map):
+            for x, item in enumerate(row):
+                print(self.characters[item] + m[self.item_map[y][x]],
+                      end="",
+                      )
+            print()
+
 
 if __name__ == '__main__':
     import time
@@ -185,3 +217,4 @@ if __name__ == '__main__':
     print('\n\n')
     m.pretty_print()
     # m.pretty_print_ai()
+    # m.pretty_print_item()

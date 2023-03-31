@@ -296,8 +296,8 @@ class Snail(object):
             player_h_adj = self.original_pos[0] % config.map_tile_size
             player_v_adj = self.original_pos[1] % config.map_tile_size
 
-            new_player_tile_h_adj = state['position'][0] // config.map_tile_size
-            new_player_tile_v_adj = state['position'][1] // config.map_tile_size
+            new_player_tile_h_adj = state['position'][0] // config.map_tile_size  # noqa
+            new_player_tile_v_adj = state['position'][1] // config.map_tile_size  # noqa
             new_player_h_adj = state['position'][0] % config.map_tile_size
             new_player_v_adj = state['position'][1] % config.map_tile_size
 

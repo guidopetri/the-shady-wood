@@ -271,6 +271,7 @@ if __name__ == '__main__':
                   'map': game_map.map,
                   'ai_map': game_map.ai_map,
                   'win_map': game_map.win_map,
+                  'item_map': game_map.item_map,
                   'msg_duration': config.msg_duration,
                   'maze_begin': True,
                   'first_item_end': {'candle': True,
