@@ -104,7 +104,8 @@ first_item_messages = {'firefly': 'A firefly! That will help light my way! I can
                        'snail': 'A glowing snail! It should help me, but they have a mind of their own...',  # noqa
                        }
 
-first_item_end_messages = 'snail': 'Whoa, that\'s a fast snail! At least it showed me the way out.'
+first_item_end_messages = {'snail': 'Whoa, that\'s a fast snail! At least it showed me the way out.',  # noqa
+                           }
 
 default_map_size = (11, 11)
 map_tile_size = 384
