@@ -305,8 +305,6 @@ class Snail(object):
 
             tile_diff_h = new_player_tile_h_adj - player_tile_h_adj
             tile_diff_v = new_player_tile_v_adj - player_tile_v_adj
-            adj_diff_h = new_player_h_adj - player_h_adj
-            adj_diff_v = new_player_v_adj - player_v_adj
 
             h_adjustment = state['snail_position'][0] % config.map_tile_size
             v_adjustment = state['snail_position'][1] % config.map_tile_size
@@ -318,22 +316,20 @@ class Snail(object):
                            * (tile_h_adj
                               - player_tile_h_adj
                               - tile_diff_h
-                              + 0.5
-                              - 0.5)
+                              + 0.5)
                            + config.screen_center[0]
                            + h_adjustment
                            - player_h_adj
-                           - adj_diff_h,
+                           - new_player_h_adj,
                            config.map_tile_size
                            * (tile_v_adj
                               - player_tile_v_adj
                               - tile_diff_v
-                              + 0.5
-                              - 0.5)
+                              + 0.5)
                            + config.screen_center[1]
                            + v_adjustment
                            - player_v_adj
-                           - adj_diff_v,
+                           - new_player_v_adj,
                            )
             if config.debug_mode:
                 pass
