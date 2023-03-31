@@ -68,6 +68,7 @@ def handle_events(state):
 
         if state['status'] == 'win':
             state['current_game_mode'] = config.Modes.WIN_DIALOG
+            state['map'] = state['win_map']
 
         if state['status'] == 'unsafe':
             # lose 1hp every 3 frames ~ 20hp per s ~ 5s in unsafe zone
@@ -213,6 +214,9 @@ if __name__ == '__main__':
 
     surface = pygame.display.set_mode(config.screen_size)
 
+    game_map = Map()
+    game_map.generate_map()
+
     game_state = {'current_game_mode': config.Modes.MAIN_MENU,
                   'active_message': 0,
                   'hp': 100,
@@ -236,6 +240,8 @@ if __name__ == '__main__':
                   'moonlight_frame_count': 0,
                   'can_use_item': True,
                   'item_duration': 0,
+                  'map': game_map.map,
+                  'win_map': game_map.win_map,
                   }
 
     character = MainCharacter(surface)
@@ -249,10 +255,6 @@ if __name__ == '__main__':
     light_fx = LightStatusEffects(surface)
 
     audio = Audio()
-
-    game_map = Map()
-    game_map.generate_map()
-    game_state['map'] = game_map.map
 
     if config.debug_mode:
         game_map.pretty_print()

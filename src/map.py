@@ -27,6 +27,26 @@ class Map(object):
                            'mazeend_down': 'x',
                            }
 
+        self.generate_win_map()
+
+    def generate_win_map(self, size=config.default_map_size):
+        buffer_size = config.map_buffer_size
+
+        grid = np.full((size[0] + 2 * buffer_size,
+                        size[1] + 2 * buffer_size),
+                       'blank',  # buffer with blanks
+                       dtype="U20",
+                       )
+
+        center = ((size[0] - 1) // 2 + buffer_size - 1,
+                  (size[1] - 1) // 2 + buffer_size,
+                  )
+        grid[center[1], center[0]: center[0] + 3] = ['mazeend_right',
+                                                     'horizontal_win',
+                                                     'mazeend_left',
+                                                     ]
+        self.win_map = grid
+
     def generate_map(self, size=config.default_map_size):
 
         final_side = random.sample(['N', 'S', 'E', 'W'], 1)[0]

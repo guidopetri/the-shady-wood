@@ -141,7 +141,7 @@ lightning_freq = 0.3
 lightning_text = 'Oh no! It\'s starting to rain...'
 lightning_text_end = 'Phew. I\'m glad that’s over.'
 
-effect_rate = 1 * framerate
+effect_rate = 5 * framerate
 
 music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100

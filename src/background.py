@@ -26,6 +26,7 @@ class AbstractBG(ABC):
                       'Straight',
                       'T',
                       'MazeEnd',
+                      # 'Win',
                       ]
 
         for tile in tile_names:
@@ -57,6 +58,8 @@ class AbstractBG(ABC):
                        'mazeend_right': rot_90(raw_imgs['MazeEnd']),
                        'mazeend_up': rot_180(raw_imgs['MazeEnd']),
                        'mazeend_down': raw_imgs['MazeEnd'],
+                       # todo: change for win piece
+                       'horizontal_win': rot_90(raw_imgs['Straight']),
                        }
 
     @property
@@ -75,8 +78,8 @@ class AbstractBG(ABC):
 
         fns[mode](state)
 
-    def render_win_dialog(self, *args):
-        pass
+    def render_win_dialog(self, state):
+        self.render_game(state)
 
     def render_game_over(self, *args):
         pass
