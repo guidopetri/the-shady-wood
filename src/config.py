@@ -147,6 +147,10 @@ music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100
 music_death_fadeout_time_ms = 100
 
+initial_position = tuple([int((x + 2 * map_buffer_size)
+                              / 2 * map_tile_size)
+                          for x in default_map_size])
+
 
 class Modes(enum.Enum):
 

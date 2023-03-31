@@ -69,6 +69,10 @@ def handle_events(state):
         if state['status'] == 'win':
             state['current_game_mode'] = config.Modes.WIN_DIALOG
             state['map'] = state['win_map']
+            state['item'] = 'waving'
+            state['action'] = 'waving'
+            state['direction'] = 'forward'
+            state['position'] = config.initial_position
 
         if state['status'] == 'unsafe':
             # lose 1hp every 3 frames ~ 20hp per s ~ 5s in unsafe zone
@@ -162,7 +166,7 @@ def handle_events(state):
             state['item_duration'] -= 1
 
         reset_item = (state['item_duration'] <= 0
-                      and state['item'] not in ('none', 'dead'))
+                      and state['item'] not in ('none', 'dead', 'waving'))
         if reset_item:
             state['item'] = 'none'
             state['can_use_item'] = True
@@ -227,11 +231,7 @@ if __name__ == '__main__':
                   'inventory': {'candle': 5, 'firefly': 1, 'snail': 3},
                   'direction': 'forward',
                   'item': 'none',
-                  'position': tuple([int((x + 2 * config.map_buffer_size)
-                                         / 2
-                                         * config.map_tile_size
-                                         )
-                                     for x in config.default_map_size]),
+                  'position': config.initial_position,
                   'effect': 'regular',
                   'effect_alpha': 120,
                   'effect_duration': 0,

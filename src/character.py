@@ -14,6 +14,7 @@ class MainCharacter(object):
                                'candle': 4,
                                'snail': 4,
                                'dead': 3,
+                               'waving': 4,
                                }
 
         self.fps_map = {'none': 4,
@@ -22,6 +23,7 @@ class MainCharacter(object):
                         'candle': 4,
                         'snail': 4,
                         'dead': 1,
+                        'waving': 4,
                         }
 
         self._frames_per_sprite_map = {k: config.framerate // v
@@ -31,9 +33,13 @@ class MainCharacter(object):
         self.frame_counter = 0
         self.spritesheets = {}
 
-        for action in ['walking', 'firefly', 'candle']:
+        for action in ['walking', 'firefly', 'candle', 'waving']:
             self.spritesheets[action] = {}
             for direction in ['back', 'forward', 'left', 'right']:
+                # todo: load waving animations
+                if action == 'waving':  # and direction != 'forward':
+                    # we only have forward waving
+                    continue
                 file = f'anne_spritesheet_{action}_{direction}_2x2_128px.png'
                 sprites = self.load_spritesheet(file,
                                                 self.num_frames_map[action])
@@ -41,6 +47,8 @@ class MainCharacter(object):
 
         self.spritesheets['none'] = self.spritesheets['walking']
         self.spritesheets['snail'] = self.spritesheets['walking']
+        # todo: remove
+        self.spritesheets['waving'] = self.spritesheets['firefly']
         # load dead sprite
         file = 'anne_spritesheet_gameover_2x2_3frames_128px.png'
         self.spritesheets['dead'] = {'forward': self.load_spritesheet(file,
@@ -100,7 +108,7 @@ class MainCharacter(object):
         self.frame_counter += 1
         if self.current_action == 'standing':
             frames_per_sprite = 2 * self._frames_per_sprite
-        elif self.current_action in ('walking', 'dead'):
+        elif self.current_action in ('walking', 'dead', 'waving'):
             frames_per_sprite = self._frames_per_sprite
         if self.frame_counter >= frames_per_sprite:
             self.current_frame += amount
@@ -112,7 +120,7 @@ class MainCharacter(object):
             self.current_frame = min(self.num_frames - 1, self.current_frame)
 
     def next_animation_frame(self):
-        if self.current_action == 'walking':
+        if self.current_action in ('walking', 'waving'):
             self.advance_frame(1, loop=True)
         elif self.current_action == 'standing':
             self.advance_frame(2, loop=True)
@@ -135,7 +143,12 @@ class MainCharacter(object):
     def render(self, state):
         mode = state['current_game_mode']
 
-        if mode not in (config.Modes.GAME, config.Modes.GAME_OVER):
+        valid_modes = (config.Modes.GAME,
+                       config.Modes.GAME_OVER,
+                       config.Modes.WIN_DIALOG,
+                       )
+
+        if mode not in valid_modes:
             return
 
         self.current_sprites = (self.spritesheets.get(state['item'])
