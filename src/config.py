@@ -93,12 +93,13 @@ firefly_flash_frames_freq = framerate * firefly_duration_in_s
 
 item_end_messages = {'candle': 'Oh... It\'s all used up...',
                      'firefly': 'Oh... It flew away...',
-                     'snail': 'The snail crawled away...',
                      }
 
 first_item_messages = {'firefly': 'A firefly! That will help light my way! I can keep it in my jar.',  # noqa
                        'snail': 'A glowing snail! It should help me, but they have a mind of their own...',  # noqa
                        }
+
+first_item_end_messages = 'snail': 'Whoa, that\'s a fast snail! At least it showed me the way out.'
 
 default_map_size = (11, 11)
 map_tile_size = 384
