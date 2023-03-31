@@ -76,16 +76,20 @@ keys = {'firefly': 'f',
         'snail': 's',
         }
 
+firefly_duration_in_s = 2.75
+firefly_flashes = 5
+firefly_flash_frames = framerate // 2
 item_durations = {'candle': 15 * framerate,
-                  'firefly': 15 * framerate,
+                  'firefly': int((firefly_duration_in_s * firefly_flashes
+                                  + firefly_flash_frames / framerate)
+                                 * framerate),
                   'snail': 30 * framerate,
                   }
 item_variances = {'candle': 13000,
                   'firefly': 9600,
                   'snail': 4800,
                   }
-firefly_flash_frames_freq = 90
-firefly_flash_frames = 4
+firefly_flash_frames_freq = framerate * firefly_duration_in_s
 
 item_end_messages = {'candle': 'Oh... It\'s all used up...',
                      'firefly': 'Oh... It flew away...',
