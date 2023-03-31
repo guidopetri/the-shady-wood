@@ -188,3 +188,96 @@ class MainCharacter(object):
         self.next_animation_frame(state)
 
         self.surface.blit(self.sprite, self.coords)
+
+
+class Snail(object):
+    def __init__(self, surface):
+        self.surface = surface
+        self.path = None
+        self.path_done = False
+
+        self.num_frames = 2
+        self.fps = 2
+        self._frames_per_sprite = config.framerate // self.fps
+
+        self.frame_counter = 0
+        self.spritesheets = {}
+
+        for direction in ['down', 'up', 'left', 'right']:
+            file = f'Snail_spritesheet_{direction}_2x1_32px.png'
+            sprites = self.load_spritesheet(file,
+                                            self.num_frames)
+            self.spritesheets[direction] = sprites
+
+        # start by default facing down
+        self.current_sprites = self.spritesheets['down']
+        self.current_frame = 0
+
+        _, _, self._size_x, self._size_y = self.sprite.get_rect()
+
+        self.coords = (config.screen_size[0] // 2 - self._size_x // 2 + 64,
+                       config.screen_size[1] // 2 - self._size_y // 2 + 64,
+                       )
+
+    def load_spritesheet(self, file, num_frames):
+        path = config.gfx_path / file
+        sheet = pygame.image.load(path).convert_alpha()
+
+        sprites = []
+        width = 32
+        height = 32
+
+        coords = [(0, 0),
+                  (width, 0),
+                  (0, height),
+                  (width, height),
+                  ]
+
+        for idx in range(num_frames):
+            sprite_area = pygame.Rect(*coords[idx], width, height)
+            sprites.append(sheet.subsurface(sprite_area))
+        return sprites
+
+    @property
+    def sprite(self):
+        return self.current_sprites[self.current_frame]
+
+    @property
+    def size(self):
+        return (self._size_x, self._size_y)
+
+    def next_animation_frame(self, state):
+        self.frame_counter += 1
+        if self.frame_counter >= self._frames_per_sprite:
+            self.current_frame += 1
+            self.frame_counter = 0
+
+        self.current_frame %= self.num_frames
+
+    def flood_fill_path(self, state):
+        pass
+
+    @property
+    def current_direction(self):
+        # todo: use path
+        return 'right'
+
+    def update_coords(self, state):
+        # self.coords = self.coords + path
+        if self.path_done:
+            self.path = None
+
+    def render(self, state):
+        mode = state['current_game_mode']
+
+        if mode != config.Modes.GAME:
+            return
+
+        self.current_sprites = self.spritesheets.get(self.current_direction)
+
+        if self.path is None:
+            self.flood_fill_path(state)
+        self.update_coords(state)
+        self.next_animation_frame(state)
+
+        self.surface.blit(self.sprite, self.coords)

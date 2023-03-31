@@ -12,6 +12,7 @@ screen_center = tuple(x // 2 for x in screen_size)
 framerate = 60
 
 character_speed = 2
+snail_speed = 8
 
 fontname = 'Copperplate Gothic'
 fontsize = 24

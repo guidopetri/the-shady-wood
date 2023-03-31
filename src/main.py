@@ -6,6 +6,7 @@ import sys
 import random
 
 from character import MainCharacter
+from character import Snail
 from background import Background
 from background import Foreground
 from background import Boundaries
@@ -289,6 +290,7 @@ if __name__ == '__main__':
     gui = Gui(surface)
     boundaries = Boundaries(surface)
     light_fx = LightStatusEffects(surface)
+    snail = Snail(surface)
 
     audio = Audio()
 
@@ -306,6 +308,8 @@ if __name__ == '__main__':
         fg.render(game_state)
 
         shadows.render(game_state)
+        # place snail above shadows
+        snail.render(game_state)
         light_fx.render(game_state)
         gui.render(game_state)
         dialog.render(game_state)
