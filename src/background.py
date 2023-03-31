@@ -182,8 +182,19 @@ class Background(AbstractBG):
         stone_text = self.font.render(text[1], True, self.font_color)
         stone_rect = stone_text.get_rect(**coords)
 
+        coords = {'center': (config.screen_center[0],
+                             config.screen_center[1] + 192,
+                             )
+                  }
+        restart_text = self.font.render(config.restart_text,
+                                        True,
+                                        self.font_color,
+                                        )
+        restart_rect = restart_text.get_rect(**coords)
+
         self.surface.blit(game_over_text, game_over_rect)
         self.surface.blit(stone_text, stone_rect)
+        self.surface.blit(restart_text, restart_rect)
 
     def render_intro_dialog(self, *args):
         self.surface.fill('black')

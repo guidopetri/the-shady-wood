@@ -245,14 +245,16 @@ def handle_events(state):
             if keys[pygame.K_l]:
                 state['effect_alpha'] -= 1
     elif mode == config.Modes.GAME_OVER:
-        pass
+        if any_key:
+            state['current_game_mode'] = config.Modes.MAIN_MENU
+            # revert to default state
+            state = config.default_game_state.copy()
     elif mode == config.Modes.WIN_DIALOG:
         if any_key:
             state['active_message'] += 1
             if state['active_message'] >= len(config.game_win_text):
                 state['current_game_mode'] = config.Modes.MAIN_MENU
                 # revert to default state
-                # return default_state
                 state = config.default_game_state.copy()
 
     return state

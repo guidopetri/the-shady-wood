@@ -209,3 +209,6 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'snail_position': (0, 0),
                       'generate_map': True,
                       }
+
+restart_text = 'Press any key to restart'
+advance_text = 'Press any key'
