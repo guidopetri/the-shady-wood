@@ -268,6 +268,10 @@ if __name__ == '__main__':
                   'win_map': game_map.win_map,
                   'msg_duration': config.msg_duration,
                   'maze_begin': True,
+                  'first_item_end': {'candle': True,
+                                     'firefly': True,
+                                     'snail': True,
+                                     }
                   }
 
     character = MainCharacter(surface)

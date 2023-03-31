@@ -84,6 +84,10 @@ class Dialog(object):
             elif state['item'].endswith('_out'):
                 item = state['item'][:-4]
                 text = config.item_end_messages.get(item)
+                if state['first_item_end'][item]:
+                    # default to text itself
+                    text = config.first_item_end_messages.get(item, text)
+
                 if text is not None:
                     state['msg_duration'] = config.msg_duration
         elif mode == config.Modes.WIN_DIALOG:

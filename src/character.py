@@ -141,6 +141,9 @@ class MainCharacter(object):
             if self.current_frame == self.num_frames - 1 and self.current_action == 'item_out':  # noqa
                 state['item'] = 'none'
                 state['action'] = 'standing'
+                # remove _out
+                item = self.current_item[:-4]
+                state['first_item_end'][item] = False
 
     def next_animation_frame(self, state):
         if self.current_action in ('walking', 'waving'):
