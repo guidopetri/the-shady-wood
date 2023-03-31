@@ -80,6 +80,7 @@ def handle_events(state):
             state['game_over'] = True
             state['direction'] = 'forward'
             state['action'] = 'dead'
+            state['item'] = 'dead'
 
         if state['game_over']:
             state['current_game_mode'] = config.Modes.GAME_OVER
@@ -159,7 +160,9 @@ def handle_events(state):
         elif state['item'] != 'none':
             state['item_duration'] -= 1
 
-        if state['item_duration'] <= 0 and state['item'] != 'none':
+        reset_item = (state['item_duration'] <= 0
+                      and state['item'] not in ('none', 'dead'))
+        if reset_item:
             state['item'] = 'none'
             state['can_use_item'] = True
             state['item_duration'] = 0

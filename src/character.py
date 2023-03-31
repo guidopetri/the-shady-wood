@@ -100,7 +100,7 @@ class MainCharacter(object):
         self.frame_counter += 1
         if self.current_action == 'standing':
             frames_per_sprite = 2 * self._frames_per_sprite
-        elif self.current_action == 'walking':
+        elif self.current_action in ('walking', 'dead'):
             frames_per_sprite = self._frames_per_sprite
         if self.frame_counter >= frames_per_sprite:
             self.current_frame += amount
