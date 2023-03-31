@@ -67,8 +67,6 @@ class MainCharacter(object):
         self.spritesheets['none'] = self.spritesheets['walking']
         self.spritesheets['snail'] = self.spritesheets['walking']
         self.spritesheets['snail_out'] = self.spritesheets['walking']
-        # todo: remove
-        self.spritesheets['waving'] = self.spritesheets['firefly']
         # load dead sprite
         file = 'anne_spritesheet_gameover_2x2_3frames_128px.png'
         self.spritesheets['dead'] = {'forward': self.load_spritesheet(file,
