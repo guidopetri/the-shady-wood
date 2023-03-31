@@ -58,6 +58,8 @@ def handle_events(state):
                 state['current_game_mode'] = config.Modes.GAME
                 state['active_message'] = 0
     elif mode == config.Modes.GAME:
+        if state['item'].endswith('_out'):
+            return state
         state['action'] = 'standing'
         for key, actions in keys_map.items():
             if keys[key]:
@@ -168,11 +170,11 @@ def handle_events(state):
         reset_item = (state['item_duration'] <= 0
                       and state['item'] not in ('none', 'dead', 'waving'))
         if reset_item:
-            state['item'] = 'none'
+            state['item'] = f'{state["item"]}_out'
+            state['action'] = 'item_out'
+            state['direction'] = 'forward'
             state['can_use_item'] = True
             state['item_duration'] = 0
-
-        # if state['item_out']
 
         if config.debug_mode:
             if keys[pygame.K_a]:

@@ -15,6 +15,8 @@ class MainCharacter(object):
                                'snail': 4,
                                'dead': 3,
                                'waving': 4,
+                               'firefly_out': 4,
+                               'candle_out': 4,
                                }
 
         self.fps_map = {'none': 4,
@@ -24,6 +26,8 @@ class MainCharacter(object):
                         'snail': 4,
                         'dead': 1,
                         'waving': 4,
+                        'firefly_out': 4,
+                        'candle_out': 4,
                         }
 
         self._frames_per_sprite_map = {k: config.framerate // v
@@ -33,12 +37,25 @@ class MainCharacter(object):
         self.frame_counter = 0
         self.spritesheets = {}
 
-        for action in ['walking', 'firefly', 'candle', 'waving']:
+        actions = ['walking',
+                   'firefly',
+                   'candle',
+                   'waving',
+                   'firefly_out',
+                   'candle_out',
+                   ]
+
+        forward_only = ['waving',
+                        'firefly_out',
+                        'candle_out',
+                        ]
+
+        for action in actions:
             self.spritesheets[action] = {}
             for direction in ['back', 'forward', 'left', 'right']:
                 # todo: load waving animations
-                if action == 'waving':  # and direction != 'forward':
-                    # we only have forward waving
+                if action in forward_only and direction != 'forward':
+                    # we only have forward waving/firefly out/candle out
                     continue
                 file = f'anne_spritesheet_{action}_{direction}_2x2_128px.png'
                 sprites = self.load_spritesheet(file,
@@ -104,11 +121,11 @@ class MainCharacter(object):
     def size(self):
         return (self._size_x, self._size_y)
 
-    def advance_frame(self, amount=1, loop=True):
+    def advance_frame(self, state, amount=1, loop=True):
         self.frame_counter += 1
         if self.current_action == 'standing':
             frames_per_sprite = 2 * self._frames_per_sprite
-        elif self.current_action in ('walking', 'dead', 'waving'):
+        elif self.current_action in ('walking', 'dead', 'waving', 'item_out'):
             frames_per_sprite = self._frames_per_sprite
         if self.frame_counter >= frames_per_sprite:
             self.current_frame += amount
@@ -118,14 +135,17 @@ class MainCharacter(object):
             self.current_frame %= self.num_frames
         else:
             self.current_frame = min(self.num_frames - 1, self.current_frame)
+            if self.current_frame == self.num_frames - 1 and self.current_action == 'item_out':  # noqa
+                state['item'] = 'none'
+                state['action'] = 'standing'
 
-    def next_animation_frame(self):
+    def next_animation_frame(self, state):
         if self.current_action in ('walking', 'waving'):
-            self.advance_frame(1, loop=True)
+            self.advance_frame(state, 1, loop=True)
         elif self.current_action == 'standing':
-            self.advance_frame(2, loop=True)
-        elif self.current_action == 'dead':
-            self.advance_frame(1, loop=False)
+            self.advance_frame(state, 2, loop=True)
+        elif self.current_action in ('dead', 'item_out'):
+            self.advance_frame(state, 1, loop=False)
         else:
             self.current_frame = 0
             self.frame_counter = 0
@@ -157,6 +177,6 @@ class MainCharacter(object):
 
         self.update_item(state['item'])
         self.update_action(state['action'])
-        self.next_animation_frame()
+        self.next_animation_frame(state)
 
         self.surface.blit(self.sprite, self.coords)
