@@ -104,6 +104,9 @@ class Objects(object):
             self._frame_counter = 0
 
     def render(self, state):
+        if state['current_game_mode'] != config.Modes.GAME:
+            return
+
         # use state to render objects
         for y, row in enumerate(state['item_map']):
             for x, item in enumerate(row):
