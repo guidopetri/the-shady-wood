@@ -140,6 +140,8 @@ lightning_fade_in_f = lightning_fade_in_s * framerate
 lightning_freq = 0.3
 lightning_text = 'Oh no! It\'s starting to rain...'
 lightning_text_end = 'Phew. I\'m glad that’s over.'
+lightning_rain_fps = 8
+lightning_rain_alpha = 80
 
 effect_rate = 5 * framerate
 

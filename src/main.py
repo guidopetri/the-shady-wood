@@ -152,8 +152,13 @@ def handle_events(state):
             state['effect_alpha'] += config.lightning_drop_rate
             state['effect_alpha'] = min(state['effect_alpha'], 255)
 
+            if state['effect_duration'] <= config.lightning_fade_in_f:
+                state['effect_fade_out'] = True
+
         if state['effect'] != 'regular' and state['effect_duration'] <= 0:
             state['effect'] = 'regular'
+            state['effect_fade_in'] = False
+            state['effect_fade_out'] = False
             state['can_use_item'] = True
 
         if state['can_use_item']:
@@ -239,6 +244,7 @@ if __name__ == '__main__':
                   'effect_duration': 0,
                   'effect_check_counter': 0,
                   'effect_fade_in': False,
+                  'effect_fade_out': False,
                   'moonlight_frame_count': 0,
                   'can_use_item': True,
                   'item_duration': 0,

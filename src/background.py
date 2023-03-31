@@ -411,7 +411,8 @@ class Shadows(object):
 
             if (state['effect'] == 'regular' or
                 (state['effect'] == 'lightning'
-                    and state['effect_fade_in'])):
+                    and (state['effect_fade_in']
+                         or state['effect_fade_out']))):
                 self.surface.blit(self.shadows, (0, 0))
 
 
@@ -431,14 +432,21 @@ class LightStatusEffects(Shadows):
                                                      384,
                                                      )
 
-        rain_num_frames = 4
+        self.rain_num_frames = 4
         filename = 'Lightning_Rain_Spritesheet_2x2_128px.png'
 
-        self.rain_tiles = self.load_spritesheet(rain_num_frames,
+        self.rain_tiles = self.load_spritesheet(self.rain_num_frames,
                                                 filename,
                                                 128,
                                                 128,
                                                 )
+
+        self.rain_fps = config.lightning_rain_fps
+        self._rain_frames_per_sprite = config.framerate / self.rain_fps
+        self.current_rain_frame = 0
+        self.rain_frame_counter = 0
+
+        self.calc_num_tiles_in_screen()
 
         super().__init__(surface,
                          area=self.initial_area,
@@ -470,12 +478,15 @@ class LightStatusEffects(Shadows):
         self.area = self.initial_area
         self.variance = self.initial_variance
         self.effect_is_fading_in = False
+        self.effect_is_fading_out = False
         self.current_frame = 0
         self.moonlight_alpha = 0
         self.moonlight_up = True
+        self.current_rain_frame = 0
+        self.rain_frame_counter = 0
 
     def render_filter(self, color, alpha):
-        if self.effect_is_fading_in:
+        if self.effect_is_fading_in or self.effect_is_fading_out:
             self.filt = self.render_shadows(color, ceil(alpha))
         else:
             self.filt.set_alpha(alpha)
@@ -543,8 +554,91 @@ class LightStatusEffects(Shadows):
 
         self.surface.blit(self.shadows, (0, 0))
 
+    def calc_num_tiles_in_screen(self):
+        self.h_tiles = ceil(config.screen_size[0]
+                            / (2 * 128)
+                            )
+        self.v_tiles = ceil(config.screen_size[1]
+                            / (2 * 128)
+                            )
+
+    def render_rain(self, state, alpha):
+        for y in range(-self.v_tiles, self.v_tiles + 1):
+            for x in range(-self.h_tiles, self.h_tiles + 1):
+                h_adjustment = state['position'][0] % 128
+                v_adjustment = state['position'][1] % 128
+
+                pos = (int(128 * (x + 0.5)
+                           + config.screen_center[0]
+                           - h_adjustment),
+                       int(128 * (y + 0.5)
+                           + config.screen_center[1]
+                           - v_adjustment),
+                       )
+                if config.debug_mode and (x, y) == (0, 0):
+                    # where center tile will be plotted
+                    # print(pos)
+                    pygame.draw.rect(self.surface,
+                                     'magenta',
+                                     pygame.Rect(*pos, 5, 5)
+                                     )
+
+                    # h/v adjustment for player position
+                    # also location within current tile
+                    # print(h_adjustment, v_adjustment)
+                    pygame.draw.rect(self.surface,
+                                     'green',
+                                     pygame.Rect(h_adjustment,
+                                                 v_adjustment,
+                                                 3,
+                                                 3,
+                                                 ))
+
+                rect = self.current_rain_tile.get_rect(center=pos)
+                self.current_rain_tile.set_alpha(alpha)
+                self.surface.blit(self.current_rain_tile, rect)
+
+    @property
+    def current_rain_tile(self):
+        return self.rain_tiles[self.current_rain_frame]
+
     def render_lightning(self, state):
-        self.render_filter(config.lightning_color, state['effect_alpha'])
+        if self.effect_is_fading_out:
+            if self.fade_in_frame % (config.lightning_fade_in_s) == 0:
+                self.area = min(self.area + 1, self.initial_area)
+
+            fade = config.lightning_fade_in_f
+            self.variance += (self.initial_variance
+                              - self.final_variance) / fade
+
+            shadow_alpha = (state['effect_alpha']
+                            - config.moonlight_fade_in_f
+                            + self.fade_in_frame)
+        else:
+            shadow_alpha = state['effect_alpha']
+
+        self.render_filter(config.lightning_color, shadow_alpha)
+
+        self.rain_frame_counter += 1
+        if self.rain_frame_counter >= self._rain_frames_per_sprite:
+            self.current_rain_frame += 1
+            self.rain_frame_counter = 0
+
+        self.current_rain_frame %= self.rain_num_frames
+
+        if self.effect_is_fading_out:
+            self.fade_in_frame -= 1
+            self.fade_in_frame = max(0, self.fade_in_frame)
+
+        # alt: looked pretty good - coming on once fadein is over
+        # alpha = (config.lightning_rain_alpha
+        #          * int(self.fade_in_frame / config.lightning_fade_in_f))
+
+        alpha = int(config.lightning_rain_alpha
+                    * self.fade_in_frame
+                    / config.lightning_fade_in_f)
+
+        self.render_rain(state, alpha)
 
     def render(self, state):
         mode = state['current_game_mode']
@@ -574,6 +668,8 @@ class LightStatusEffects(Shadows):
                     fade = config.lightning_fade_in_f
                     self.variance -= (self.initial_variance
                                       - self.final_variance) / fade
+            elif state['effect_fade_out']:
+                self.effect_is_fading_out = True
 
             if state['effect'] in colors_map:
                 colors_map[state['effect']](state)
