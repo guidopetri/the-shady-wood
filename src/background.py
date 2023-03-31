@@ -303,7 +303,9 @@ class Shadows(object):
         self.surface = surface
         self.area = area
         self.variance = variance
+        self.default_variance = variance
         self.shadows = None
+        self._item = 'none'
 
     @property
     def area(self):
@@ -358,13 +360,23 @@ class Shadows(object):
 
         return shadow
 
+    def update_item(self, item):
+        if self._item == item:
+            return
+        elif item == 'none':
+            self.variance = self.default_variance
+        elif item in ('candle', 'firefly'):
+            self.variance = config.item_variances[item]
+        self._item = item
+
     def render(self, state):
         mode = state['current_game_mode']
 
-        if self.redo_render or self.shadows is None:
-            self.shadows = self.render_shadows('black', 255)
-
         if mode == config.Modes.GAME:
+            self.update_item(state['item'])
+            if self.redo_render or self.shadows is None:
+                self.shadows = self.render_shadows('black', 255)
+
             if (state['effect'] == 'regular' or
                 (state['effect'] == 'lightning'
                     and state['effect_fade_in'])):
