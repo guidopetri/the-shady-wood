@@ -52,10 +52,18 @@ root = main_dir / '..'
 gfx_path = root / 'assets' / 'gfx'
 sfx_path = root / 'assets' / 'fx'
 
-intro_messages = ['lorem ipsum',
-                  'dolor sit amet',
-                  'Oh no! I\'m lost in the woods...',
+intro_messages = ['All I wanted was a nice picnic at my favorite spot.',
+                  'Unfortunately for me, I wasn\'t the only one using it today.',  # noqa
+                  'When I arrived at the spot and sat down, something poked at me!',  # noqa
+                  'I had sat on a tiny angry fairy!',
+                  'It was so upset it cast a spell on me and...',
+                  'it transported me to the middle of the Shaded Woods!',
+                  'The Shaded Woods are cursed.',
+                  'Anyone who shows fear gets turned to stone and lost forever.',  # noqa
+                  'I need to keep courage and find my way out!',
                   ]
+
+maze_begin_message = 'It\'s a good thing I packed some candles. But I don\'t think they\'ll be enough...'  # noqa
 
 items = ['firefly', 'candle', 'snail']
 keys = {'firefly': 'f',
@@ -68,10 +76,14 @@ item_durations = {'candle': 15 * framerate,
                   'snail': 30 * framerate,
                   }
 
-item_end_messages = {'candle': 'Oh no... my candle is out.',
-                     'firefly': 'Oh no... the firefly flew away!',
-                     'snail': 'Oh no... the snail went into the woods.',
+item_end_messages = {'candle': 'Oh... It\'s all used up...',
+                     'firefly': 'Oh... It flew away...',
+                     'snail': 'The snail crawled away...',
                      }
+
+first_item_messages = {'firefly': 'A firefly! That will help light my way! I can keep it in my jar.',  # noqa
+                       'snail': 'A glowing snail! It should help me, but they have a mind of their own...',  # noqa
+                       }
 
 default_map_size = (11, 11)
 map_tile_size = 384
@@ -82,9 +94,14 @@ boundary_unsafe_zone_color = '#0000ff'
 boundary_dead_zone_color = '#ff0000'
 boundary_win_zone_color = '#fff000'
 
+game_win_text = ['I found a road! I can make it home safely now.',
+                 'Thank you for your help!',
+                 ]
+
 game_over_text = ['GAME OVER',
                   'Anne became too afraid. She turned to stone...',
                   ]
+
 game_over_fontname = 'Copperplate Gothic'
 game_over_fontsize = 20
 game_over_font_color = 'white'
@@ -95,7 +112,8 @@ moonlight_duration = 15 * framerate
 moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
 moonlight_fade_in_s = 3
 moonlight_fade_in_f = moonlight_fade_in_s * framerate
-moonlight_text = 'What a terrible night for a curse...'
+moonlight_text = 'The Moon came out. Now I can see my way!'
+moonlight_text_end = 'Aw, it\'s cloudy again. It was nice while it lasted...'
 
 lightning_color = 'black'
 lightning_default_alpha = 120
@@ -105,7 +123,8 @@ lightning_drop_rate = (255 - lightning_default_alpha) // lightning_frame_count
 lightning_fade_in_s = 2
 lightning_fade_in_f = lightning_fade_in_s * framerate
 lightning_freq = 0.3
-lightning_text = 'Jeepers! It\'s raining, Batman!'
+lightning_text = 'Oh no! It\'s starting to rain...'
+lightning_text_end = 'Phew. I\'m glad that’s over.'
 
 effect_rate = 1 * framerate
 
