@@ -304,6 +304,23 @@ class Shadows(object):
         self.area = area
         self.variance = variance
         self.shadows = None
+
+    @property
+    def area(self):
+        return self._area
+
+    @area.setter
+    def area(self, area):
+        self._area = area
+        self.redo_render = True
+
+    @property
+    def variance(self):
+        return self._variance
+
+    @variance.setter
+    def variance(self, variance):
+        self._variance = variance
         self.redo_render = True
 
     def render_shadows(self, color, default_alpha):
@@ -510,7 +527,6 @@ class LightStatusEffects(Shadows):
                     if self.fade_in_frame % (config.lightning_fade_in_s) == 0:
                         self.area = max(self.area - 1, self.final_area)
 
-                    self.redo_render = True
                     fade = config.lightning_fade_in_f
                     self.variance -= (self.initial_variance
                                       - self.final_variance) / fade
