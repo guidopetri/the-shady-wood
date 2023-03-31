@@ -41,10 +41,11 @@ class Map(object):
         center = ((size[0] - 1) // 2 + buffer_size - 1,
                   (size[1] - 1) // 2 + buffer_size,
                   )
-        grid[center[1], center[0]: center[0] + 3] = ['mazeend_right',
-                                                     'horizontal_win',
-                                                     'mazeend_left',
-                                                     ]
+
+        replacement = (['mazeend_right']
+                       + ['horizontal_win'] * len(grid[0, center[0]: -1]))
+
+        grid[center[1], center[0]:] = replacement
         self.win_map = grid
 
     def generate_map(self, size=config.default_map_size):
