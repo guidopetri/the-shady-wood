@@ -380,8 +380,10 @@ class Shadows(object):
             return
         elif item == 'none':
             self.variance = self.default_variance
-        elif item in ('candle'):
+        elif item == 'candle':
             self.variance = config.item_variances[item]
+        elif item == 'firefly':
+            self.variance = config.firefly_default_variance
         self._item = item
 
     def advance_frame(self):
@@ -396,7 +398,7 @@ class Shadows(object):
                 self.num_flash_frames -= 1
                 if self.num_flash_frames <= 0:
                     self.num_flash_frames = 0
-                    self.variance = self.default_variance
+                    self.variance = config.firefly_default_variance
 
     def render(self, state):
         mode = state['current_game_mode']

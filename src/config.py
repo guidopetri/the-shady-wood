@@ -89,6 +89,7 @@ item_variances = {'candle': 13000,
                   'firefly': 9600,
                   'snail': 4800,
                   }
+firefly_default_variance = 2400
 firefly_flash_frames_freq = framerate * firefly_duration_in_s
 
 item_end_messages = {'candle': 'Oh... It\'s all used up...',
@@ -124,7 +125,7 @@ game_over_font_color = 'white'
 
 moonlight_color = 'blue'
 moonlight_default_alpha = 120
-moonlight_duration = 15 * framerate
+moonlight_duration = 20 * framerate
 moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
 moonlight_fade_in_s = 3
 moonlight_fade_in_f = moonlight_fade_in_s * framerate
@@ -133,7 +134,7 @@ moonlight_text_end = 'Aw, it\'s cloudy again. It was nice while it lasted...'
 
 lightning_color = 'black'
 lightning_default_alpha = 120
-lightning_duration = 15 * framerate
+lightning_duration = 20 * framerate
 lightning_frame_count = 8
 lightning_drop_rate = (255 - lightning_default_alpha) // lightning_frame_count
 lightning_fade_in_s = 2
@@ -141,10 +142,11 @@ lightning_fade_in_f = lightning_fade_in_s * framerate
 lightning_freq = 0.3
 lightning_text = 'Oh no! It\'s starting to rain...'
 lightning_text_end = 'Phew. I\'m glad that’s over.'
-lightning_rain_fps = 8
+lightning_rain_fps = 4
 lightning_rain_alpha = 80
 
 effect_rate = 5 * framerate
+lightning_effect_rate = 1 * framerate
 
 music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100

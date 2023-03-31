@@ -141,7 +141,7 @@ def handle_events(state):
         elif state['effect'] == 'lightning':
             state['effect_duration'] -= 1
 
-            if state['effect_check_counter'] < config.effect_rate:
+            if state['effect_check_counter'] < config.lightning_effect_rate:
                 state['effect_check_counter'] += 1
             else:
                 state['effect_check_counter'] = 0
@@ -255,7 +255,7 @@ if __name__ == '__main__':
     character = MainCharacter(surface)
     bg = Background(surface)
     dialog = Dialog(surface)
-    shadows = Shadows(surface, area=360, variance=2400)
+    shadows = Shadows(surface, area=360, variance=240)
     # shadows = Shadows(surface, area=360, variance=48000)
     fg = Foreground(surface)
     gui = Gui(surface)
