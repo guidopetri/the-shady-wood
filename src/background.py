@@ -306,6 +306,9 @@ class Shadows(object):
         self.default_variance = variance
         self.shadows = None
         self._item = 'none'
+        self.frame_counter = 0
+        self.current_frame = 0
+        self.num_flash_frames = 0
 
     @property
     def area(self):
@@ -365,15 +368,30 @@ class Shadows(object):
             return
         elif item == 'none':
             self.variance = self.default_variance
-        elif item in ('candle', 'firefly'):
+        elif item in ('candle'):
             self.variance = config.item_variances[item]
         self._item = item
+
+    def advance_frame(self):
+        if self._item == 'firefly':
+            self.frame_counter += 1
+            if self.frame_counter >= config.firefly_flash_frames_freq:
+                self.frame_counter = 0
+                self.num_flash_frames = config.firefly_flash_frames
+                self.variance = config.item_variances['firefly']
+
+            if self.num_flash_frames > 0:
+                self.num_flash_frames -= 1
+                if self.num_flash_frames <= 0:
+                    self.num_flash_frames = 0
+                    self.variance = self.default_variance
 
     def render(self, state):
         mode = state['current_game_mode']
 
         if mode == config.Modes.GAME:
             self.update_item(state['item'])
+            self.advance_frame()
             if self.redo_render or self.shadows is None:
                 self.shadows = self.render_shadows('black', 255)
 
