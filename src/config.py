@@ -145,6 +145,7 @@ effect_rate = 1 * framerate
 
 music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100
+music_death_fadeout_time_ms = 100
 
 
 class Modes(enum.Enum):
