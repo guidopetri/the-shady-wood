@@ -194,7 +194,11 @@ class Snail(object):
     def __init__(self, surface):
         self.surface = surface
         self.path = None
-        self.path_done = False
+        self._total_movement = 0
+        self.path_done = True
+        self.original_pos = None
+        # start by default facing down
+        self._direction = 'S'
 
         self.num_frames = 2
         self.fps = 2
@@ -203,21 +207,24 @@ class Snail(object):
         self.frame_counter = 0
         self.spritesheets = {}
 
+        dirs_mapper = {'up': 'N', 'down': 'S', 'right': 'E', 'left': 'W'}
         for direction in ['down', 'up', 'left', 'right']:
             file = f'Snail_spritesheet_{direction}_2x1_32px.png'
             sprites = self.load_spritesheet(file,
                                             self.num_frames)
-            self.spritesheets[direction] = sprites
+            self.spritesheets[dirs_mapper[direction]] = sprites
+        self.spritesheets[''] = self.spritesheets['S']
 
-        # start by default facing down
-        self.current_sprites = self.spritesheets['down']
         self.current_frame = 0
 
         _, _, self._size_x, self._size_y = self.sprite.get_rect()
 
-        self.coords = (config.screen_size[0] // 2 - self._size_x // 2 + 64,
-                       config.screen_size[1] // 2 - self._size_y // 2 + 64,
-                       )
+        self.coords = (0, 0)
+        self.move_map = {'N': (0, -config.snail_speed),
+                         'S': (0, config.snail_speed),
+                         'W': (-config.snail_speed, 0),
+                         'E': (config.snail_speed, 0),
+                         }
 
     def load_spritesheet(self, file, num_frames):
         path = config.gfx_path / file
@@ -254,18 +261,112 @@ class Snail(object):
 
         self.current_frame %= self.num_frames
 
-    def flood_fill_path(self, state):
-        pass
+    @property
+    def current_sprites(self):
+        return self.spritesheets[self.current_direction]
 
     @property
     def current_direction(self):
-        # todo: use path
-        return 'right'
+        return self._direction
+
+    @property
+    def total_movement(self):
+        return self._total_movement
+
+    @total_movement.setter
+    def total_movement(self, value):
+        self._total_movement = value
+        self._total_movement %= config.map_tile_size
+
+    def relative_player_movement(self, state):
+        if self._direction == 'N':
+            return self.original_pos[1] - state['position'][1]
+        elif self._direction == 'S':
+            return state['position'][1] - self.original_pos[1]
+        elif self._direction == 'W':
+            return self.original_pos[0] - state['position'][0]
+        elif self._direction == 'E':
+            return state['position'][0] - self.original_pos[0]
 
     def update_coords(self, state):
-        # self.coords = self.coords + path
-        if self.path_done:
-            self.path = None
+        if state['item'] == 'snail':
+            if self.original_pos is None:
+                self.original_pos = state['position']
+
+            player_tile_h_adj = self.original_pos[0] // config.map_tile_size
+            player_tile_v_adj = self.original_pos[1] // config.map_tile_size
+            player_h_adj = self.original_pos[0] % config.map_tile_size
+            player_v_adj = self.original_pos[1] % config.map_tile_size
+
+            new_player_tile_h_adj = state['position'][0] // config.map_tile_size
+            new_player_tile_v_adj = state['position'][1] // config.map_tile_size
+            new_player_h_adj = state['position'][0] % config.map_tile_size
+            new_player_v_adj = state['position'][1] % config.map_tile_size
+
+            tile_diff_h = new_player_tile_h_adj - player_tile_h_adj
+            tile_diff_v = new_player_tile_v_adj - player_tile_v_adj
+            adj_diff_h = new_player_h_adj - player_h_adj
+            adj_diff_v = new_player_v_adj - player_v_adj
+
+            h_adjustment = state['snail_position'][0] % config.map_tile_size
+            v_adjustment = state['snail_position'][1] % config.map_tile_size
+
+            tile_h_adj = state['snail_position'][0] // config.map_tile_size
+            tile_v_adj = state['snail_position'][1] // config.map_tile_size
+
+            self.coords = (config.map_tile_size
+                           * (tile_h_adj
+                              - player_tile_h_adj
+                              - tile_diff_h
+                              + 0.5
+                              - 0.5)
+                           + config.screen_center[0]
+                           + h_adjustment
+                           - player_h_adj
+                           - adj_diff_h,
+                           config.map_tile_size
+                           * (tile_v_adj
+                              - player_tile_v_adj
+                              - tile_diff_v
+                              + 0.5
+                              - 0.5)
+                           + config.screen_center[1]
+                           + v_adjustment
+                           - player_v_adj
+                           - adj_diff_v,
+                           )
+            if config.debug_mode:
+                pass
+                # print('og_it_adj: ', player_h_adj, player_v_adj)
+                # print('it_adj: ', new_player_h_adj, new_player_v_adj)
+                # print('og_tile_adj: ', player_tile_h_adj, player_tile_v_adj)
+                # print('tile: ', tile_h_adj, tile_v_adj)
+                # print(self.coords, state['position'])
+            if not self.path_done:
+                state['snail_position'] = tuple(
+                    map(sum, zip(state['snail_position'], self.movement))
+                    )
+
+                self.total_movement += config.snail_speed
+                self.path_done = self.total_movement == 0
+
+            if self.path_done:
+                self._direction = state['ai_map'][tile_v_adj][tile_h_adj]
+                self.movement = self.move_map[self._direction]
+                self.path_done = False
+                self.total_movement = 0
+
+        elif state['item'] == 'snail_out':
+            state['snail_position'] = (0, 0)
+            self.coords = (0, 0)
+            self.original_pos = None
+
+    @property
+    def blit_coords(self):
+        # center the sprite
+        return (self.coords[0] - self.sprite.get_width() // 2,
+                self.coords[1] - self.sprite.get_height() // 2,
+                )
 
     def render(self, state):
         mode = state['current_game_mode']
@@ -273,11 +374,8 @@ class Snail(object):
         if mode != config.Modes.GAME:
             return
 
-        self.current_sprites = self.spritesheets.get(self.current_direction)
-
-        if self.path is None:
-            self.flood_fill_path(state)
         self.update_coords(state)
         self.next_animation_frame(state)
 
-        self.surface.blit(self.sprite, self.coords)
+        if state['item'] == 'snail':
+            self.surface.blit(self.sprite, self.blit_coords)

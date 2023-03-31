@@ -177,6 +177,9 @@ def handle_events(state):
                     state['inventory'][item] -= 1
                     state['can_use_item'] = False
                     state['item_duration'] = config.item_durations[item]
+
+                    if item == 'snail':
+                        state['snail_position'] = state['position']
                     break
         elif state['item'] != 'none':
             state['item_duration'] -= 1
@@ -266,6 +269,7 @@ if __name__ == '__main__':
                   'can_use_item': True,
                   'item_duration': 0,
                   'map': game_map.map,
+                  'ai_map': game_map.ai_map,
                   'win_map': game_map.win_map,
                   'msg_duration': config.msg_duration,
                   'maze_begin': True,
@@ -279,6 +283,7 @@ if __name__ == '__main__':
                                         'firefly': True,
                                         'snail': True,
                                         },
+                  'snail_position': (0, 0),
                   }
 
     character = MainCharacter(surface)
