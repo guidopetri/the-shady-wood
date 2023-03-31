@@ -302,9 +302,11 @@ class Shadows(object):
     def __init__(self, surface, area, variance):
         self.surface = surface
         self.area = area
-        self.variance = variance
-        self.default_variance = variance
+        self.redo_render = True
         self.shadows = None
+        self.default_shadows = None
+        self.default_variance = variance
+        self.variance = variance
         self._item = 'none'
         self.frame_counter = 0
         self.current_frame = 0
@@ -326,7 +328,10 @@ class Shadows(object):
     @variance.setter
     def variance(self, variance):
         self._variance = variance
-        self.redo_render = True
+        if self._variance == self.default_variance:
+            self.shadows = self.default_shadows
+        else:
+            self.redo_render = True
 
     def render_shadows(self, color, default_alpha):
         # foreground with lighting effect
@@ -361,6 +366,10 @@ class Shadows(object):
 
         self.redo_render = False
 
+        if config.debug_mode:
+            pass
+            # print('rerender')
+
         return shadow
 
     def update_item(self, item):
@@ -394,6 +403,8 @@ class Shadows(object):
             self.advance_frame()
             if self.redo_render or self.shadows is None:
                 self.shadows = self.render_shadows('black', 255)
+                if self.default_shadows is None:
+                    self.default_shadows = self.shadows
 
             if (state['effect'] == 'regular' or
                 (state['effect'] == 'lightning'

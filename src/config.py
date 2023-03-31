@@ -85,7 +85,7 @@ item_variances = {'candle': 13000,
                   'snail': 4800,
                   }
 firefly_flash_frames_freq = 90
-firefly_flash_frames = 8
+firefly_flash_frames = 4
 
 item_end_messages = {'candle': 'Oh... It\'s all used up...',
                      'firefly': 'Oh... It flew away...',
