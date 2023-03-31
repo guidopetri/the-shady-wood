@@ -13,13 +13,17 @@ framerate = 60
 
 character_speed = 2
 
-fontname = 'Arial'
-fontsize = 32
+fontname = 'Copperplate Gothic'
+fontsize = 24
 font_color = '#303030'
 
 dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
 menu_bg_color = 'yellow'
+dialog_border_radius = 5
+border_padding = 10
+border_size = (20, 10)
+text_padding = (0, 3)
 
 main_menu_bg_color = '#072016'
 main_menu_text = 'Press any key to start'
@@ -155,6 +159,8 @@ music_death_fadeout_time_ms = 100
 initial_position = tuple([int((x + 2 * map_buffer_size)
                               / 2 * map_tile_size)
                           for x in default_map_size])
+
+msg_duration = framerate * 3
 
 
 class Modes(enum.Enum):

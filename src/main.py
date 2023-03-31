@@ -61,6 +61,9 @@ def handle_events(state):
         if state['item'].endswith('_out'):
             return state
         state['action'] = 'standing'
+        state['maze_begin'] = False
+        state['msg_duration'] -= 1
+        state['msg_duration'] = max(0, state['msg_duration'])
         for key, actions in keys_map.items():
             if keys[key]:
                 state['position'] = tuple(map(sum, zip(state['position'],
@@ -70,6 +73,7 @@ def handle_events(state):
 
         if state['status'] == 'win':
             state['current_game_mode'] = config.Modes.WIN_DIALOG
+            state['maze_begin'] = False
             state['map'] = state['win_map']
             state['item'] = 'waving'
             state['action'] = 'waving'
@@ -91,6 +95,7 @@ def handle_events(state):
 
         if state['game_over']:
             state['current_game_mode'] = config.Modes.GAME_OVER
+            state['maze_begin'] = False
 
         if state['effect'] == 'regular':
             # randomly switch to other effects
@@ -138,6 +143,9 @@ def handle_events(state):
             state['moonlight_frame_count'] %= N
             # but make sure we don't go over 100
             state['hp'] = min(100, state['hp'])
+
+            if state['effect_duration'] <= config.moonlight_fade_in_f:
+                state['effect_fade_out'] = True
         elif state['effect'] == 'lightning':
             state['effect_duration'] -= 1
 
@@ -212,6 +220,14 @@ def handle_events(state):
                 state['effect_alpha'] -= 1
     elif mode == config.Modes.GAME_OVER:
         pass
+    elif mode == config.Modes.WIN_DIALOG:
+        if any_key:
+            state['active_message'] += 1
+            if state['active_message'] >= len(config.game_win_text):
+                state['current_game_mode'] = config.Modes.MAIN_MENU
+                # revert to default state
+                # return default_state
+                state['active_message'] = 0
 
     return state
 
@@ -250,6 +266,8 @@ if __name__ == '__main__':
                   'item_duration': 0,
                   'map': game_map.map,
                   'win_map': game_map.win_map,
+                  'msg_duration': config.msg_duration,
+                  'maze_begin': True,
                   }
 
     character = MainCharacter(surface)
