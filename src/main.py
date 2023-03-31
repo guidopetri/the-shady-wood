@@ -271,7 +271,13 @@ if __name__ == '__main__':
                   'first_item_end': {'candle': True,
                                      'firefly': True,
                                      'snail': True,
-                                     }
+                                     },
+                  'last_item_picked_up': None,
+                  'pickup': False,
+                  'first_item_pickup': {'candle': True,
+                                        'firefly': True,
+                                        'snail': True,
+                                        },
                   }
 
     character = MainCharacter(surface)

@@ -90,6 +90,13 @@ class Dialog(object):
 
                 if text is not None:
                     state['msg_duration'] = config.msg_duration
+            elif state['pickup']:
+                item = state['last_item_picked_up']
+                if state['first_item_pickup'].get(item):
+                    text = config.first_item_messages.get(item)
+
+                if text is not None:
+                    state['msg_duration'] = config.msg_duration
         elif mode == config.Modes.WIN_DIALOG:
             text = config.game_win_text[message]
 
