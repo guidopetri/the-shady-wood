@@ -17,6 +17,7 @@ class MainCharacter(object):
                                'waving': 4,
                                'firefly_out': 4,
                                'candle_out': 4,
+                               'snail_out': 4,
                                }
 
         self.fps_map = {'none': 4,
@@ -28,6 +29,7 @@ class MainCharacter(object):
                         'waving': 4,
                         'firefly_out': 4,
                         'candle_out': 4,
+                        'snail_out': 4,
                         }
 
         self._frames_per_sprite_map = {k: config.framerate // v
@@ -64,6 +66,7 @@ class MainCharacter(object):
 
         self.spritesheets['none'] = self.spritesheets['walking']
         self.spritesheets['snail'] = self.spritesheets['walking']
+        self.spritesheets['snail_out'] = self.spritesheets['walking']
         # todo: remove
         self.spritesheets['waving'] = self.spritesheets['firefly']
         # load dead sprite
@@ -144,6 +147,8 @@ class MainCharacter(object):
             self.advance_frame(state, 1, loop=True)
         elif self.current_action == 'standing':
             self.advance_frame(state, 2, loop=True)
+        elif self.current_item == 'snail_out':
+            self.advance_frame(state, 2, loop=False)
         elif self.current_action in ('dead', 'item_out'):
             self.advance_frame(state, 1, loop=False)
         else:
