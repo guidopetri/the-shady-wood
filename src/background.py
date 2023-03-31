@@ -190,6 +190,7 @@ class Background(AbstractBG):
         self.num_frames = 4
         self.fps = 4
         self._frames_per_sprite = config.framerate / self.fps
+
         file = 'Main_menu_spritesheet_2x2_384px.png'
         path = config.gfx_path / file
         sheet = pygame.image.load(path).convert_alpha()
@@ -219,6 +220,15 @@ class Background(AbstractBG):
         self.menu_text_rect.midtop = self.menu_rect.midbottom
         self.menu_text_rect.move_ip(config.menu_text_padding)
 
+        # file = 'title.png'
+        # path = config.gfx_path / file
+        # self.title_image = pygame.image.load(path).convert_alpha()
+        self.title_image = pygame.Surface((400, 100))
+        self.title_image.fill('magenta')
+        self.title_rect = self.title_image.get_rect()
+        self.title_rect.midbottom = self.menu_rect.midtop
+        self.title_rect.move_ip(config.title_padding)
+
     def advance_frame(self):
         self.frame_counter += 1
         if self.frame_counter >= self._frames_per_sprite:
@@ -234,6 +244,8 @@ class Background(AbstractBG):
     def render_main_menu(self, *args):
         self.surface.fill(config.main_menu_bg_color)
         self.advance_frame()
+
+        self.surface.blit(self.title_image, self.title_rect)
         self.surface.blit(self.menu_sprite, self.menu_rect)
         self.surface.blit(self.menu_text, self.menu_text_rect)
 
