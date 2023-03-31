@@ -16,6 +16,7 @@ from dialog import Dialog
 from gui import Gui
 from map import Map
 from audio import Audio
+from objects import Objects
 
 
 def handle_events(state):
@@ -297,11 +298,13 @@ if __name__ == '__main__':
     boundaries = Boundaries(surface)
     light_fx = LightStatusEffects(surface)
     snail = Snail(surface)
+    objects = Objects(surface)
 
     audio = Audio()
 
     if config.debug_mode:
         game_map.pretty_print()
+        game_map.pretty_print_item()
 
     while True:
         boundaries.check_for_dmg(game_state)
@@ -315,6 +318,7 @@ if __name__ == '__main__':
 
         shadows.render(game_state)
         # place snail above shadows
+        objects.render(game_state)
         snail.render(game_state)
         light_fx.render(game_state)
         gui.render(game_state)
