@@ -174,7 +174,7 @@ initial_position = tuple([int((x + 2 * map_buffer_size)
 msg_duration = framerate * 3
 pickup_item_sprite_size = 32
 
-default_game_state = {'current_game_mode': Modes.GAME,
+default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'active_message': 0,
                       'hp': 100,
                       'status': 'safe',
@@ -207,4 +207,5 @@ default_game_state = {'current_game_mode': Modes.GAME,
                                             'snail': True,
                                             },
                       'snail_position': (0, 0),
+                      'generate_map': True,
                       }

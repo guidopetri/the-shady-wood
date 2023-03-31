@@ -253,7 +253,7 @@ def handle_events(state):
                 state['current_game_mode'] = config.Modes.MAIN_MENU
                 # revert to default state
                 # return default_state
-                state['active_message'] = 0
+                state = config.default_game_state.copy()
 
     return state
 
@@ -267,16 +267,7 @@ if __name__ == '__main__':
 
     surface = pygame.display.set_mode(config.screen_size)
 
-    game_map = Map()
-    game_map.generate_map()
-
-    map_state = {'map': game_map.map,
-                 'ai_map': game_map.ai_map,
-                 'win_map': game_map.win_map,
-                 'item_map': game_map.item_map,
-                 }
     game_state = config.default_game_state.copy()
-    game_state.update(map_state)
 
     character = MainCharacter(surface)
     bg = Background(surface)
@@ -292,13 +283,28 @@ if __name__ == '__main__':
 
     audio = Audio()
 
-    if config.debug_mode:
-        game_map.pretty_print()
-        game_map.pretty_print_item()
-
     while True:
+        if game_state['generate_map']:
+            game_map = Map()
+            game_map.generate_map()
+
+            map_state = {'map': game_map.map,
+                         'ai_map': game_map.ai_map,
+                         'win_map': game_map.win_map,
+                         'item_map': game_map.item_map,
+                         }
+            game_state.update(map_state)
+            game_state['generate_map'] = False
+
+            if config.debug_mode:
+                game_map.pretty_print()
+                game_map.pretty_print_item()
+
         boundaries.check_for_dmg(game_state)
         game_state = handle_events(game_state)
+
+        if 'map' not in game_state.keys():
+            continue
 
         surface.fill('black')
 
