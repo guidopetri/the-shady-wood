@@ -163,6 +163,7 @@ initial_position = tuple([int((x + 2 * map_buffer_size)
                           for x in default_map_size])
 
 msg_duration = framerate * 3
+pickup_item_sprite_size = 32
 
 
 class Modes(enum.Enum):

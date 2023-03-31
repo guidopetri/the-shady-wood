@@ -194,6 +194,27 @@ def handle_events(state):
             state['can_use_item'] = True
             state['item_duration'] = 0
 
+        tile_size = config.map_tile_size
+        dist_to_tile_center = (state['position'][0]
+                               % tile_size
+                               - 0.5 * tile_size,
+                               state['position'][1]
+                               % tile_size
+                               - 0.5 * tile_size,
+                               )
+
+        close_to_tile_center = (abs(dist_to_tile_center[0])
+                                < config.pickup_item_sprite_size
+                                and abs(dist_to_tile_center[1])
+                                < config.pickup_item_sprite_size)
+        current_tile = (state['position'][0] // tile_size,
+                        state['position'][1] // tile_size,
+                        )
+        item = state['item_map'][current_tile[1]][current_tile[0]]
+        if close_to_tile_center and item != ' ':
+            state['inventory'][item] += 1
+            state['item_map'][current_tile[1]][current_tile[0]] = ' '
+
         if config.debug_mode:
             if keys[pygame.K_a]:
                 state['hp'] = min(state['hp'] + 1, 100)
