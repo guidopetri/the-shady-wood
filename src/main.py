@@ -4,6 +4,7 @@ import pygame
 import config
 import sys
 import random
+from copy import deepcopy
 
 from character import MainCharacter
 from character import Snail
@@ -258,7 +259,7 @@ def handle_events(state):
         if any_key:
             state['current_game_mode'] = config.Modes.MAIN_MENU
             # revert to default state
-            state = config.default_game_state.copy()
+            state = deepcopy(config.default_game_state)
             state['active_sfx'].add('menu_select')
     elif mode == config.Modes.WIN_DIALOG:
         if any_key:
@@ -267,7 +268,7 @@ def handle_events(state):
             if state['active_message'] >= len(config.game_win_text):
                 state['current_game_mode'] = config.Modes.MAIN_MENU
                 # revert to default state
-                state = config.default_game_state.copy()
+                state = deepcopy(config.default_game_state)
 
     return state
 
@@ -282,7 +283,7 @@ if __name__ == '__main__':
     surface = pygame.display.set_mode(config.screen_size)
     pygame.display.set_caption(config.window_title)
 
-    game_state = config.default_game_state.copy()
+    game_state = deepcopy(config.default_game_state)
 
     character = MainCharacter(surface)
     bg = Background(surface)
