@@ -105,7 +105,8 @@ class SFX(object):
         for name, sfx in self.sfx.items():
             if name in state['active_sfx']:
                 # if the sound is "active", but not playing
-                if not self.channels[name].get_busy():
+                # or if it's anne speaking
+                if not self.channels[name].get_busy() or name == 'anne_normal':
                     # then play it
                     self.channels[name].play(sfx, loops=self.loops[name])
             else:
