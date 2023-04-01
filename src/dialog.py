@@ -59,13 +59,21 @@ class Dialog(object):
             if state['effect_fade_in']:
                 if state['effect'] == 'moonlight':
                     tone_text = config.moonlight_text
+                    if state['message_sfx_played']:
+                        tone_text = (None, tone_text[1])
                 elif state['effect'] == 'lightning':
                     tone_text = config.lightning_text
+                    if state['message_sfx_played']:
+                        tone_text = (None, tone_text[1])
             elif state['effect_fade_out']:
                 if state['effect'] == 'moonlight':
                     tone_text = config.moonlight_text_end
+                    if state['message_sfx_played']:
+                        tone_text = (None, tone_text[1])
                 elif state['effect'] == 'lightning':
                     tone_text = config.lightning_text_end
+                    if state['message_sfx_played']:
+                        tone_text = (None, tone_text[1])
             elif state['maze_begin'] and state['msg_duration'] >= 0:
                 tone_text = config.maze_begin_message
             elif state['item'].endswith('_out'):

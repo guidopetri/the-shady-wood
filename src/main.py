@@ -121,6 +121,7 @@ def handle_events(state):
                     state['effect_duration'] = config.moonlight_duration
                     state['effect_fade_in'] = True
                     state['can_use_item'] = False
+                    state['message_sfx_played'] = False
                     # place item back in inventory
                     if state['item'] != 'none':
                         state['inventory'][state['item']] += 1
@@ -133,6 +134,7 @@ def handle_events(state):
                     state['effect_duration'] = config.lightning_duration
                     state['effect_fade_in'] = True
                     state['can_use_item'] = False
+                    state['message_sfx_played'] = False
                     # place item back in inventory
                     if state['item'] != 'none':
                         state['inventory'][state['item']] += 1
@@ -154,6 +156,9 @@ def handle_events(state):
             state['hp'] = min(100, state['hp'])
 
             if state['effect_duration'] <= config.moonlight_fade_in_f:
+                # only play sfx once
+                if not state['effect_fade_out']:
+                    state['message_sfx_played'] = False
                 state['effect_fade_out'] = True
         elif state['effect'] == 'lightning':
             state['effect_duration'] -= 1
@@ -170,6 +175,9 @@ def handle_events(state):
             state['effect_alpha'] = min(state['effect_alpha'], 255)
 
             if state['effect_duration'] <= config.lightning_fade_in_f:
+                # only play sfx once
+                if not state['effect_fade_out']:
+                    state['message_sfx_played'] = False
                 state['effect_fade_out'] = True
 
         if state['effect'] != 'regular' and state['effect_duration'] <= 0:
