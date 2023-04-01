@@ -191,7 +191,6 @@ class MainCharacter(object):
 class Snail(object):
     def __init__(self, surface):
         self.surface = surface
-        self.path = None
         self._total_movement = 0
         self.path_done = True
         self.original_pos = None
@@ -352,8 +351,13 @@ class Snail(object):
 
         elif state['item'] == 'snail_out':
             state['snail_position'] = (0, 0)
+            self.path_done = True
             self.coords = (0, 0)
             self.original_pos = None
+            self.total_movement = 0
+            self._direction = 'S'
+            self.current_frame = 0
+            self.frame_counter = 0
 
     @property
     def blit_coords(self):
