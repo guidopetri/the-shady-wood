@@ -92,7 +92,7 @@ intro_messages = [('anne_normal',
                   ('anne_normal',
                    'The Shady Wood is cursed.'),
                   ('anne_normal',
-                   'Anyone who shows fear gets turned to stone and lost forever.'),  # noqa
+                   'Anyone who shows fear gets turned to stone and is lost forever.'),  # noqa
                   ('anne_normal',
                    'I need to keep courage and find my way out!'),
                   ]
