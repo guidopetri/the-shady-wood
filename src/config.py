@@ -241,7 +241,7 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'hold_at_menu': False,
                       }
 
-fadein_credits_text = 'Kendra Lemon and Guido Petri'
+fadein_credits_text = 'Created by Kendra Lemon and Guido Petri'
 fadein_credits_text_padding = (0, 0)
 
 logo_fadein_period = 2 * framerate
@@ -262,7 +262,7 @@ advance_fontsize = 14
 advance_color = 'gray'
 advance_padding = (-32, 0)
 
-credits_text = 'A game by Kendra Lemon and Guido Petri'
+credits_text = 'A game by Lemon Pepper Wings'
 credits_fontsize = 12
 credits_font_color = 'gray'
 credits_padding = (0, 22)
