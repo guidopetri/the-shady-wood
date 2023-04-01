@@ -234,4 +234,4 @@ advance_padding = (-32, 0)
 credits_text = 'A game by Kendra Lemon and Guido Petri'
 credits_fontsize = 12
 credits_font_color = 'gray'
-credits_padding = (0, 32)
+credits_padding = (0, 22)

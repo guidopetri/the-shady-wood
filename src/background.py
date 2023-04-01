@@ -301,10 +301,7 @@ class Foreground(AbstractBG):
                                      )
         self.font_color = pygame.Color(config.credits_font_color)
 
-        coords = {'center': (config.screen_center[0],
-                             config.screen_size[1] - 64,
-                             )
-                  }
+        coords = {'center': (config.screen_center[0], 5)}
         self.credits_text = self.font.render(config.credits_text,
                                              True,
                                              self.font_color,
@@ -342,6 +339,8 @@ class Foreground(AbstractBG):
         # press any key to advance
         self.surface.blit(self.advance_text, self.advance_rect)
 
+    def render_main_menu(self, state):
+        super().render_main_menu(state)
         # credits
         self.surface.blit(self.credits_text, self.credits_rect)
 
