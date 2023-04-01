@@ -221,6 +221,7 @@ class Snail(object):
                          'S': (0, config.snail_speed),
                          'W': (-config.snail_speed, 0),
                          'E': (config.snail_speed, 0),
+                         '': (0, 0),
                          }
 
     def load_spritesheet(self, file, num_frames):
