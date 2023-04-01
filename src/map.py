@@ -153,6 +153,7 @@ class Map(object):
 
         objects = [' ', ' ', ' ', 'firefly' 'firefly', 'snail']
         unique_objs = ['firefly', 'snail']
+        t_objs = [' ', ' ', ' ', ' ', 'firefly', 'firefly', 'snail', 'snail']
 
         for y, row in enumerate(self.map):
             for x, tile in enumerate(row):
@@ -163,6 +164,9 @@ class Map(object):
                 elif tile == 'cross':
                     # guarantee an item at a cross
                     item = random.sample(unique_objs, 1)[0]
+                    grid[y][x] = item
+                elif tile.startswith('t_'):
+                    item = random.sample(t_objs, 1)[0]
                     grid[y][x] = item
 
         # set center to no item
