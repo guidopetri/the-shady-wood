@@ -155,7 +155,6 @@ class Map(object):
         unique_objs = ['firefly', 'snail']
         t_objs = [' ', ' ', ' ', ' ', 'firefly', 'firefly', 'snail', 'snail']
         corner_objs = [' '] * 45 + ['firefly'] * 4 + ['snail']
-        straight_objs = [' '] * 45 + ['firefly'] * 4 + ['snail']
 
         for y, row in enumerate(self.map):
             for x, tile in enumerate(row):
@@ -172,9 +171,6 @@ class Map(object):
                     grid[y][x] = item
                 elif tile.startswith('corner_'):
                     item = random.sample(corner_objs, 1)[0]
-                    grid[y][x] = item
-                elif tile.startswith('straight_'):
-                    item = random.sample(straight_objs, 1)[0]
                     grid[y][x] = item
 
         # set center to no item
