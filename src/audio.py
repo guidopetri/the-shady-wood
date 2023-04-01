@@ -69,3 +69,46 @@ class Audio(object):
         if self.current_music != track:
             self.current_music = track
         self.play_current_track()
+
+
+class SFX(object):
+    def __init__(self):
+        self.sfx_path = config.sfx_path
+
+        self.paths = {'hp_drain': 'Hp_draining.wav',
+                      'pickup': 'Item_pickup.wav',
+                      'item_use': 'Item_use_Menu_select.wav',
+                      'menu_select': 'Item_use_Menu_select.wav',
+                      'anne_normal': 'Anne_speaking_normal.wav',
+                      'anne_negative': 'Anne_speaking_negative.wav',
+                      }
+        self.loops = {'hp_drain': -1,
+                      'pickup': 0,
+                      'item_use': 0,
+                      'menu_select': 0,
+                      'anne_normal': 2,
+                      'anne_negative': 2,
+                      }
+        self.sfx = {name: self.load_sound(path)
+                    for name, path in self.paths.items()
+                    }
+        self.channels = {name: pygame.mixer.Channel(idx)
+                         for idx, name in enumerate(self.sfx.keys())
+                         }
+
+    def load_sound(self, path):
+        return pygame.mixer.Sound(self.sfx_path / path)
+
+    def play(self, state):
+        for name, sfx in self.sfx.items():
+            if name in state['active_sfx']:
+                # if the sound is "active", but not playing
+                if not self.channels[name].get_busy():
+                    # then play it
+                    self.channels[name].play(sfx, loops=self.loops[name])
+            else:
+                # if the sound is "not active", but playing,
+                # and won't end by itself
+                if self.channels[name].get_busy() and self.loops[name] == -1:
+                    # then stop it with a fadeout
+                    sfx.fadeout(100)

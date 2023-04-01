@@ -16,6 +16,7 @@ from dialog import Dialog
 from gui import Gui
 from map import Map
 from audio import Audio
+from audio import SFX
 from objects import Objects
 
 
@@ -49,12 +50,17 @@ def handle_events(state):
             any_key = True
 
     keys = pygame.key.get_pressed()
+    state['active_sfx'] = set()
 
     if mode == config.Modes.MAIN_MENU:
         if any_key:
             state['current_game_mode'] = config.Modes.INTRO
+            state['active_sfx'].add('menu_select')
+            state['message_sfx_played'] = False
     elif mode == config.Modes.INTRO:
         if any_key:
+            state['active_sfx'].add('menu_select')
+            state['message_sfx_played'] = False
             state['active_message'] += 1
             if state['active_message'] >= len(config.intro_messages):
                 state['current_game_mode'] = config.Modes.GAME
@@ -87,6 +93,7 @@ def handle_events(state):
             state['unsafe_frame_count'] += 1
             state['hp'] -= state['unsafe_frame_count'] // 3
             state['unsafe_frame_count'] %= 3
+            state['active_sfx'].add('hp_drain')
         if state['status'] == 'dead' or state['hp'] <= 0:
             state['hp'] = 0
             state['status'] = 'dead'
@@ -174,6 +181,7 @@ def handle_events(state):
         if state['can_use_item']:
             for key, item in items_map.items():
                 if keys[key] and state['inventory'][item] > 0:
+                    state['active_sfx'].add('item_use')
                     state['item'] = item
                     state['inventory'][item] -= 1
                     state['can_use_item'] = False
@@ -194,6 +202,7 @@ def handle_events(state):
             state['can_use_item'] = True
             state['item_duration'] = 0
 
+        # item pickup logic
         tile_size = config.map_tile_size
         dist_to_tile_center = (state['position'][0]
                                % tile_size
@@ -212,6 +221,7 @@ def handle_events(state):
                         )
         item = state['item_map'][current_tile[1]][current_tile[0]]
         if close_to_tile_center and item != ' ':
+            state['active_sfx'].add('item_pickup')
             state['inventory'][item] += 1
             state['item_map'][current_tile[1]][current_tile[0]] = ' '
 
@@ -249,8 +259,10 @@ def handle_events(state):
             state['current_game_mode'] = config.Modes.MAIN_MENU
             # revert to default state
             state = config.default_game_state.copy()
+            state['active_sfx'].add('menu_select')
     elif mode == config.Modes.WIN_DIALOG:
         if any_key:
+            state['active_sfx'].add('menu_select')
             state['active_message'] += 1
             if state['active_message'] >= len(config.game_win_text):
                 state['current_game_mode'] = config.Modes.MAIN_MENU
@@ -284,6 +296,7 @@ if __name__ == '__main__':
     objects = Objects(surface)
 
     audio = Audio()
+    sfx = SFX()
 
     while True:
         if game_state['generate_map']:
@@ -323,6 +336,7 @@ if __name__ == '__main__':
         dialog.render(game_state)
 
         audio.play(game_state)
+        sfx.play(game_state)
 
         pygame.display.flip()
 

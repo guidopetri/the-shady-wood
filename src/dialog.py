@@ -60,10 +60,12 @@ class Dialog(object):
         mode = state['current_game_mode']
         message = state['active_message']
 
-        text = None
+        tone_text = ('anne_normal', None)
 
         if mode == config.Modes.INTRO:
-            text = config.intro_messages[message]
+            tone_text = config.intro_messages[message]
+            if state['message_sfx_played']:
+                tone_text = (None, tone_text[1])
         elif mode == config.Modes.GAME:
             if state['msg_duration'] <= 0:
                 self.last_text = None
@@ -71,36 +73,41 @@ class Dialog(object):
 
             if state['effect_fade_in']:
                 if state['effect'] == 'moonlight':
-                    text = config.moonlight_text
+                    tone_text = config.moonlight_text
                 elif state['effect'] == 'lightning':
-                    text = config.lightning_text
+                    tone_text = config.lightning_text
             elif state['effect_fade_out']:
                 if state['effect'] == 'moonlight':
-                    text = config.moonlight_text_end
+                    tone_text = config.moonlight_text_end
                 elif state['effect'] == 'lightning':
-                    text = config.lightning_text_end
+                    tone_text = config.lightning_text_end
             elif state['maze_begin'] and state['msg_duration'] >= 0:
-                text = config.maze_begin_message
+                tone_text = config.maze_begin_message
             elif state['item'].endswith('_out'):
                 item = state['item'][:-4]
-                text = config.item_end_messages.get(item)
+                tone_text = config.item_end_messages.get(item)
                 if state['first_item_end'][item]:
                     # default to text itself
-                    text = config.first_item_end_messages.get(item, text)
+                    tone_text = config.first_item_end_messages.get(item, tone_text)  # noqa
 
-                if text is not None:
+                if tone_text[1] is not None:
                     state['msg_duration'] = config.msg_duration
             elif state['pickup']:
                 item = state['last_item_picked_up']
                 if state['first_item_pickup'].get(item):
-                    text = config.first_item_messages.get(item)
+                    tone_text = config.first_item_messages.get(item)
 
-                if text is not None:
+                if tone_text[1] is not None:
                     state['msg_duration'] = config.msg_duration
         elif mode == config.Modes.WIN_DIALOG:
-            text = config.game_win_text[message]
+            tone_text = config.game_win_text[message]
+
+        tone, text = tone_text
 
         if text is not None:
+            if tone is not None:
+                state['active_sfx'].add(tone)
+                state['message_sfx_played'] = True
             text, rect = self.render_text(text)
             self.render_box_bg(rect.width, rect.height)
             self.blit_text(text, rect)

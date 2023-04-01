@@ -71,18 +71,28 @@ root = main_dir / '..'
 gfx_path = root / 'assets' / 'gfx'
 sfx_path = root / 'assets' / 'fx'
 
-intro_messages = ['All I wanted was a nice picnic at my favorite spot.',
-                  'Unfortunately for me, I wasn\'t the only one using it today.',  # noqa
-                  'When I arrived at the spot and sat down, something poked at me!',  # noqa
-                  'I had sat on a tiny angry fairy!',
-                  'It was so upset it cast a spell on me and...',
-                  'it transported me to the middle of the Shady Wood!',
-                  'The Shady Wood is cursed.',
-                  'Anyone who shows fear gets turned to stone and lost forever.',  # noqa
-                  'I need to keep courage and find my way out!',
+intro_messages = [('anne_normal',
+                   'All I wanted was a nice picnic at my favorite spot.'),
+                  ('anne_normal',
+                   'Unfortunately for me, I wasn\'t the only one using it today.'),  # noqa
+                  ('anne_normal',
+                   'When I arrived at the spot and sat down, something poked at me!'),  # noqa
+                  ('anne_normal',
+                   'I had sat on a tiny angry fairy!'),
+                  ('anne_normal',
+                   'It was so upset it cast a spell on me and...'),
+                  ('anne_normal',
+                   'it transported me to the middle of the Shady Wood!'),
+                  ('anne_normal',
+                   'The Shady Wood is cursed.'),
+                  ('anne_normal',
+                   'Anyone who shows fear gets turned to stone and lost forever.'),  # noqa
+                  ('anne_normal',
+                   'I need to keep courage and find my way out!'),
                   ]
 
-maze_begin_message = 'It\'s a good thing I packed some candles. But I don\'t think they\'ll be enough...'  # noqa
+maze_begin_message = ('anne_normal',
+                      'It\'s a good thing I packed some candles. But I don\'t think they\'ll be enough...')  # noqa
 
 items = ['firefly', 'candle', 'snail']
 keys = {'firefly': 'f',
@@ -106,15 +116,15 @@ item_variances = {'candle': 13000,
 firefly_default_variance = 2400
 firefly_flash_frames_freq = framerate * firefly_duration_in_s
 
-item_end_messages = {'candle': 'Oh... It\'s all used up...',
-                     'firefly': 'Oh... It flew away...',
+item_end_messages = {'candle': ('anne_negative', 'Oh... It\'s all used up...'),
+                     'firefly': ('anne_negative', 'Oh... It flew away...'),
                      }
 
-first_item_messages = {'firefly': 'A firefly! That will help light my way! I can keep it in my jar.',  # noqa
-                       'snail': 'A glowing snail! It should help me, but they have a mind of their own...',  # noqa
+first_item_messages = {'firefly': ('anne_normal', 'A firefly! That will help light my way! I can keep it in my jar.'),  # noqa
+                       'snail': ('anne_normal', 'A glowing snail! It should help me, but they have a mind of their own...'),  # noqa
                        }
 
-first_item_end_messages = {'snail': 'Whoa, that\'s a fast snail! At least it showed me the way out.',  # noqa
+first_item_end_messages = {'snail': ('anne_normal', 'Whoa, that\'s a fast snail! At least it showed me the way out.'),  # noqa
                            }
 
 default_map_size = (11, 11)
@@ -126,8 +136,8 @@ boundary_unsafe_zone_color = '#0000ff'
 boundary_dead_zone_color = '#ff0000'
 boundary_win_zone_color = '#fff000'
 
-game_win_text = ['I found a road! I can make it home safely now.',
-                 'Thank you for your help!',
+game_win_text = [('anne_normal', 'I found a road! I can make it home safely now.'),  # noqa
+                 ('anne_normal', 'Thank you for your help!'),
                  ]
 
 game_over_text = ['GAME OVER',
@@ -144,8 +154,8 @@ moonlight_duration = 20 * framerate
 moonlight_drop_rate = (255 - moonlight_default_alpha) / moonlight_duration
 moonlight_fade_in_s = 3
 moonlight_fade_in_f = moonlight_fade_in_s * framerate
-moonlight_text = 'The Moon came out. Now I can see my way!'
-moonlight_text_end = 'Aw, it\'s cloudy again. It was nice while it lasted...'
+moonlight_text = ('anne_normal', 'The Moon came out. Now I can see my way!')
+moonlight_text_end = ('anne_negative', 'Aw, it\'s cloudy again. It was nice while it lasted...')  # noqa
 
 lightning_color = 'black'
 lightning_default_alpha = 120
@@ -155,8 +165,8 @@ lightning_drop_rate = (255 - lightning_default_alpha) // lightning_frame_count
 lightning_fade_in_s = 2
 lightning_fade_in_f = lightning_fade_in_s * framerate
 lightning_freq = 0.3
-lightning_text = 'Oh no! It\'s starting to rain...'
-lightning_text_end = 'Phew. I\'m glad that’s over.'
+lightning_text = ('anne_negative', 'Oh no! It\'s starting to rain...')
+lightning_text_end = ('anne_normal', 'Phew. I\'m glad that’s over.')
 lightning_rain_fps = 4
 lightning_rain_alpha = 80
 
@@ -208,6 +218,8 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                                             },
                       'snail_position': (0, 0),
                       'generate_map': True,
+                      'active_sfx': set(),
+                      'message_sfx_played': True,
                       }
 
 restart_text = 'Press any key to restart'
