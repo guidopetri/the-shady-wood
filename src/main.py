@@ -280,6 +280,7 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
 
     surface = pygame.display.set_mode(config.screen_size)
+    pygame.display.set_caption(config.window_title)
 
     game_state = config.default_game_state.copy()
 
