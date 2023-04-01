@@ -54,9 +54,35 @@ def handle_events(state):
     state['active_sfx'] = set()
 
     if mode == config.Modes.MAIN_MENU:
-        if state['menu_ready'] and any_key:
-            state['current_game_mode'] = config.Modes.INTRO
-            state['message_sfx_played'] = False
+        if any_key:
+            if state['menu_ready']:
+                state['current_game_mode'] = config.Modes.INTRO
+                state['message_sfx_played'] = False
+
+            logo_keys = ['fading_in_logo', 'hold_logo', 'fading_out_logo']
+            credits_keys = ['fading_in_credits',
+                            'hold_credits',
+                            'fading_out_credits',
+                            ]
+            intro_keys = ['fading_in_anne',
+                          'fading_in_title',
+                          'hold_at_menu',
+                          ]
+
+            # spaghetti code
+            if any([state[key] for key in intro_keys]):
+                state['menu_ready'] = True
+                for key in intro_keys:
+                    state[key] = False
+            elif any([state[key] for key in credits_keys]):
+                state['fading_in_anne'] = True
+                for key in credits_keys:
+                    state[key] = False
+            elif any([state[key] for key in logo_keys]):
+                state['fading_in_credits'] = True
+                for key in logo_keys:
+                    state[key] = False
+
     elif mode == config.Modes.INTRO:
         if any_key:
             state['message_sfx_played'] = False

@@ -201,6 +201,14 @@ class Background(AbstractBG):
     def render_intro_dialog(self, *args):
         self.surface.fill(config.main_menu_bg_color)
 
+        self.reset_main_menu_images_transparency(0)
+
+    def reset_main_menu_images_transparency(self, val):
+        for sprite in self.main_menu_images:
+            sprite.set_alpha(val)
+        for sprite in self.title_images:
+            sprite.set_alpha(val)
+
     def load_images(self):
         super().load_images()
 
@@ -423,6 +431,8 @@ class Background(AbstractBG):
                     break
 
         if state['menu_ready']:
+            self.reset_main_menu_images_transparency(255)
+
             self.menu_frame_counter = 0
             self.advance_frame()
             self.surface.blit(self.title_sprite, self.title_rect)
