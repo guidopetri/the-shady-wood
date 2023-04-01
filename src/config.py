@@ -150,7 +150,7 @@ game_over_text = ['GAME OVER',
                   'Anne became too afraid. She turned to stone...',
                   ]
 
-game_over_fontsize = 20
+game_over_fontsize = 16
 game_over_font_color = 'white'
 
 moonlight_color = 'blue'
