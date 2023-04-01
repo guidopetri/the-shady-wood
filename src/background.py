@@ -296,7 +296,29 @@ class Foreground(AbstractBG):
     def __init__(self, surface):
         self.image_type = 'Tree'
 
+        self.font = pygame.font.Font(config.fontname,
+                                     config.credits_fontsize,
+                                     )
+        self.font_color = pygame.Color(config.credits_font_color)
+
+        coords = {'center': (config.screen_center[0],
+                             config.screen_size[1] - 64,
+                             )
+                  }
+        self.credits_text = self.font.render(config.credits_text,
+                                             True,
+                                             self.font_color,
+                                             )
+        self.credits_rect = self.credits_text.get_rect(**coords)
+        self.credits_rect.move_ip(config.credits_padding)
+
         super().__init__(surface)
+
+    def render_win_dialog(self, state):
+        super().render_win_dialog(state)
+
+        # credits
+        self.surface.blit(self.credits_text, self.credits_rect)
 
 
 class Boundaries(AbstractBG):

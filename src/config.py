@@ -229,3 +229,8 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
 
 restart_text = 'Press any key to restart'
 advance_text = 'Press any key'
+
+credits_text = 'A game by Kendra Lemon and Guido Petri'
+credits_fontsize = 12
+credits_font_color = 'gray'
+credits_padding = (0, 0)
