@@ -375,9 +375,9 @@ if __name__ == '__main__':
 
         shadows.render(game_state)
         # place snail above shadows
-        objects.render(game_state)
         snail.render(game_state)
         light_fx.render(game_state)
+        objects.render(game_state)
         gui.render(game_state)
         dialog.render(game_state)
 
