@@ -8,10 +8,10 @@ The theme for [this PyWeek](https://pyweek.org/35/) is `In The Shadows`.
 git clone https://github.com/guidopetri/pyweek-35
 cd pyweek-35
 pip install -r requirements.txt  # or replace with your virtual env stuff
-python3 src/main.py
+python3 src/run_game.py
 ```
 
-Install the dependencies with `pip install`, then run `main.py` from any location!
+Install the dependencies with `pip install`, then run `run_game.py` from any location!
 
 ## How to play
 
@@ -54,7 +54,7 @@ pip install pyinstaller
 Create the spec file:
 
 ```sh
-pyi-makespec --windowed --onefile --add-data "./assets;assets" --name shady_wood src/main.py
+pyi-makespec --windowed --onefile --add-data "./assets;assets" --name shady_wood src/run_game.py
 ```
 
 Use a `;` for a path separator on Windows, or `:` on \*nix.
