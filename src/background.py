@@ -209,6 +209,9 @@ class Background(AbstractBG):
         for sprite in self.title_images:
             sprite.set_alpha(val)
 
+        self.logo.set_alpha(val)
+        self.credits_text.set_alpha(val)
+
     def load_images(self):
         super().load_images()
 
