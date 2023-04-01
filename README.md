@@ -62,7 +62,7 @@ Use a `;` for a path separator on Windows, or `:` on \*nix.
 Build:
 
 ```sh
-pyinstaller shady_wood.spec
+pyinstaller --clean shady_wood.spec
 ```
 
 The executable will be located in `./dist/shady_wood.exe` (or no extension for \*nix).
