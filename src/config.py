@@ -37,10 +37,11 @@ border_padding = 10
 border_size = (20, 10)
 text_padding = (0, 3)
 
-main_menu_bg_color = '#072016'
+main_menu_bg_color = '#141414'
 main_menu_text = 'Press any key to start'
-menu_text_padding = (0, 50)
-title_padding = (0, -30)
+menu_text_padding = (0, 0)
+menu_sprite_padding = (0, 110)
+title_padding = (0, 80)
 
 courage_fontname = 'Copperplate Gothic'
 courage_fontsize = 14

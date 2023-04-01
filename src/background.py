@@ -202,8 +202,8 @@ class Background(AbstractBG):
     def load_images(self):
         super().load_images()
 
-        self.num_frames = 4
-        self.fps = 4
+        self.num_frames = 8
+        self.fps = 5
         self._frames_per_sprite = config.framerate / self.fps
 
         file = 'Main_menu_spritesheet_2x2_384px.png'
@@ -218,6 +218,10 @@ class Background(AbstractBG):
                   (width, 0),
                   (0, height),
                   (width, height),
+                  (0, 2 * height),
+                  (width, 2 * height),
+                  (0, 3 * height),
+                  (width, 3 * height),
                   ]
 
         for idx in range(self.num_frames):
@@ -226,6 +230,7 @@ class Background(AbstractBG):
         self.main_menu_images = sprites
         coords = {'center': config.screen_center}
         self.menu_rect = self.menu_sprite.get_rect(**coords)
+        self.menu_rect.move_ip(config.menu_sprite_padding)
 
         self.menu_text = self.font.render(config.main_menu_text,
                                           True,
@@ -235,13 +240,31 @@ class Background(AbstractBG):
         self.menu_text_rect.midtop = self.menu_rect.midbottom
         self.menu_text_rect.move_ip(config.menu_text_padding)
 
-        # file = 'title.png'
-        # path = config.gfx_path / file
-        # self.title_image = pygame.image.load(path).convert_alpha()
-        self.title_image = pygame.Surface((400, 100))
-        self.title_image.fill('magenta')
-        self.title_rect = self.title_image.get_rect()
-        self.title_rect.midbottom = self.menu_rect.midtop
+        file = 'Main_menu_spritesheet_title_2x4_331x133px.png'
+        path = config.gfx_path / file
+        sheet = pygame.image.load(path).convert_alpha()
+
+        sprites = []
+        width = 993
+        height = 399
+
+        coords = [(0, 0),
+                  (width, 0),
+                  (0, height),
+                  (width, height),
+                  (0, 2 * height),
+                  (width, 2 * height),
+                  (0, 3 * height),
+                  (width, 3 * height),
+                  ]
+
+        for idx in range(self.num_frames):
+            sprite_area = pygame.Rect(*coords[idx], width, height)
+            sprites.append(sheet.subsurface(sprite_area))
+        self.title_images = sprites
+
+        self.title_rect = self.title_sprite.get_rect()
+        self.title_rect.midbottom = config.screen_center
         self.title_rect.move_ip(config.title_padding)
 
     def advance_frame(self):
@@ -253,6 +276,10 @@ class Background(AbstractBG):
         self.current_frame %= self.num_frames
 
     @property
+    def title_sprite(self):
+        return self.title_images[self.current_frame]
+
+    @property
     def menu_sprite(self):
         return self.main_menu_images[self.current_frame]
 
@@ -260,7 +287,7 @@ class Background(AbstractBG):
         self.surface.fill(config.main_menu_bg_color)
         self.advance_frame()
 
-        self.surface.blit(self.title_image, self.title_rect)
+        self.surface.blit(self.title_sprite, self.title_rect)
         self.surface.blit(self.menu_sprite, self.menu_rect)
         self.surface.blit(self.menu_text, self.menu_text_rect)
 
