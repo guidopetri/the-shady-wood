@@ -96,6 +96,10 @@ class SFX(object):
                          for idx, name in enumerate(self.sfx.keys())
                          }
 
+        self.sfx['anne_normal'].set_volume(0.1)
+        self.sfx['menu_select'].set_volume(0.3)
+        self.sfx['item_use'].set_volume(0.3)
+
     def load_sound(self, path):
         return pygame.mixer.Sound(self.sfx_path / path)
 
