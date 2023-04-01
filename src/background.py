@@ -271,12 +271,9 @@ class Background(AbstractBG):
         self.title_rect.move_ip(config.title_padding)
 
         # logo
-        # file = 'logo.png'
-        # path = config.gfx_path / file
-        # self.logo = pygame.image.load(path).convert_alpha()
-        # todo: use logo image
-        self.logo = pygame.Surface((128, 128))
-        self.logo.fill('magenta')
+        file = 'Lemon_Pepper_Logo_148x124px.png'
+        path = config.gfx_path / file
+        self.logo = pygame.image.load(path).convert_alpha()
 
         coords = {'center': config.screen_center}
         self.logo_rect = self.logo.get_rect(**coords)
