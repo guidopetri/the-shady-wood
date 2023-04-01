@@ -637,19 +637,16 @@ class Shadows(object):
                 if self.default_shadows is None:
                     self.default_shadows = self.shadows
 
-            if (state['effect'] == 'regular' or
-                (state['effect'] == 'lightning'
-                    and (state['effect_fade_in']
-                         or state['effect_fade_out']))):
+            if state['effect'] == 'regular':
                 self.surface.blit(self.shadows, (0, 0))
 
 
 class LightStatusEffects(Shadows):
     def __init__(self, surface):
-        self.initial_area = 180
-        self.initial_variance = 48000
+        self.initial_area = 120
+        self.initial_variance = 240
         self.final_area = 50
-        self.final_variance = 3
+        self.final_variance = 200
 
         moon_num_frames = 2
         filename = 'Moonlight_Rays_2x1_384px.png'
@@ -678,7 +675,7 @@ class LightStatusEffects(Shadows):
 
         super().__init__(surface,
                          area=self.initial_area,
-                         variance=2400,
+                         variance=240,
                          )
         self.shadows = self.render_shadows('black', 255)
         self.reset_to_defaults()
@@ -715,7 +712,10 @@ class LightStatusEffects(Shadows):
 
     def render_filter(self, color, alpha):
         if self.effect_is_fading_in or self.effect_is_fading_out:
+
             self.filt = self.render_shadows(color, ceil(alpha))
+            if self.effect_is_fading_out:
+                self.filt.set_alpha(255)
         else:
             self.filt.set_alpha(alpha)
 
