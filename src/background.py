@@ -312,10 +312,35 @@ class Foreground(AbstractBG):
         self.credits_rect = self.credits_text.get_rect(**coords)
         self.credits_rect.move_ip(config.credits_padding)
 
+        self.intro_font = pygame.font.Font(config.fontname,
+                                           config.advance_fontsize,
+                                           )
+        self.intro_font_color = pygame.Color(config.advance_color)
+
+        coords = {'center': (config.screen_size[0] - 128,
+                             config.screen_size[1] - 64,
+                             )
+                  }
+        self.advance_text = self.font.render(config.advance_text,
+                                             True,
+                                             self.font_color,
+                                             )
+        self.advance_rect = self.advance_text.get_rect(**coords)
+        self.advance_rect.move_ip(config.advance_padding)
+
         super().__init__(surface)
+
+    def render_intro_dialog(self, state):
+        super().render_intro_dialog(state)
+
+        # press any key to advance
+        self.surface.blit(self.advance_text, self.advance_rect)
 
     def render_win_dialog(self, state):
         super().render_win_dialog(state)
+
+        # press any key to advance
+        self.surface.blit(self.advance_text, self.advance_rect)
 
         # credits
         self.surface.blit(self.credits_text, self.credits_rect)
