@@ -167,6 +167,7 @@ class Background(AbstractBG):
         super().__init__(surface)
 
     def render_game_over(self, *args):
+        self.surface.fill(config.main_menu_bg_color)
         text = config.game_over_text
 
         coords = {'center': (config.screen_center[0],
