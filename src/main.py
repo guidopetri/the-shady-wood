@@ -86,6 +86,7 @@ def handle_events(state):
             state['action'] = 'waving'
             state['direction'] = 'forward'
             state['position'] = config.initial_position
+            state['message_sfx_played'] = False
 
         if state['status'] == 'unsafe':
             # lose 1hp every 3 frames ~ 20hp per s ~ 5s in unsafe zone
@@ -263,6 +264,7 @@ def handle_events(state):
     elif mode == config.Modes.WIN_DIALOG:
         if any_key:
             state['active_message'] += 1
+            state['message_sfx_played'] = False
             if state['active_message'] >= len(config.game_win_text):
                 state['current_game_mode'] = config.Modes.MAIN_MENU
                 # revert to default state

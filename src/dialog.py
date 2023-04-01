@@ -107,6 +107,8 @@ class Dialog(object):
                     state['msg_duration'] = config.msg_duration
         elif mode == config.Modes.WIN_DIALOG:
             tone_text = config.game_win_text[message]
+            if state['message_sfx_played']:
+                tone_text = (None, tone_text[1])
 
         tone, text = tone_text
 
