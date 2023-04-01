@@ -96,10 +96,12 @@ class Dialog(object):
                     state['msg_duration'] = config.msg_duration
             elif state['pickup']:
                 item = state['last_item_picked_up']
+                state['pickup'] = False
                 if state['first_item_pickup'].get(item):
                     tone_text = config.first_item_messages.get(item,
                                                                (None, None),
                                                                )
+                    state['first_item_pickup'][item] = False
 
                 if tone_text[1] is not None:
                     state['msg_duration'] = config.msg_duration

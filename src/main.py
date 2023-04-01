@@ -225,6 +225,8 @@ def handle_events(state):
             state['active_sfx'].add('item_pickup')
             state['inventory'][item] += 1
             state['item_map'][current_tile[1]][current_tile[0]] = ' '
+            state['pickup'] = True
+            state['last_item_picked_up'] = item
 
         if config.debug_mode:
             if keys[pygame.K_a]:
