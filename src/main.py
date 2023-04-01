@@ -221,7 +221,7 @@ def handle_events(state):
                         )
         item = state['item_map'][current_tile[1]][current_tile[0]]
         if close_to_tile_center and item != ' ':
-            state['active_sfx'].add('item_pickup')
+            state['active_sfx'].add('pickup')
             state['inventory'][item] += 1
             state['item_map'][current_tile[1]][current_tile[0]] = ' '
             state['pickup'] = True

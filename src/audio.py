@@ -96,6 +96,7 @@ class SFX(object):
 
         self.sfx['anne_normal'].set_volume(0.3)
         self.sfx['item_use'].set_volume(0.3)
+        self.sfx['pickup'].set_volume(0.3)
 
     def load_sound(self, path):
         return pygame.mixer.Sound(self.sfx_path / path)
