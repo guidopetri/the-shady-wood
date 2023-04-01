@@ -9,12 +9,10 @@ class Dialog(object):
         self.font_color = pygame.Color(config.font_color)
         self.last_text = None
         self.last_rect = None
-
-    @property
-    def position(self):
-        return {'midtop': (config.screen_size[0] // 2,
-                           3 * config.screen_size[1] // 4),
-                }
+        self._default_position = {'midtop': (config.screen_size[0] // 2,
+                                             3 * config.screen_size[1] // 4),
+                                  }
+        self.position = self._default_position
 
     def render_box_bg(self, width, height):
         # create filled in rect for border
@@ -61,11 +59,30 @@ class Dialog(object):
         message = state['active_message']
 
         tone_text = ('anne_normal', None)
+        self.position = self._default_position
 
         if mode == config.Modes.INTRO:
-            tone_text = config.intro_messages[message]
+            tone_texts = config.intro_messages[:message + 1]
+            for idx, (tone, text) in enumerate(tone_texts):
+                if state['message_sfx_played']:
+                    tone = None
+
+                self.position = {'midtop': (config.screen_size[0] // 2,
+                                            int((idx + 1) / 3
+                                                * config.screen_size[1]
+                                                // 4)),
+                                 }
+                text, rect = self.render_text(text)
+                self.render_box_bg(rect.width, rect.height)
+                self.blit_text(text, rect)
+
+            # return to empty string for the last section of this
+            # method to still handle sound
+            # spaghetti code
+            tone = tone_texts[-1][0]
             if state['message_sfx_played']:
-                tone_text = (None, tone_text[1])
+                tone = None
+            tone_text = (tone, ' ')
         elif mode == config.Modes.GAME:
             if state['msg_duration'] <= 0:
                 self.last_text = None
