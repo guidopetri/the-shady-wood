@@ -86,8 +86,8 @@ class SFX(object):
                       'pickup': 0,
                       'item_use': 0,
                       'menu_select': 0,
-                      'anne_normal': 2,
-                      'anne_negative': 2,
+                      'anne_normal': 0,
+                      'anne_negative': 0,
                       }
         self.sfx = {name: self.load_sound(path)
                     for name, path in self.paths.items()
@@ -96,8 +96,8 @@ class SFX(object):
                          for idx, name in enumerate(self.sfx.keys())
                          }
 
-        self.sfx['anne_normal'].set_volume(0.1)
-        self.sfx['menu_select'].set_volume(0.3)
+        self.sfx['anne_normal'].set_volume(0.3)
+        self.sfx['menu_select'].set_volume(0)
         self.sfx['item_use'].set_volume(0.3)
 
     def load_sound(self, path):
