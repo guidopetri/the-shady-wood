@@ -197,7 +197,7 @@ class Background(AbstractBG):
         self.surface.blit(restart_text, restart_rect)
 
     def render_intro_dialog(self, *args):
-        self.surface.fill('black')
+        self.surface.fill(config.main_menu_bg_color)
 
     def load_images(self):
         super().load_images()
