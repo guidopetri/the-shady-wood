@@ -5,8 +5,8 @@ The theme for [this PyWeek](https://pyweek.org/35/) is `In The Shadows`.
 # Instructions
 
 ```sh
-git clone https://github.com/guidopetri/pyweek-35
-cd pyweek-35
+git clone https://github.com/guidopetri/the-shady-wood
+cd the-shady-wood
 pip install -r requirements.txt  # or replace with your virtual env stuff
 python3 src/run_game.py
 ```
