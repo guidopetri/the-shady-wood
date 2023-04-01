@@ -22,6 +22,7 @@ Press any key to advance.
 ### Game
 
 Use the arrow keys to move.
+
 Use items with the C, F and S keys.
 
 # Game description
@@ -45,7 +46,9 @@ Elaborate descriptions to be added.
 # Credits / Attribution
 
 Programming: Guido Petri
+
 Art: Kendra Lemon
+
 Sound effects: Kendra Lemon
 
 Font: [Dogica Pixel](https://www.dafont.com/dogica.font) by Roberto Mocci.
