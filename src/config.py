@@ -13,7 +13,7 @@ class Modes(enum.Enum):
     WIN_DIALOG = 4
 
 
-debug_mode = True
+debug_mode = False
 
 screen_size = (1080, 720)
 screen_center = tuple(x // 2 for x in screen_size)
