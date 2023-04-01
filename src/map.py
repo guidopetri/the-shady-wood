@@ -154,8 +154,8 @@ class Map(object):
         objects = [' ', ' ', ' ', 'firefly' 'firefly', 'snail']
         unique_objs = ['firefly', 'snail']
         t_objs = [' ', ' ', ' ', ' ', 'firefly', 'firefly', 'snail', 'snail']
-        corner_objs = [' ', ' ', 'firefly']
-        straight_objs = [' ', ' ', ' ', ' ', ' ', 'snail']
+        corner_objs = [' '] * 45 + ['firefly'] * 4 + ['snail']
+        straight_objs = [' '] * 45 + ['firefly'] * 4 + ['snail']
 
         for y, row in enumerate(self.map):
             for x, tile in enumerate(row):
