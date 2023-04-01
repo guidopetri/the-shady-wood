@@ -103,7 +103,7 @@ class Dialog(object):
                 tone_text = config.cant_use_item_text
                 if state['message_sfx_played']:
                     tone_text = (None, tone_text[1])
-        elif mode == config.Modes.WIN_DIALOG:
+        elif mode == config.Modes.WIN_DIALOG and state['ready_for_win']:
             tone_text = config.game_win_text[message]
             if state['message_sfx_played']:
                 tone_text = (None, tone_text[1])

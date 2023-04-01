@@ -13,6 +13,7 @@ class Audio(object):
 
         self.current_music = self.menu_music
         self.playing = False
+        self.win_delay_frames = 0
 
     @property
     def current_music(self):
@@ -68,6 +69,12 @@ class Audio(object):
 
         if self.current_music != track:
             self.current_music = track
+
+        if self.current_music == self.win_music and self.delay_frames <= config.music_win_delay_frames:  # noqa
+            self.delay_frames += 1
+            return
+
+        self.delay_frames = 0
         self.play_current_track()
 
 

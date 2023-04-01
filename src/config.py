@@ -184,6 +184,10 @@ lightning_effect_rate = 1 * framerate
 music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100
 music_death_fadeout_time_ms = 100
+# 3s before pause in music - magic number
+music_win_delay_frames = int(1.5 * map_tile_size
+                             / character_speed
+                             - 3 * framerate)
 
 initial_position = tuple([int((x + 2 * map_buffer_size)
                               / 2 * map_tile_size)
@@ -239,6 +243,7 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'fading_in_anne': False,
                       'fading_in_title': False,
                       'hold_at_menu': False,
+                      'ready_for_win': False,
                       }
 
 fadein_credits_text = 'Created by Kendra Lemon and Guido Petri'

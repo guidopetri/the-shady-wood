@@ -85,7 +85,11 @@ def handle_events(state):
             state['item'] = 'waving'
             state['action'] = 'waving'
             state['direction'] = 'forward'
-            state['position'] = config.initial_position
+            # move 1.5 tiles back for the win animation
+            state['position'] = (config.initial_position[0]
+                                 - int(1.5 * config.map_tile_size),
+                                 config.initial_position[1],
+                                 )
             state['message_sfx_played'] = False
 
         if state['status'] == 'unsafe':
@@ -284,7 +288,25 @@ def handle_events(state):
             # revert to default state
             state = deepcopy(config.default_game_state)
     elif mode == config.Modes.WIN_DIALOG:
-        if any_key:
+        # move anne's position along background
+        if not state['ready_for_win']:
+            state['item'] = 'none'
+            state['action'] = 'walking'
+            state['direction'] = 'right'
+            state['position'] = (state['position'][0]
+                                 + config.character_speed,
+                                 state['position'][1],
+                                 )
+
+            if state['position'] == config.initial_position:
+                state['item'] = 'waving'
+                state['action'] = 'waving'
+                state['direction'] = 'forward'
+                state['message_sfx_played'] = False
+
+                state['ready_for_win'] = True
+
+        if any_key and state['ready_for_win']:
             state['active_message'] += 1
             state['message_sfx_played'] = False
             if state['active_message'] >= len(config.game_win_text):

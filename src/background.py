@@ -473,8 +473,9 @@ class Foreground(AbstractBG):
     def render_win_dialog(self, state):
         super().render_win_dialog(state)
 
-        # press any key to advance
-        self.surface.blit(self.advance_text, self.advance_rect)
+        if state['ready_for_win']:
+            # press any key to advance
+            self.surface.blit(self.advance_text, self.advance_rect)
 
     def render_main_menu(self, state):
         super().render_main_menu(state)
