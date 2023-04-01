@@ -14,37 +14,6 @@ class Dialog(object):
                                   }
         self.position = self._default_position
 
-    def render_box_bg(self, width, height):
-        # create filled in rect for border
-        border_rect = pygame.Rect(0,
-                                  0,
-                                  width + config.border_size[0],
-                                  height + config.border_size[1],
-                                  )
-        border_rect.midtop = self.position['midtop']
-
-        pygame.draw.rect(self.surface,
-                         config.dialog_border_color,
-                         border_rect,
-                         border_radius=config.dialog_border_radius,
-                         )
-
-        # create bg to overlay on border
-        bg_rect = pygame.Rect(0,
-                              0,
-                              border_rect.width - config.border_padding,
-                              border_rect.height - config.border_padding,
-                              )
-        bg_rect.midtop = border_rect.midtop
-        bg_rect.move_ip(0, config.border_padding // 2)
-
-        # blit bg within border to achieve a border effect
-        pygame.draw.rect(self.surface,
-                         config.dialog_box_color,
-                         bg_rect,
-                         border_radius=config.dialog_border_radius,
-                         )
-
     def render_text(self, text):
         render = self.font.render(text, True, self.font_color)
         rect = render.get_rect(**self.position)
@@ -73,7 +42,6 @@ class Dialog(object):
                                                 // 4)),
                                  }
                 text, rect = self.render_text(text)
-                self.render_box_bg(rect.width, rect.height)
                 self.blit_text(text, rect)
 
             # return to empty string for the last section of this
@@ -134,10 +102,8 @@ class Dialog(object):
                 state['active_sfx'].add(tone)
                 state['message_sfx_played'] = True
             text, rect = self.render_text(text)
-            self.render_box_bg(rect.width, rect.height)
             self.blit_text(text, rect)
             self.last_text = text
             self.last_rect = rect
         elif self.last_text is not None and mode == config.Modes.GAME:
-            self.render_box_bg(self.last_rect.width, self.last_rect.height)
             self.blit_text(self.last_text, self.last_rect)

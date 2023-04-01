@@ -30,17 +30,11 @@ framerate = 60
 character_speed = 2
 snail_speed = 6
 
-font_color = '#303030'
 fontpath = root / 'assets' / 'font'
 fontname = fontpath / 'OTF' / 'dogicapixel.otf'
 fontsize = 16
+font_color = 'white'
 
-dialog_border_color = 'blue'
-dialog_box_color = 'yellow'
-menu_bg_color = 'yellow'
-dialog_border_radius = 5
-border_padding = 10
-border_size = (20, 10)
 text_padding = (0, 3)
 
 main_menu_bg_color = '#141414'
