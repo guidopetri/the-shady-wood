@@ -15,7 +15,7 @@ class Modes(enum.Enum):
 
 
 debug_mode = False
-version_text = 'v1.1.0'
+version_text = 'v1.1.1'
 version_color = '#444444'
 version_text_padding = (-10, -10)
 

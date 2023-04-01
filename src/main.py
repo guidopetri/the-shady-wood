@@ -359,7 +359,7 @@ if __name__ == '__main__':
     character = MainCharacter(surface)
     bg = Background(surface)
     dialog = Dialog(surface)
-    shadows = Shadows(surface, area=120, variance=400)
+    shadows = Shadows(surface, area=360, variance=400)
     # shadows = Shadows(surface, area=360, variance=48000)
     fg = Foreground(surface)
     gui = Gui(surface)
