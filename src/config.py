@@ -170,6 +170,9 @@ lightning_rain_fps = 4
 lightning_rain_alpha = 80
 
 effect_rate = 5 * framerate
+cant_use_item_text = ('anne_negative', 'I can\'t use that right now.')
+cant_use_item_duration = 3 * framerate
+
 lightning_effect_rate = 1 * framerate
 
 music_fadeout_time_ms = 2000
@@ -219,6 +222,7 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'generate_map': True,
                       'active_sfx': set(),
                       'message_sfx_played': True,
+                      'tried_to_use_item': False,
                       }
 
 restart_text = 'Press any key to restart'

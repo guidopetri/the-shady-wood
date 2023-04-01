@@ -193,6 +193,15 @@ def handle_events(state):
         elif state['item'] != 'none':
             state['item_duration'] -= 1
 
+        # spaghetti code
+        for key, item in items_map.items():
+            has_item = state['inventory'][item] > 0
+            if keys[key] and state['effect'] != 'regular' and has_item:
+                state['tried_to_use_item'] = config.cant_use_item_duration
+                state['message_sfx_played'] = False
+
+        state['tried_to_use_item'] = max(0, state['tried_to_use_item'] - 1)
+
         reset_item = (state['item_duration'] <= 0
                       and state['item'] not in ('none', 'dead', 'waving'))
         if reset_item:
