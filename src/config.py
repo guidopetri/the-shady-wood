@@ -260,7 +260,7 @@ title_fadein_period = 2 * framerate
 ready_hold_period = 2 * framerate
 
 restart_text = 'Press any key to restart'
-advance_text = 'Press any key to advance'
+advance_text = 'Press any key to continue'
 advance_fontsize = 14
 advance_color = 'gray'
 advance_padding = (-32, 0)
