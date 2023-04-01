@@ -85,7 +85,9 @@ class Dialog(object):
                 tone_text = config.maze_begin_message
             elif state['item'].endswith('_out'):
                 item = state['item'][:-4]
-                tone_text = config.item_end_messages.get(item)
+                tone_text = config.item_end_messages.get(item,
+                                                         (None, None),
+                                                         )
                 if state['first_item_end'][item]:
                     # default to text itself
                     tone_text = config.first_item_end_messages.get(item, tone_text)  # noqa
@@ -95,7 +97,9 @@ class Dialog(object):
             elif state['pickup']:
                 item = state['last_item_picked_up']
                 if state['first_item_pickup'].get(item):
-                    tone_text = config.first_item_messages.get(item)
+                    tone_text = config.first_item_messages.get(item,
+                                                               (None, None),
+                                                               )
 
                 if tone_text[1] is not None:
                     state['msg_duration'] = config.msg_duration
