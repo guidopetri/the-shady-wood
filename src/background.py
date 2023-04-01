@@ -161,6 +161,7 @@ class Background(AbstractBG):
         self.font_color = pygame.Color(config.game_over_font_color)
 
         self.frame_counter = 0
+        self.menu_frame_counter = 0
         self.current_frame = 0
 
         super().__init__(surface)
@@ -227,6 +228,7 @@ class Background(AbstractBG):
         for idx in range(self.num_frames):
             sprite_area = pygame.Rect(*coords[idx], width, height)
             sprites.append(sheet.subsurface(sprite_area))
+            sprites[-1].set_alpha(0)
         self.main_menu_images = sprites
         coords = {'center': config.screen_center}
         self.menu_rect = self.menu_sprite.get_rect(**coords)
@@ -261,11 +263,35 @@ class Background(AbstractBG):
         for idx in range(self.num_frames):
             sprite_area = pygame.Rect(*coords[idx], width, height)
             sprites.append(sheet.subsurface(sprite_area))
+            sprites[-1].set_alpha(0)
         self.title_images = sprites
 
         self.title_rect = self.title_sprite.get_rect()
         self.title_rect.midbottom = config.screen_center
         self.title_rect.move_ip(config.title_padding)
+
+        # logo
+        # file = 'logo.png'
+        # path = config.gfx_path / file
+        # self.logo = pygame.image.load(path).convert_alpha()
+        # todo: use logo image
+        self.logo = pygame.Surface((128, 128))
+        self.logo.fill('magenta')
+
+        coords = {'center': config.screen_center}
+        self.logo_rect = self.logo.get_rect(**coords)
+        self.logo.set_alpha(0)
+
+        # fadein credits
+        self.credits_text = self.font.render(config.fadein_credits_text,
+                                             True,
+                                             self.font_color,
+                                             )
+        self.credits_text_rect = self.credits_text.get_rect(**coords)
+        self.credits_text_rect.move_ip(config.fadein_credits_text_padding)
+        self.credits_text.set_alpha(0)
+
+        self.generate_states_map()
 
     def advance_frame(self):
         self.frame_counter += 1
@@ -283,13 +309,126 @@ class Background(AbstractBG):
     def menu_sprite(self):
         return self.main_menu_images[self.current_frame]
 
-    def render_main_menu(self, *args):
-        self.surface.fill(config.main_menu_bg_color)
-        self.advance_frame()
+    def generate_states_map(self):
+        # spaghetti code, there must be a better way
+        # but i'm pretty tired
 
-        self.surface.blit(self.title_sprite, self.title_rect)
-        self.surface.blit(self.menu_sprite, self.menu_rect)
-        self.surface.blit(self.menu_text, self.menu_text_rect)
+        states_map = {'fading_in_logo': {'period': config.logo_fadein_period,
+                                         'next': 'hold_logo',
+                                         'blit_imgs': [(self.logo,
+                                                        self.logo_rect,
+                                                        ),
+                                                       ],
+                                         'alpha_mod': 2,
+                                         },
+                      'hold_logo': {'period': config.logo_hold_period,
+                                    'next': 'fading_out_logo',
+                                    'blit_imgs': [(self.logo,
+                                                   self.logo_rect,
+                                                   ),
+                                                  ],
+                                    'alpha_mod': 0,
+                                    },
+                      'fading_out_logo': {'period': config.logo_fadeout_period,
+                                          'next': 'fading_in_credits',
+                                          'blit_imgs': [(self.logo,
+                                                         self.logo_rect,
+                                                         ),
+                                                        ],
+                                          'alpha_mod': -2,
+                                          },
+                      'fading_in_credits': {'period': config.credits_fadein_period,  # noqa
+                                            'next': 'hold_credits',
+                                            'blit_imgs': [(self.credits_text,
+                                                           self.credits_text_rect,  # noqa
+                                                           ),
+                                                          ],
+                                            'alpha_mod': 2,
+                                            },
+                      'hold_credits': {'period': config.credits_hold_period,
+                                       'next': 'fading_out_credits',
+                                       'blit_imgs': [(self.credits_text,
+                                                      self.credits_text_rect,
+                                                      ),
+                                                     ],
+                                       'alpha_mod': 0,
+                                       },
+                      'fading_out_credits': {'period': config.credits_fadeout_period,  # noqa
+                                             'next': 'fading_in_anne',
+                                             'blit_imgs': [(self.credits_text,
+                                                            self.credits_text_rect,  # noqa
+                                                            ),
+                                                           ],
+                                             'alpha_mod': -2,
+                                             },
+                      'fading_in_anne': {'period': config.anne_fadein_period,
+                                         'next': 'fading_in_title',
+                                         'blit_imgs': [(self.main_menu_images,
+                                                        self.menu_rect,
+                                                        ),
+                                                       ],
+                                         'alpha_mod': 2,
+                                         },
+                      'fading_in_title': {'period': config.title_fadein_period,
+                                          'next': 'hold_at_menu',
+                                          'blit_imgs': [(self.main_menu_images,
+                                                         self.menu_rect,
+                                                         ),
+                                                        (self.title_images,
+                                                         self.title_rect,
+                                                         ),
+                                                        ],
+                                          'alpha_mod': 3,
+                                          },
+                      'hold_at_menu': {'period': config.ready_hold_period,
+                                       'next': 'menu_ready',
+                                       'blit_imgs': [(self.main_menu_images,
+                                                      self.menu_rect,
+                                                      ),
+                                                     (self.title_images,
+                                                      self.title_rect,
+                                                      ),
+                                                     ],
+                                       'alpha_mod': 0,
+                                       },
+                      }
+        self.states_map = states_map
+
+    def render_main_menu(self, state):
+        self.surface.fill(config.main_menu_bg_color)
+
+        self.menu_frame_counter += 1
+
+        advance_frames_on_states = ('fading_in_anne',
+                                    'fading_in_title',
+                                    'hold_at_menu',
+                                    )
+
+        if not state['menu_ready']:
+            for key, info in self.states_map.items():
+                if state[key]:
+                    if self.menu_frame_counter >= info['period']:
+                        state[key] = False
+                        state[info['next']] = True
+                        self.menu_frame_counter = 0
+                    if key in advance_frames_on_states:
+                        self.advance_frame()
+                    for (img, rect) in info['blit_imgs']:
+                        if isinstance(img, list):
+                            for i in img:
+                                i.set_alpha(i.get_alpha() + info['alpha_mod'])
+                            blit_img = img[self.current_frame]
+                        else:
+                            img.set_alpha(img.get_alpha() + info['alpha_mod'])
+                            blit_img = img
+                        self.surface.blit(blit_img, rect)
+                    break
+
+        if state['menu_ready']:
+            self.advance_frame()
+            self.surface.blit(self.title_sprite, self.title_rect)
+            self.surface.blit(self.menu_sprite, self.menu_rect)
+            self.surface.blit(self.menu_text, self.menu_text_rect)
 
 
 class Foreground(AbstractBG):
@@ -341,8 +480,10 @@ class Foreground(AbstractBG):
 
     def render_main_menu(self, state):
         super().render_main_menu(state)
-        # credits
-        self.surface.blit(self.credits_text, self.credits_rect)
+
+        if state['menu_ready']:
+            # credits
+            self.surface.blit(self.credits_text, self.credits_rect)
 
 
 class Boundaries(AbstractBG):

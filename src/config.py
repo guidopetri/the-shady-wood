@@ -223,7 +223,32 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'active_sfx': set(),
                       'message_sfx_played': True,
                       'tried_to_use_item': False,
+                      'menu_ready': False,
+                      'fading_in_logo': True,
+                      'hold_logo': False,
+                      'fading_out_logo': False,
+                      'fading_in_credits': False,
+                      'hold_credits': False,
+                      'fading_out_credits': False,
+                      'fading_in_anne': False,
+                      'fading_in_title': False,
+                      'hold_at_menu': False,
                       }
+
+fadein_credits_text = 'Kendra Lemon and Guido Petri'
+fadein_credits_text_padding = (0, 0)
+
+logo_fadein_period = 2 * framerate
+logo_hold_period = 1 * framerate
+logo_fadeout_period = 2 * framerate
+
+credits_fadein_period = 2 * framerate
+credits_hold_period = 1 * framerate
+credits_fadeout_period = 2 * framerate
+
+anne_fadein_period = 2 * framerate
+title_fadein_period = 2 * framerate
+ready_hold_period = 2 * framerate
 
 restart_text = 'Press any key to restart'
 advance_text = 'Press any key to advance'

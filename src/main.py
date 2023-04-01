@@ -54,7 +54,7 @@ def handle_events(state):
     state['active_sfx'] = set()
 
     if mode == config.Modes.MAIN_MENU:
-        if any_key:
+        if state['menu_ready'] and any_key:
             state['current_game_mode'] = config.Modes.INTRO
             state['message_sfx_played'] = False
     elif mode == config.Modes.INTRO:
