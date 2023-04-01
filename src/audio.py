@@ -78,14 +78,12 @@ class SFX(object):
         self.paths = {'hp_drain': 'Hp_draining.wav',
                       'pickup': 'Item_pickup.wav',
                       'item_use': 'Item_use_Menu_select.wav',
-                      'menu_select': 'Item_use_Menu_select.wav',
                       'anne_normal': 'Anne_speaking_normal.wav',
                       'anne_negative': 'Anne_speaking_negative.wav',
                       }
         self.loops = {'hp_drain': -1,
                       'pickup': 0,
                       'item_use': 0,
-                      'menu_select': 0,
                       'anne_normal': 0,
                       'anne_negative': 0,
                       }
@@ -97,7 +95,6 @@ class SFX(object):
                          }
 
         self.sfx['anne_normal'].set_volume(0.3)
-        self.sfx['menu_select'].set_volume(0)
         self.sfx['item_use'].set_volume(0.3)
 
     def load_sound(self, path):

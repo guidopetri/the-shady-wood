@@ -56,11 +56,9 @@ def handle_events(state):
     if mode == config.Modes.MAIN_MENU:
         if any_key:
             state['current_game_mode'] = config.Modes.INTRO
-            state['active_sfx'].add('menu_select')
             state['message_sfx_played'] = False
     elif mode == config.Modes.INTRO:
         if any_key:
-            state['active_sfx'].add('menu_select')
             state['message_sfx_played'] = False
             state['active_message'] += 1
             if state['active_message'] >= len(config.intro_messages):
@@ -262,10 +260,8 @@ def handle_events(state):
             state['current_game_mode'] = config.Modes.MAIN_MENU
             # revert to default state
             state = deepcopy(config.default_game_state)
-            state['active_sfx'].add('menu_select')
     elif mode == config.Modes.WIN_DIALOG:
         if any_key:
-            state['active_sfx'].add('menu_select')
             state['active_message'] += 1
             if state['active_message'] >= len(config.game_win_text):
                 state['current_game_mode'] = config.Modes.MAIN_MENU
