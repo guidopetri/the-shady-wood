@@ -185,9 +185,7 @@ music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100
 music_death_fadeout_time_ms = 100
 # 3s before pause in music - magic number
-music_win_delay_frames = int(1.5 * map_tile_size
-                             / character_speed
-                             - 3 * framerate)
+music_win_delay_frames = int(0.375 * map_tile_size / character_speed)
 
 initial_position = tuple([int((x + 2 * map_buffer_size)
                               / 2 * map_tile_size)
