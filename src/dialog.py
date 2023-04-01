@@ -84,9 +84,10 @@ class Dialog(object):
                 if state['first_item_end'][item]:
                     # default to text itself
                     tone_text = config.first_item_end_messages.get(item, tone_text)  # noqa
-
                 if tone_text is not None:
                     state['msg_duration'] = config.msg_duration
+                if state['message_sfx_played']:
+                    tone_text = (None, tone_text[1])
             elif state['pickup']:
                 item = state['last_item_picked_up']
                 state['pickup'] = False

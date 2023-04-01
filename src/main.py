@@ -194,6 +194,7 @@ def handle_events(state):
                     state['inventory'][item] -= 1
                     state['can_use_item'] = False
                     state['item_duration'] = config.item_durations[item]
+                    state['message_sfx_played'] = False
 
                     if item == 'snail':
                         state['snail_position'] = state['position']
@@ -204,7 +205,11 @@ def handle_events(state):
         # spaghetti code
         for key, item in items_map.items():
             has_item = state['inventory'][item] > 0
-            if keys[key] and state['effect'] != 'regular' and has_item:
+            correct_state = (state['effect'] != 'regular'
+                             and not state['effect_fade_in']
+                             and not state['effect_fade_out']
+                             )
+            if keys[key] and correct_state and has_item:
                 state['tried_to_use_item'] = config.cant_use_item_duration
                 state['message_sfx_played'] = False
 
