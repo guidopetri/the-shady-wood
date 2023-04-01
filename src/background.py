@@ -476,6 +476,15 @@ class Foreground(AbstractBG):
         self.advance_rect = self.advance_text.get_rect(**coords)
         self.advance_rect.move_ip(config.advance_padding)
 
+        self.version_color = pygame.Color(config.version_color)
+        self.version_text = self.font.render(config.version_text,
+                                             True,
+                                             self.version_color,
+                                             )
+        coords = {'bottomright': config.screen_size}
+        self.version_rect = self.version_text.get_rect(**coords)
+        self.version_rect.move_ip(config.version_text_padding)
+
         super().__init__(surface)
 
     def render_intro_dialog(self, state):
@@ -497,6 +506,7 @@ class Foreground(AbstractBG):
         if state['menu_ready']:
             # credits
             self.surface.blit(self.credits_text, self.credits_rect)
+            self.surface.blit(self.version_text, self.version_rect)
 
 
 class Boundaries(AbstractBG):
