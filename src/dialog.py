@@ -90,7 +90,7 @@ class Dialog(object):
                     # default to text itself
                     tone_text = config.first_item_end_messages.get(item, tone_text)  # noqa
 
-                if tone_text[1] is not None:
+                if tone_text is not None:
                     state['msg_duration'] = config.msg_duration
             elif state['pickup']:
                 item = state['last_item_picked_up']
