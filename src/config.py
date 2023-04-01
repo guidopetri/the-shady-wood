@@ -184,8 +184,12 @@ lightning_effect_rate = 1 * framerate
 music_fadeout_time_ms = 2000
 music_fadein_time_ms = 100
 music_death_fadeout_time_ms = 100
-# 3s before pause in music - magic number
-music_win_delay_frames = int(0.375 * map_tile_size / character_speed)
+# warning: includes magic numbers
+music_delay_frames = {Modes.WIN_DIALOG: int(0.375
+                                            * map_tile_size
+                                            / character_speed),
+                      Modes.MAIN_MENU: 0.1 * framerate,
+                      }
 
 initial_position = tuple([int((x + 2 * map_buffer_size)
                               / 2 * map_tile_size)

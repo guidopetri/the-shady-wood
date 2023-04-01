@@ -13,7 +13,7 @@ class Audio(object):
 
         self.current_music = self.menu_music
         self.playing = False
-        self.win_delay_frames = 0
+        self.delay_frames = 0
 
     @property
     def current_music(self):
@@ -46,6 +46,8 @@ class Audio(object):
             pass
             # pygame.mixer.music.set_volume(0)
 
+        mode = state['current_game_mode']
+
         mapper = {config.Modes.GAME: {'regular': self.game_music,
                                       'lightning': self.lightning_music,
                                       'moonlight': self.moonlight_music,
@@ -62,15 +64,15 @@ class Audio(object):
                         }
 
         # keep playing the current song by default
-        track = mapper.get(state['current_game_mode'], self.current_music)
+        track = mapper.get(mode, self.current_music)
         if isinstance(track, dict):
             track = track.get(state['effect'], self.current_music)
-        self.loops = loops_mapper.get(state['current_game_mode'], 0)
+        self.loops = loops_mapper.get(mode, 0)
 
         if self.current_music != track:
             self.current_music = track
 
-        if self.current_music == self.win_music and self.delay_frames <= config.music_win_delay_frames:  # noqa
+        if self.delay_frames <= config.music_delay_frames.get(mode, -1):
             self.delay_frames += 1
             return
 
