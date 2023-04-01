@@ -43,6 +43,30 @@ Elaborate descriptions to be added.
 - separate music vs sfx folder
 - music is not scary
 
+# Build instructions
+
+Make sure `pyinstaller` is installed:
+
+```sh
+pip install pyinstaller
+```
+
+Create the spec file:
+
+```sh
+pyi-makespec --windowed --onefile --add-data "./assets;assets" --name shady_wood src/main.py
+```
+
+Use a `;` for a path separator on Windows, or `:` on \*nix.
+
+Build:
+
+```sh
+pyinstaller shady_wood.spec
+```
+
+The executable will be located in `./dist/shady_wood.exe` (or no extension for \*nix).
+
 # Credits / Attribution
 
 Programming: Guido Petri

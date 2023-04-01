@@ -2,6 +2,7 @@ import enum
 import os
 from pathlib import Path
 from math import ceil
+import sys
 
 
 class Modes(enum.Enum):
@@ -15,8 +16,13 @@ class Modes(enum.Enum):
 
 debug_mode = False
 
-main_dir = Path(os.path.split(os.path.abspath(__file__))[0])
-root = main_dir / '..'
+# pyinstaller shenanigans
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    root = Path(sys._MEIPASS)
+else:
+    main_dir = Path(os.path.split(os.path.abspath(__file__))[0])
+    root = main_dir / '..'
+
 gfx_path = root / 'assets' / 'gfx'
 sfx_path = root / 'assets' / 'fx'
 
