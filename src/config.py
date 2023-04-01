@@ -246,6 +246,7 @@ default_game_state = {'current_game_mode': Modes.MAIN_MENU,
                       'fading_in_title': False,
                       'hold_at_menu': False,
                       'ready_for_win': False,
+                      'ready_for_restart': False,
                       }
 
 fadein_credits_text = 'Created by Kendra Lemon and Guido Petri'

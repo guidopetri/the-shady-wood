@@ -135,6 +135,7 @@ def handle_events(state):
         if state['game_over']:
             state['current_game_mode'] = config.Modes.GAME_OVER
             state['maze_begin'] = False
+            state['ready_for_restart'] = False
 
         if state['effect'] == 'regular':
             # randomly switch to other effects
@@ -309,7 +310,7 @@ def handle_events(state):
             if keys[pygame.K_l]:
                 state['effect_alpha'] -= 1
     elif mode == config.Modes.GAME_OVER:
-        if any_key:
+        if state['ready_for_restart'] and any_key:
             state['current_game_mode'] = config.Modes.MAIN_MENU
             # revert to default state
             state = deepcopy(config.default_game_state)

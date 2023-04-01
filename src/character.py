@@ -135,6 +135,9 @@ class MainCharacter(object):
         if loop:
             self.current_frame %= self.num_frames
         else:
+            # spaghetti
+            if self.current_action == 'dead' and self.current_frame == self.num_frames:  # noqa
+                state['ready_for_restart'] = True
             self.current_frame = min(self.num_frames - 1, self.current_frame)
             if self.current_frame == self.num_frames - 1 and self.current_action == 'item_out':  # noqa
                 state['item'] = 'none'
