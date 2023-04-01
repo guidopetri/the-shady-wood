@@ -675,7 +675,7 @@ class LightStatusEffects(Shadows):
 
         super().__init__(surface,
                          area=self.initial_area,
-                         variance=240,
+                         variance=480,
                          )
         self.shadows = self.render_shadows('black', 255)
         self.reset_to_defaults()
