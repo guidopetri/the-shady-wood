@@ -5,7 +5,7 @@ import config
 class Dialog(object):
     def __init__(self, surface):
         self.surface = surface
-        self.font = pygame.font.SysFont(config.fontname, config.fontsize)
+        self.font = pygame.font.Font(config.fontname, config.fontsize)
         self.font_color = pygame.Color(config.font_color)
         self.last_text = None
         self.last_rect = None

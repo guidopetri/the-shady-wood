@@ -17,18 +17,18 @@ class Gui(object):
         self.render_base_item_bar()
 
     def render_text(self):
-        self.font = pygame.font.SysFont(config.courage_fontname,
-                                        config.courage_fontsize,
-                                        )
+        self.font = pygame.font.Font(config.fontname,
+                                     config.courage_fontsize,
+                                     )
         self.font_color = pygame.Color(config.courage_font_color)
-        self.courage_text = self.font.render('courage',
+        self.courage_text = self.font.render(config.courage_text,
                                              True,
                                              self.font_color,
                                              )
 
-        self.item_font = pygame.font.SysFont(config.courage_fontname,
-                                             config.item_fontsize,
-                                             )
+        self.item_font = pygame.font.Font(config.fontname,
+                                          config.item_fontsize,
+                                          )
         self.item_font_color = pygame.Color(config.item_font_color)
 
         key_filename = 'ItemBar_Key_10x10px.png'
@@ -37,7 +37,7 @@ class Gui(object):
         img_rect = key_img.get_rect()
         for item in config.items:
             img = key_img.copy()
-            text = self.item_font.render(config.keys[item],
+            text = self.item_font.render(config.keys[item].upper(),
                                          True,
                                          self.item_font_color,
                                          )
@@ -123,6 +123,7 @@ class Gui(object):
 
         coords = {'midtop': (hp_indicator_size[0] // 2, 12)}
         self.courage_rect = self.courage_text.get_rect(**coords)
+        self.courage_rect.move_ip(config.courage_text_padding)
         self.hp_indicator.blit(self.courage_text, self.courage_rect)
 
         height = (self.hp_sprite.get_height() - hp_indicator_size[1]) // 2
@@ -136,6 +137,7 @@ class Gui(object):
                                           10,
                                           )
         self.hp_bg_bar_rect.midtop = self.courage_rect.midbottom
+        self.hp_bg_bar_rect.move_ip(config.hp_bar_padding)
 
         self.full_hp_color = pygame.Color(config.full_hp_color)
         self.empty_hp_color = pygame.Color(config.empty_hp_color)

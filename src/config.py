@@ -15,6 +15,11 @@ class Modes(enum.Enum):
 
 debug_mode = False
 
+main_dir = Path(os.path.split(os.path.abspath(__file__))[0])
+root = main_dir / '..'
+gfx_path = root / 'assets' / 'gfx'
+sfx_path = root / 'assets' / 'fx'
+
 screen_size = (1080, 720)
 screen_center = tuple(x // 2 for x in screen_size)
 
@@ -25,9 +30,10 @@ framerate = 60
 character_speed = 2
 snail_speed = 6
 
-fontname = 'Copperplate Gothic'
-fontsize = 24
 font_color = '#303030'
+fontpath = root / 'assets' / 'font'
+fontname = fontpath / 'OTF' / 'dogicapixel.otf'
+fontsize = 16
 
 dialog_border_color = 'blue'
 dialog_box_color = 'yellow'
@@ -43,9 +49,10 @@ menu_text_padding = (0, 0)
 menu_sprite_padding = (0, 110)
 title_padding = (0, 80)
 
-courage_fontname = 'Copperplate Gothic'
-courage_fontsize = 14
+courage_fontsize = 10
 courage_font_color = 'black'
+courage_text_padding = (0, 4)
+courage_text = 'COURAGE'
 
 hp_bar_border_radius = 3
 full_hp_color = '#00aa00'
@@ -55,24 +62,20 @@ hp_indicator_size = (150,  # ~ 1080 / 8 + 10%
                      40,  # ~ 720 / 20 + 10%
                      )
 hp_bar_border_thickness = 1
+hp_bar_padding = (0, 4)
 
-item_fontsize = 14
+item_fontsize = 10
 item_icon_size = 48
 item_padding = 11
 item_bar_size = (3 * item_icon_size + 4 * item_padding,
                  item_icon_size + 2 * item_padding,
                  )
 item_font_color = 'black'
-item_count_padding = (-3, 2)
+item_count_padding = (-3, 8)
 item_key_padding = (0, 1)
 item_letter_padding = (0, -1)
 
 img_buffer = 2
-
-main_dir = Path(os.path.split(os.path.abspath(__file__))[0])
-root = main_dir / '..'
-gfx_path = root / 'assets' / 'gfx'
-sfx_path = root / 'assets' / 'fx'
 
 intro_messages = [('anne_normal',
                    'All I wanted was a nice picnic at my favorite spot.'),
@@ -147,7 +150,6 @@ game_over_text = ['GAME OVER',
                   'Anne became too afraid. She turned to stone...',
                   ]
 
-game_over_fontname = 'Copperplate Gothic'
 game_over_fontsize = 20
 game_over_font_color = 'white'
 

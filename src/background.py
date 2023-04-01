@@ -155,9 +155,9 @@ class Background(AbstractBG):
     def __init__(self, surface):
         self.image_type = 'Ground'
 
-        self.font = pygame.font.SysFont(config.game_over_fontname,
-                                        config.game_over_fontsize,
-                                        )
+        self.font = pygame.font.Font(config.fontname,
+                                     config.game_over_fontsize,
+                                     )
         self.font_color = pygame.Color(config.game_over_font_color)
 
         self.frame_counter = 0
