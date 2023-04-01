@@ -107,9 +107,9 @@ keys = {'firefly': 'f',
         }
 
 firefly_duration_in_s = 2.75
-firefly_flashes = 5
+firefly_flashes = 10
 firefly_flash_frames = framerate // 2
-item_durations = {'candle': 15 * framerate,
+item_durations = {'candle': 30 * framerate,
                   'firefly': int((firefly_duration_in_s * firefly_flashes
                                   + firefly_flash_frames / framerate)
                                  * framerate),
