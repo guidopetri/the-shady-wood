@@ -107,7 +107,7 @@ item_durations = {'candle': 15 * framerate,
                   'firefly': int((firefly_duration_in_s * firefly_flashes
                                   + firefly_flash_frames / framerate)
                                  * framerate),
-                  'snail': 30 * framerate,
+                  'snail': 3 * framerate,
                   }
 item_variances = {'candle': 13000,
                   'firefly': 9600,
