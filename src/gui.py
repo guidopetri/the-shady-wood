@@ -210,10 +210,9 @@ class Gui(object):
         self.render_item_counts()
 
         for item in config.items:
-            fn = lambda x: x  # noqa
             if self.item_count[item] == 0:
-                fn = pygame.transform.grayscale
-            self.item_bar.blit(fn(self.icons[item]), self.item_rects[item])
+                continue
+            self.item_bar.blit(self.icons[item], self.item_rects[item])
             self.item_bar.blit(self.item_count_texts[item],
                                self.item_count_rects[item],
                                )
