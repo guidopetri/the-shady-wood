@@ -257,7 +257,7 @@ credits_fadeout_period = 2 * framerate
 
 anne_fadein_period = 2 * framerate
 title_fadein_period = 2 * framerate
-ready_hold_period = 2 * framerate
+ready_hold_period = 1 * framerate
 
 restart_text = 'Press any key to restart'
 advance_text = 'Press any key to continue'
