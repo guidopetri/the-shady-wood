@@ -425,6 +425,7 @@ class Background(AbstractBG):
                     break
 
         if state['menu_ready']:
+            self.menu_frame_counter = 0
             self.advance_frame()
             self.surface.blit(self.title_sprite, self.title_rect)
             self.surface.blit(self.menu_sprite, self.menu_rect)
