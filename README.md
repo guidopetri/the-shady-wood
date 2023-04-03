@@ -73,6 +73,6 @@ Programming: Guido Petri
 
 Art: Kendra Lemon
 
-Sound effects: Kendra Lemon
+Music and sound effects: Kendra Lemon
 
 Font: [Dogica Pixel](https://www.dafont.com/dogica.font) by Roberto Mocci.
